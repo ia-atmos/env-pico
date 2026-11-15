@@ -298,17 +298,30 @@ static void _pico_atmos_lay_fin (void* p) {
     _pico_atmos_lay_unref(p);
 }
 
-static AVal _pico_atmos_lay_new (Pico_Layer* lay, int kind, _PICO_ATMOS_Lay* up, _PICO_ATMOS_Lay* sup) {
+// A new layer, with the boxes of its parent and of its source (or nil).
+//
+// The new box holds the two (`a_nat_holds`): it is born with its floor in
+// their blocks, so that the program cannot store it where it would outlive
+// them. The counters of the structs remain, since a box may still be
+// finalized before a box that depends on it (a parent that is removed from
+// a table, that is never pinned, or that is pinned after the table that
+// holds its child): its layer is then only freed with the last dependent.
+static AVal _pico_atmos_lay_new (Pico_Layer* lay, int kind, AVal vup, AVal vsup) {
+    _PICO_ATMOS_Lay* up  = (vup.type  == A_NIL) ? NULL : a_nat_ptr(vup);
+    _PICO_ATMOS_Lay* sup = (vsup.type == A_NIL) ? NULL : a_nat_ptr(vsup);
     _PICO_ATMOS_Lay* s = malloc(sizeof(_PICO_ATMOS_Lay));
     *s = (_PICO_ATMOS_Lay) { lay, _PICO_ATMOS.gen, 1, kind, 0, up, sup, a_nil(), NULL };
+    AVal box = a_nat(s, _pico_atmos_lay_fin, _PICO_ATMOS_KIND_LAY);
     if (up != NULL) {
         up->rc++;
+        a_nat_holds(box, vup);
     }
     if (sup != NULL) {
         sup->rc++;
         sup->subs++;
+        a_nat_holds(box, vsup);
     }
-    return a_nat(s, _pico_atmos_lay_fin, _PICO_ATMOS_KIND_LAY);
+    return box;
 }
 
 // Sets the box of the current layer.
@@ -353,9 +366,11 @@ static AVal _pico_atmos_get (AVal t, const char* k) {
     return v;
 }
 
-// Sets a field of a table, consuming the value.
+// Sets a field of a table that is being built, consuming the value. The
+// table is born with the value (`a_born`), which may be pinned: a font.
 static void _pico_atmos_set (AVal t, const char* k, AVal v) {
     AVal key = a_strz(k);
+    a_born(t, v);
     a_setindex(t, key, v);
     a_dec(key);
     a_dec(v);
@@ -846,8 +861,12 @@ static void _pico_atmos_open (Pico_Window* win) {
     _PICO_ATMOS.open = 1;
     _PICO_ATMOS.mouse.on = 0;
     _PICO_ATMOS.gen++;
-    a_set(&_PICO_ATMOS.world,  _pico_atmos_lay_new(pico_layer_world(),  _PICO_ATMOS_ROOT, NULL, NULL));
-    a_set(&_PICO_ATMOS.window, _pico_atmos_lay_new(pico_layer_window(), _PICO_ATMOS_ROOT, NULL, NULL));
+    a_set(&_PICO_ATMOS.world,  _pico_atmos_lay_new(pico_layer_world(),  _PICO_ATMOS_ROOT, a_nil(), a_nil()));
+    a_set(&_PICO_ATMOS.window, _pico_atmos_lay_new(pico_layer_window(), _PICO_ATMOS_ROOT, a_nil(), a_nil()));
+    // the two roots are given to the program many times: the binding
+    // owns them, and the program refers to them with a plain `val`
+    a_own(_PICO_ATMOS.world);
+    a_own(_PICO_ATMOS.window);
     _pico_atmos_cur(_PICO_ATMOS.world);
 }
 
@@ -1651,6 +1670,7 @@ static int _pico_atmos_hosts (_PICO_ATMOS_Lay* s) {
 // `target`.
 typedef struct _PICO_ATMOS_Ctor {
     AVal          t;
+    AVal          vup;      // the box of `up`, or nil
     _PICO_ATMOS_Lay*       up;
     Pico_Layer*   xup;
     int           has_dst;
@@ -1662,7 +1682,8 @@ static int _pico_atmos_ctor (int argc, AVal* argv, _PICO_ATMOS_Ctor* c) {
     if (!_pico_atmos_tab(c->t, "layer")) {
         return 0;
     }
-    if (!_pico_atmos_lay_opt(_pico_atmos_get(c->t,"up"), &c->xup, &c->up)) {
+    c->vup = _pico_atmos_get(c->t, "up");
+    if (!_pico_atmos_lay_opt(c->vup, &c->xup, &c->up)) {
         return 0;
     }
     if (c->up!=NULL && !_pico_atmos_hosts(c->up)) {
@@ -1684,9 +1705,9 @@ static void _pico_atmos_ctor_dst (_PICO_ATMOS_Ctor* c, Pico_Layer* lay) {
 }
 
 // Applies the `target`, and pushes the box of the new layer.
-static AStatus _pico_atmos_ctor_end (_PICO_ATMOS_Ctor* c, Pico_Layer* lay, int kind, _PICO_ATMOS_Lay* sup) {
+static AStatus _pico_atmos_ctor_end (_PICO_ATMOS_Ctor* c, Pico_Layer* lay, int kind, AVal vsup) {
     _pico_atmos_ctor_dst(c, lay);
-    a_push(_pico_atmos_lay_new(lay, kind, c->up, sup));
+    a_push(_pico_atmos_lay_new(lay, kind, c->vup, vsup));
     return A_OK;
 }
 
@@ -1738,7 +1759,7 @@ static AStatus _pico_atmos_l_layer_empty (AFunc* self, int argc, AVal* argv) {
         _PICO_ATMOS_TRY(_pico_atmos_dim(vtile, &tile));
         xtile = &tile;
     }
-    return _pico_atmos_ctor_end(&c, pico_layer_empty(c.xup,clear,dim,xtile), _PICO_ATMOS_EMPTY, NULL);
+    return _pico_atmos_ctor_end(&c, pico_layer_empty(c.xup,clear,dim,xtile), _PICO_ATMOS_EMPTY, a_nil());
 }
 
 // pico.layer.image [up=, path=, target=]
@@ -1747,7 +1768,7 @@ static AStatus _pico_atmos_l_layer_image (AFunc* self, int argc, AVal* argv) {
     _PICO_ATMOS_Ctor c;
     const char* path;
     _PICO_ATMOS_TRY(_pico_atmos_ctor(argc,argv,&c) && _pico_atmos_path(c.t,&path));
-    return _pico_atmos_ctor_end(&c, pico_layer_image(c.xup,path), _PICO_ATMOS_IMAGE, NULL);
+    return _pico_atmos_ctor_end(&c, pico_layer_image(c.xup,path), _PICO_ATMOS_IMAGE, a_nil());
 }
 
 // pico.layer.images [up=, path=, sheet=, target=]
@@ -1812,12 +1833,14 @@ static AStatus _pico_atmos_l_layer_images (AFunc* self, int argc, AVal* argv) {
     }
 
     AVal ret = a_tab();
-    AVal img = _pico_atmos_lay_new(pico_layer_image(NULL,path), _PICO_ATMOS_IMAGE, NULL, NULL);
+    // the image has no value in the program: it lives while a sub-layer does
+    AVal img = _pico_atmos_lay_new(pico_layer_image(NULL,path), _PICO_ATMOS_IMAGE, a_nil(), a_nil());
     _PICO_ATMOS_Lay* sup = a_nat_ptr(img);
     for (int i=0; i<n; i++) {
         Pico_Layer* lay = pico_layer_sub(c.xup, sup->lay, &crops[i]);
         _pico_atmos_ctor_dst(&c, lay);
-        AVal sub = _pico_atmos_lay_new(lay, _PICO_ATMOS_SUB, c.up, sup);
+        AVal sub = _pico_atmos_lay_new(lay, _PICO_ATMOS_SUB, c.vup, img);
+        a_born(ret, sub);
         a_setindex(ret, (names == NULL) ? a_int(i) : names[i], sub);
         a_dec(sub);
     }
@@ -1842,7 +1865,7 @@ static AStatus _pico_atmos_l_layer_pixmap (AFunc* self, int argc, AVal* argv) {
     _PICO_ATMOS_TRY(_pico_atmos_pixmap(pixels, &dim, &buf));
     Pico_Layer* lay = pico_layer_pixmap(c.xup, dim, buf);
     free(buf);
-    return _pico_atmos_ctor_end(&c, lay, _PICO_ATMOS_PIXMAP, NULL);
+    return _pico_atmos_ctor_end(&c, lay, _PICO_ATMOS_PIXMAP, a_nil());
 }
 
 // pico.layer.screenshot [up=, sup=|src=, crop=|rect=, target=]
@@ -1865,7 +1888,7 @@ static AStatus _pico_atmos_l_layer_screenshot (AFunc* self, int argc, AVal* argv
         _PICO_ATMOS_TRY(_pico_atmos_rect(vcrop, &crop));
         xcrop = &crop;
     }
-    return _pico_atmos_ctor_end(&c, pico_layer_screenshot(c.xup,sup,xcrop), _PICO_ATMOS_SHOT, NULL);
+    return _pico_atmos_ctor_end(&c, pico_layer_screenshot(c.xup,sup,xcrop), _PICO_ATMOS_SHOT, a_nil());
 }
 
 // pico.layer.sub [up=, sup=, crop=, target=]
@@ -1887,7 +1910,7 @@ static AStatus _pico_atmos_l_layer_sub (AFunc* self, int argc, AVal* argv) {
     if (sup->kind == _PICO_ATMOS_SUB) {
         return a_error("%s : invalid 'sup' : sub-layer of a sub-layer", _PICO_ATMOS_FN);
     }
-    return _pico_atmos_ctor_end(&c, pico_layer_sub(c.xup,sup->lay,&crop), _PICO_ATMOS_SUB, sup);
+    return _pico_atmos_ctor_end(&c, pico_layer_sub(c.xup,sup->lay,&crop), _PICO_ATMOS_SUB, vsup);
 }
 
 // pico.layer.text [up=, dim=, text=, target=]
@@ -1916,7 +1939,7 @@ static AStatus _pico_atmos_l_layer_text (AFunc* self, int argc, AVal* argv) {
     }
     Pico_Layer* lay = pico_layer_text(c.xup, dim, A_STR_OF(text)->s);
     a_dec(text);
-    return _pico_atmos_ctor_end(&c, lay, _PICO_ATMOS_TEXT, NULL);
+    return _pico_atmos_ctor_end(&c, lay, _PICO_ATMOS_TEXT, a_nil());
 }
 
 // pico.layer.video [up=, path=, target=]
@@ -1925,7 +1948,7 @@ static AStatus _pico_atmos_l_layer_video (AFunc* self, int argc, AVal* argv) {
     _PICO_ATMOS_Ctor c;
     const char* path;
     _PICO_ATMOS_TRY(_pico_atmos_ctor(argc,argv,&c) && _pico_atmos_path(c.t,&path));
-    return _pico_atmos_ctor_end(&c, pico_layer_video(c.xup,path), _PICO_ATMOS_VIDEO, NULL);
+    return _pico_atmos_ctor_end(&c, pico_layer_video(c.xup,path), _PICO_ATMOS_VIDEO, a_nil());
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -2481,7 +2504,7 @@ int main (int argc, char** argv) {
 }
 ```
 
-val pico = [
+pin pico = [
     ;; pico.open([title=, fs=, show=]): opens pico and its window again,
     ;; after a `pico.close()`: the program starts with pico open
     ;; (`fs` may also be named `fullscreen`)
