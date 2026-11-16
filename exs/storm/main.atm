@@ -7,25 +7,22 @@ pico.set.effect [ color=[ r=0x21, g=0x2C, b=0x34 ] ]
 
 math.randomseed(os.time())
 
-;; Shared game state accessible by all entities
+;; Shared game state accessible by all entities.
+;; The table owns the pools, which are created in it.
 pin G = [
     W  = W,
     H  = H,
     PI = math.pi,
+    drops  = tasks(),
+    clouds = tasks(),
+    booms  = tasks(),
+    lights = tasks(),
 ]
 
 include "ts.atm"
 
-pin drops  = tasks()
-pin clouds = tasks()
-pin booms  = tasks()
-pin lights = tasks()
-
-set G.drops  = drops
-set G.clouds = clouds
-set G.booms  = booms
-set G.lights = lights
-
+;; (a task that is spawned in a `set` is not pinned while its body
+;; starts, and could not refer to what it publishes)
 pin car = spawn Car(G)
 set G.car = car
 
@@ -36,7 +33,7 @@ spawn Collisions(G)
 spawn {
     loop {
         await :key.dn [key='Down']
-        spawn @lights Light(
+        spawn @(G.lights) Light(
             G, [ x=300, y=0 ], 270, 50, false
         )
     }
