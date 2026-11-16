@@ -366,12 +366,12 @@ static AVal _pico_atmos_get (AVal t, const char* k) {
     return v;
 }
 
-// Sets a field of a table that is being built, consuming the value. The
-// table is born with the value (`a_born`), which may be pinned: a font.
+// Sets a field of a table that is being built, consuming the value. It is
+// a field of a constructor (`a_tab_field`): the table takes its floor from
+// the value, which may be pinned in the program (the font of a pencil).
 static void _pico_atmos_set (AVal t, const char* k, AVal v) {
     AVal key = a_strz(k);
-    a_born(t, v);
-    a_setindex(t, key, v);
+    a_tab_field(t, key, v);
     a_dec(key);
     a_dec(v);
 }
@@ -1832,6 +1832,7 @@ static AStatus _pico_atmos_l_layer_images (AFunc* self, int argc, AVal* argv) {
         }
     }
 
+    AStatus st = A_OK;
     AVal ret = a_tab();
     // the image has no value in the program: it lives while a sub-layer does
     AVal img = _pico_atmos_lay_new(pico_layer_image(NULL,path), _PICO_ATMOS_IMAGE, a_nil(), a_nil());
@@ -1840,13 +1841,20 @@ static AStatus _pico_atmos_l_layer_images (AFunc* self, int argc, AVal* argv) {
         Pico_Layer* lay = pico_layer_sub(c.xup, sup->lay, &crops[i]);
         _pico_atmos_ctor_dst(&c, lay);
         AVal sub = _pico_atmos_lay_new(lay, _PICO_ATMOS_SUB, c.vup, img);
-        a_born(ret, sub);
-        a_setindex(ret, (names == NULL) ? a_int(i) : names[i], sub);
+        // a field of a constructor: a sub-layer has its floor in the
+        // block of `up`, and the table takes it
+        if (st == A_OK) {
+            st = a_tab_field(ret, (names == NULL) ? a_int(i) : names[i], sub);
+        }
         a_dec(sub);
     }
     a_dec(img);
     free(crops);
     free(names);
+    if (st != A_OK) {
+        a_dec(ret);
+        return st;
+    }
     a_push(ret);
     return A_OK;
 }
