@@ -4,6 +4,8 @@
 ;;
 ;;      atmos-pico anims.atm
 
+pico.open()
+
 pico.set.expert(true, 20)
 pico.set.pencil [ style='stroke' ]
 

@@ -20,9 +20,13 @@ cd birds/
 of the repository (see the [main README](../README.md), which also lists the
 SDL2 packages required).
 
-A game does not include the binding nor opens the window: `atmos-pico`
-makes the table `pico` available, and the program starts with the window
-open.
+A game does not include the binding: `atmos-pico` makes the table `pico`
+available.
+A game opens the window explicitly, as its first statement:
+
+```
+pico.open()
+```
 
 # Running without a display
 

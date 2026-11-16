@@ -31,11 +31,12 @@ cd exs/birds/
 ```
 
 `atmos-pico` is the Atmos compiler dedicated to pico: a program is only its
-own code, with no `include` and with the window already open.
+own code, with no `include` of the binding.
 It keeps depending on the checkout of the compiler, on a C compiler, and on
 the SDL2 packages above.
 
 ```
+pico.open()
 spawn {
     loop on :draw {
         pico.output.draw.rect ['%', x=0.5, y=0.5, w=0.5, h=0.5]

@@ -13,8 +13,14 @@ $ atmos-pico file.atm
   `pico.atm`, such that the table `pico` is available from its first line.
   (An `include` of `pico.atm` in the program is harmless: a file is only
   included once.)
-- The program starts with pico already open, with the default window: there
-  is no initial call to `pico.open`.
+- The program opens pico itself, with `pico.open`, before any other
+  operation:
+
+    ```
+    pico.open()
+    ...
+    ```
+
 - The relative paths that a program uses at run time (images, sounds) are
   relative to the current directory: run a program from its own directory.
 - The plain compiler also works, if the program includes `pico.atm` itself
@@ -22,8 +28,7 @@ $ atmos-pico file.atm
 
 Everything lives in the single table `pico`.
 All operations, except `pico.open`, `pico.color.*`, and `pico.equal`, raise the
-error `pico is not open` if called after `pico.close` (and before a new
-`pico.open`).
+error `pico is not open` if called before `pico.open` or after `pico.close`.
 
 - [Types](#types)
 - [Lifetimes](#lifetimes)
@@ -445,8 +450,7 @@ In alphabetical order:
         ```
     - A layer is released with the block that owns it (see
       [Lifetimes](#lifetimes)): there is no `pico.layer.free`.
-- **pico.open**: Initializes pico and opens its window again, after a
-  `pico.close`.
+- **pico.open**: Initializes pico and opens its window.
     ```
     pico.open [
         title:  string,     -- window title (default: built-in title)
@@ -457,11 +461,10 @@ In alphabetical order:
     - `pico.open ()` uses all defaults.
     - The field `fs` may also be named `fullscreen` (`fs` prevails if both
       are given).
-    - A program starts with pico open, with all defaults: it is an error
-      to call `pico.open` with no `pico.close` before it.
-    - To create the window hidden or in fullscreen, a program closes and
-      reopens pico: `pico.close() ; pico.open [show=false]`.
-      Otherwise, `pico.set.window` changes the window that is open.
+    - It is an error to open pico twice with no `pico.close` in between.
+    - The fields create the window hidden or in fullscreen from the start:
+      `pico.open [show=false]`.
+      Afterwards, `pico.set.window` changes the window that is open.
     - The current layer is the world.
 - **pico.output**
     - **pico.output.clear**: Clears screen.
@@ -664,15 +667,16 @@ In alphabetical order:
 
 ## Reactive Mode
 
-A program starts with pico open.
-An imperative program draws, waits for input with `pico.input.*`, and calls
-`pico.close()` (or leaves it to the end of the program).
+An imperative program calls `pico.open()`, draws, waits for input with
+`pico.input.*`, and calls `pico.close()` (or leaves it to the end of the
+program).
 
-A reactive program awaits.
+A reactive program calls `pico.open()` and awaits.
 When the main chunk awaits (it does not terminate) and pico is open, the
 program runs inside the loop of pico:
 
 ```
+pico.open()
 par {
     loop on :draw {
         pico.output.draw.rect [ '%', x=0.5, y=0.5, w=0.5, h=0.5 ]
