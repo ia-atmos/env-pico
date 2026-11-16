@@ -8,7 +8,7 @@ do {
     ;; world 100x100, window 500x500 -> 5x scale
     print('', 1)
     do {
-        val out = ['!', anchor='NW']
+        pin out = ['!', anchor='NW']
         pico.cv.pos(window, out, nil, ['!', x=50, y=50, anchor='NW'])
         assert(out.x==250 && out.y==250)
         pico.cv.pos(window, out, ['!', x=50, y=50, anchor='NW'])
@@ -17,7 +17,7 @@ do {
 
     print('', 2)
     do {
-        val out = ['!', anchor='NW']
+        pin out = ['!', anchor='NW']
         pico.cv.pos(nil, out, window, ['!', x=250, y=250, anchor='NW'])
         assert(out.x==50 && out.y==50)
         pico.cv.pos(out, window, ['!', x=250, y=250, anchor='NW'])
@@ -25,58 +25,60 @@ do {
     }
 
     print('', 3)
-    val win = ['!', anchor='NW']
+    pin win = ['!', anchor='NW']
     pico.cv.pos(window, win, ['!', x=37, y=89, anchor='NW'])
-    val back = ['!', anchor='NW']
+    pin back = ['!', anchor='NW']
     pico.cv.pos(nil, back, window, win)
     assert(back.x==37 && back.y==89)
 }
 
 do {
-    var v = pico.cv.pos('%', ['!',x=50,y=99])
-    assert(v.x*100//1==50 && v.y*100//98)
+    pin st = []
+    set st.v = pico.cv.pos('%', ['!',x=50,y=99])
+    assert(st.v.x*100//1==50 && st.v.y*100//98)
 
-    set v = pico.cv.rect(
+    set st.v = pico.cv.rect(
         ['!',anchor='NW'],
         ['%',x=1,y=1,w=0.5,h=0.5,anchor='SE']
     )
-    assert(v.x==50 && v.y==50)
+    assert(st.v.x==50 && st.v.y==50)
 }
 
 print "pico.cv.* sub-layer 2-hop walk"
 ;; (declared outside the block: the layer is used by the next sections)
-val sub_cv = pico.layer.empty [ up=world, clear=true, dim=['!', w=50, h=50] ]
+pin sub_cv = pico.layer.empty [ up=world, clear=true, dim=['!', w=50, h=50] ]
 do {
     pico.set.layer(sub_cv)
 
     print('', 'pos sub -> world')
-    var w = ['!', anchor='NW']
-    pico.cv.pos(world, w, nil, ['!', x=10, y=20, anchor='NW'])
-    assert(w.x==20 && w.y==40)
-    set w = pico.cv.pos(world, w, ['!', x=10, y=20, anchor='NW'])
-    assert(w.x==20 && w.y==40)
+    pin st = []
+    set st.w = ['!', anchor='NW']
+    pico.cv.pos(world, st.w, nil, ['!', x=10, y=20, anchor='NW'])
+    assert(st.w.x==20 && st.w.y==40)
+    set st.w = pico.cv.pos(world, st.w, ['!', x=10, y=20, anchor='NW'])
+    assert(st.w.x==20 && st.w.y==40)
 
     print('', 'pos world -> sub')
-    var s = ['!', anchor='NW']
-    set s = pico.cv.pos(nil, s, world, ['!', x=20, y=40, anchor='NW'])
-    assert(s.x==10 && s.y==20)
-    pico.cv.pos(s, world, ['!', x=20, y=40, anchor='NW'])
-    assert(s.x==10 && s.y==20)
+    set st.s = ['!', anchor='NW']
+    set st.s = pico.cv.pos(nil, st.s, world, ['!', x=20, y=40, anchor='NW'])
+    assert(st.s.x==10 && st.s.y==20)
+    pico.cv.pos(st.s, world, ['!', x=20, y=40, anchor='NW'])
+    assert(st.s.x==10 && st.s.y==20)
 
     print('', 'pos sub -> window (2 hops)')
-    val win = ['!', anchor='NW']
+    pin win = ['!', anchor='NW']
     pico.cv.pos(window, win, ['!', x=10, y=20, anchor='NW'])
     assert(win.x==100 && win.y==200)
 
     print('', 'rect sub -> world')
-    set w = ['!', anchor='NW']
-    pico.cv.rect(world, w, nil, ['!', x=10, y=20, w=5, h=10, anchor='NW'])
-    assert(w.x==20 && w.y==40 && w.w==10 && w.h==20)
-    set w = pico.cv.rect(world, w, ['!', x=10, y=20, w=5, h=10, anchor='NW'])
-    assert(w.x==20 && w.y==40 && w.w==10 && w.h==20)
+    set st.w = ['!', anchor='NW']
+    pico.cv.rect(world, st.w, nil, ['!', x=10, y=20, w=5, h=10, anchor='NW'])
+    assert(st.w.x==20 && st.w.y==40 && st.w.w==10 && st.w.h==20)
+    set st.w = pico.cv.rect(world, st.w, ['!', x=10, y=20, w=5, h=10, anchor='NW'])
+    assert(st.w.x==20 && st.w.y==40 && st.w.w==10 && st.w.h==20)
 
     print('', 'dim sub -> world')
-    val t = ['!']
+    pin t = ['!']
     val v = pico.cv.dim(world, t, nil, ['!', w=5, h=10])
     assert(t==v && v.w==10 && v.h==20)
 
@@ -87,24 +89,25 @@ print "pico.cv.* descendant target/source (bidirectional)"
 do {
     ;; cur=world, target=sub_cv (descendant). sub_cv is 50x50 in world 100x100.
     print('', 'pos world -> sub (target=descendant)')
-    var s = ['!', anchor='NW']
-    set s = pico.cv.pos(sub_cv, s, nil, ['!', x=20, y=40, anchor='NW'])
-    assert(s.x==10 && s.y==20)
-    pico.cv.pos(sub_cv, s, ['!', x=20, y=40, anchor='NW'])
-    assert(s.x==10 && s.y==20)
+    pin st = []
+    set st.s = ['!', anchor='NW']
+    set st.s = pico.cv.pos(sub_cv, st.s, nil, ['!', x=20, y=40, anchor='NW'])
+    assert(st.s.x==10 && st.s.y==20)
+    pico.cv.pos(sub_cv, st.s, ['!', x=20, y=40, anchor='NW'])
+    assert(st.s.x==10 && st.s.y==20)
 
     print('', 'pos sub -> world (source=descendant)')
-    val w = ['!', anchor='NW']
+    pin w = ['!', anchor='NW']
     pico.cv.pos(nil, w, sub_cv, ['!', x=10, y=20, anchor='NW'])
     assert(w.x==20 && w.y==40)
 
     print('', 'rect world -> sub (target=descendant)')
-    set s = ['!', anchor='NW']
-    pico.cv.rect(sub_cv, s, nil, ['!', x=20, y=40, w=10, h=20, anchor='NW'])
-    assert(s.x==10 && s.y==20 && s.w==5 && s.h==10)
+    set st.s = ['!', anchor='NW']
+    pico.cv.rect(sub_cv, st.s, nil, ['!', x=20, y=40, w=10, h=20, anchor='NW'])
+    assert(st.s.x==10 && st.s.y==20 && st.s.w==5 && st.s.h==10)
 
     print('', 'dim world -> sub (target=descendant)')
-    val v = pico.cv.dim(sub_cv, '!', nil, ['!', w=10, h=20])
+    pin v = pico.cv.dim(sub_cv, '!', nil, ['!', w=10, h=20])
     assert(v.w==5 && v.h==10)
 }
 
@@ -114,11 +117,11 @@ print "pico.cv.* sibling projection (via cur)"
 ;; Default scene.dst fills cur, so they overlap entirely.
 ;; A point at (5,10) in sub_a maps to (10,20) in world maps to (5,10) in sub_b.
 ;; (declared outside the block: the layers remain attached, as in Lua)
-val sib_a = pico.layer.empty [ up=world, clear=true, dim=['!', w=50, h=50] ]
-val sib_b = pico.layer.empty [ up=world, clear=true, dim=['!', w=50, h=50] ]
+pin sib_a = pico.layer.empty [ up=world, clear=true, dim=['!', w=50, h=50] ]
+pin sib_b = pico.layer.empty [ up=world, clear=true, dim=['!', w=50, h=50] ]
 do {
     print('', 'pos sib_a -> sib_b')
-    val p = pico.cv.pos(sib_b, '!', sib_a, ['!', x=5, y=10])
+    pin p = pico.cv.pos(sib_b, '!', sib_a, ['!', x=5, y=10])
     assert(p.x==5 && p.y==10)
 }
 
@@ -134,52 +137,53 @@ print "pico.cv.* deep 4-layer (window > world > A > B), default anchor C"
 ;; (+25) -> 47,57; through window (5x) -> 235,285. Reported as 235.5,285.5
 ;; after the +0.5 C echo.
 ;; (declared outside the block: the layers remain attached, as in Lua)
-val A = pico.layer.empty [ up=world, clear=true,
+pin A = pico.layer.empty [ up=world, clear=true,
     target=['%', x=0.5, y=0.5, w=0.5, h=0.5] ]
-val B = pico.layer.empty [ up=A, clear=true,
+pin B = pico.layer.empty [ up=A, clear=true,
     target=['%', x=0.5, y=0.5, w=0.5, h=0.5] ]
 do {
     pico.set.layer(B)
 
     print('', 'pos B -> A')
-    var p = pico.cv.pos(A, '!', nil, ['!', x=10, y=20])
-    assert(p.x==22.5 && p.y==32.5)
+    pin st = []
+    set st.p = pico.cv.pos(A, '!', nil, ['!', x=10, y=20])
+    assert(st.p.x==22.5 && st.p.y==32.5)
 
     print('', 'pos B -> world (2 hops)')
-    set p = pico.cv.pos(world, '!', nil, ['!', x=10, y=20])
-    assert(p.x==47.5 && p.y==57.5)
+    set st.p = pico.cv.pos(world, '!', nil, ['!', x=10, y=20])
+    assert(st.p.x==47.5 && st.p.y==57.5)
 
     print('', 'pos B -> window (3 hops)')
-    set p = pico.cv.pos(window, '!', nil, ['!', x=10, y=20])
-    assert(p.x==235.5 && p.y==285.5)
+    set st.p = pico.cv.pos(window, '!', nil, ['!', x=10, y=20])
+    assert(st.p.x==235.5 && st.p.y==285.5)
 
     print('', 'pos window -> B (3 hops back)')
-    set p = pico.cv.pos(nil, '!', window, ['!', x=235.5, y=285.5])
-    assert(p.x==10 && p.y==20)
+    set st.p = pico.cv.pos(nil, '!', window, ['!', x=235.5, y=285.5])
+    assert(st.p.x==10 && st.p.y==20)
 
     print('', 'rect B -> A')
-    var r = pico.cv.rect(A, '!', nil, ['!', x=10, y=10, w=5, h=10])
-    assert(r.x==22.5 && r.y==22.5 && r.w==5 && r.h==10)
+    set st.r = pico.cv.rect(A, '!', nil, ['!', x=10, y=10, w=5, h=10])
+    assert(st.r.x==22.5 && st.r.y==22.5 && st.r.w==5 && st.r.h==10)
 
     print('', 'rect B -> world')
-    set r = pico.cv.rect(world, '!', nil, ['!', x=10, y=10, w=5, h=10])
-    assert(r.x==47.5 && r.y==47.5 && r.w==5 && r.h==10)
+    set st.r = pico.cv.rect(world, '!', nil, ['!', x=10, y=10, w=5, h=10])
+    assert(st.r.x==47.5 && st.r.y==47.5 && st.r.w==5 && st.r.h==10)
 
     print('', 'rect B -> window')
-    set r = pico.cv.rect(window, '!', nil, ['!', x=10, y=10, w=5, h=10])
-    assert(r.x==237.5 && r.y==237.5 && r.w==25 && r.h==50)
+    set st.r = pico.cv.rect(window, '!', nil, ['!', x=10, y=10, w=5, h=10])
+    assert(st.r.x==237.5 && st.r.y==237.5 && st.r.w==25 && st.r.h==50)
 
     print('', 'dim B -> A')
-    var d = pico.cv.dim(A, '!', nil, ['!', w=10, h=20])
-    assert(d.w==10 && d.h==20)
+    set st.d = pico.cv.dim(A, '!', nil, ['!', w=10, h=20])
+    assert(st.d.w==10 && st.d.h==20)
 
     print('', 'dim B -> world')
-    set d = pico.cv.dim(world, '!', nil, ['!', w=10, h=20])
-    assert(d.w==10 && d.h==20)
+    set st.d = pico.cv.dim(world, '!', nil, ['!', w=10, h=20])
+    assert(st.d.w==10 && st.d.h==20)
 
     print('', 'dim B -> window')
-    set d = pico.cv.dim(window, '!', nil, ['!', w=10, h=20])
-    assert(d.w==50 && d.h==100)
+    set st.d = pico.cv.dim(window, '!', nil, ['!', w=10, h=20])
+    assert(st.d.w==50 && st.d.h==100)
 
     pico.set.layer(world)
 }
@@ -187,17 +191,18 @@ do {
 print "pico.cv.* mode-string as to (returns fresh table)"
 do {
     print('', "pos with '!'")
-    var out = pico.cv.pos(window, '!', nil, ['!', x=50, y=50])
-    assert(out && out.x==248 && out.y==248 && out@0=='!')
-    set out = pico.cv.pos(window, '!', ['!', x=50, y=50])
-    assert(out && out.x==248 && out.y==248 && out@0=='!')
+    pin st = []
+    set st.out = pico.cv.pos(window, '!', nil, ['!', x=50, y=50])
+    assert(st.out && st.out.x==248 && st.out.y==248 && st.out@0=='!')
+    set st.out = pico.cv.pos(window, '!', ['!', x=50, y=50])
+    assert(st.out && st.out.x==248 && st.out.y==248 && st.out@0=='!')
 
-    set out = pico.cv.pos(window, ['!', anchor='NW'], ['!', x=50, y=50, anchor='NW'])
-    assert(out && out.x==250 && out.y==250 && out@0=='!')
+    set st.out = pico.cv.pos(window, ['!', anchor='NW'], ['!', x=50, y=50, anchor='NW'])
+    assert(st.out && st.out.x==250 && st.out.y==250 && st.out@0=='!')
 
     print('', "rect with '%'")
-    set out = pico.cv.rect('%', window, ['!', x=250, y=250, w=50, h=50, anchor='NW'])
-    assert(out && out@0=='%')
+    set st.out = pico.cv.rect('%', window, ['!', x=250, y=250, w=50, h=50, anchor='NW'])
+    assert(st.out && st.out@0=='%')
 
     ;; '#' output uses the *target* layer's tile:
     ;; world 10x20 -> window px 50x100 -> window tiles 5x10
@@ -205,8 +210,8 @@ do {
     pico.set.layer(window)
     pico.set.scene [ tile=['!', w=10, h=10] ]
     pico.set.layer(world)
-    set out = pico.cv.dim(window, '#', ['!', w=10, h=20])
-    assert(out && out@0=='#' && out.w==5 && out.h==10)
+    set st.out = pico.cv.dim(window, '#', ['!', w=10, h=20])
+    assert(st.out && st.out@0=='#' && st.out.w==5 && st.out.h==10)
 
     print('', "invalid mode-string 'z' errors")
     val ok = catch true {

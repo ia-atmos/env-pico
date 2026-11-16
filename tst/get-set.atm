@@ -8,39 +8,42 @@ pico.set.scene [ dim=['!', w=64, h=48] ]
 print("color_clear")
 do {
     pico.set.effect [ color='red' ]
-    var c = pico.get.effect().color
-    assert(c.r==255 && c.g==0 && c.b==0 && c.a==255)
+    pin st = []
+    set st.c = pico.get.effect().color
+    assert(st.c.r==255 && st.c.g==0 && st.c.b==0 && st.c.a==255)
     pico.set.effect [ color='blue' ]
-    set c = pico.get.effect().color
-    assert(c.r==0 && c.g==0 && c.b==255 && c.a==255)
+    set st.c = pico.get.effect().color
+    assert(st.c.r==0 && st.c.g==0 && st.c.b==255 && st.c.a==255)
     pico.set.effect [ color='black' ]
-    set c = pico.get.effect().color
-    assert(c.r==0 && c.g==0 && c.b==0 && c.a==255)
+    set st.c = pico.get.effect().color
+    assert(st.c.r==0 && st.c.g==0 && st.c.b==0 && st.c.a==255)
 }
 
 ;; color_clear with alpha
 print("color_clear_alpha")
 do {
     pico.set.effect [ color=['!', r=0, g=0, b=255, a=128] ]
-    var c = pico.get.effect().color
-    assert(c.r==0 && c.g==0 && c.b==255 && c.a==128)
+    pin st = []
+    set st.c = pico.get.effect().color
+    assert(st.c.r==0 && st.c.g==0 && st.c.b==255 && st.c.a==128)
     pico.set.effect [ color=['!', r=255, g=0, b=0, a=0] ]
-    set c = pico.get.effect().color
-    assert(c.r==255 && c.g==0 && c.b==0 && c.a==0)
+    set st.c = pico.get.effect().color
+    assert(st.c.r==255 && st.c.g==0 && st.c.b==0 && st.c.a==0)
 }
 
 ;; color_draw
 print("color_draw")
 do {
     pico.set.pencil [ color='green' ]
-    var c = pico.get.pencil().color
-    assert(c.r==0 && c.g==255 && c.b==0)
+    pin st = []
+    set st.c = pico.get.pencil().color
+    assert(st.c.r==0 && st.c.g==255 && st.c.b==0)
     pico.set.pencil [ color='yellow' ]
-    set c = pico.get.pencil().color
-    assert(c.r==255 && c.g==255 && c.b==0)
+    set st.c = pico.get.pencil().color
+    assert(st.c.r==255 && st.c.g==255 && st.c.b==0)
     pico.set.pencil [ color='white' ]
-    set c = pico.get.pencil().color
-    assert(c.r==255 && c.g==255 && c.b==255)
+    set st.c = pico.get.pencil().color
+    assert(st.c.r==255 && st.c.g==255 && st.c.b==255)
 }
 
 ;; style
@@ -57,20 +60,21 @@ do {
 ;; view (get defaults, set, get back)
 print("view")
 do {
-    var v = pico.get.scene()
-    assert(v.dim.w==64 && v.dim.h==48)
-    assert(v.tile.w==0 && v.tile.h==0)
-    assert(v.target@0=='%' && v.target.x==0.5 && v.target.y==0.5 && v.target.w==1 && v.target.h==1)
-    assert(v.source@0=='%' && v.source.x==0.5 && v.source.y==0.5 && v.source.w==1 && v.source.h==1)
-    assert(v.clip@0=='%' && v.clip.x==0.5 && v.clip.y==0.5 && v.clip.w==1 && v.clip.h==1)
+    pin st = []
+    set st.v = pico.get.scene()
+    assert(st.v.dim.w==64 && st.v.dim.h==48)
+    assert(st.v.tile.w==0 && st.v.tile.h==0)
+    assert(st.v.target@0=='%' && st.v.target.x==0.5 && st.v.target.y==0.5 && st.v.target.w==1 && st.v.target.h==1)
+    assert(st.v.source@0=='%' && st.v.source.x==0.5 && st.v.source.y==0.5 && st.v.source.w==1 && st.v.source.h==1)
+    assert(st.v.clip@0=='%' && st.v.clip.x==0.5 && st.v.clip.y==0.5 && st.v.clip.w==1 && st.v.clip.h==1)
 
     pico.set.scene [ target=['%', x=0.5, y=0.5, w=0.5, h=0.5, anchor='C'] ]
-    set v = pico.get.scene()
-    assert(v.target.w==0.5 && v.target.h==0.5)
+    set st.v = pico.get.scene()
+    assert(st.v.target.w==0.5 && st.v.target.h==0.5)
 
     pico.set.scene [ source=['%', x=0.6, y=0.4, w=0.8, h=0.8, anchor='C'] ]
-    set v = pico.get.scene()
-    assert(pico.equal(v.source.x,0.6) && pico.equal(v.source.y,0.4))
+    set st.v = pico.get.scene()
+    assert(pico.equal(st.v.source.x,0.6) && pico.equal(st.v.source.y,0.4))
 
     ;; restore
     pico.set.scene [
@@ -85,14 +89,14 @@ do {
     pico.set.layer(pico.layer.window())
     pico.set.effect [ color=['!', r=0x12, g=0x34, b=0x56, a=0x78] ]
     pico.set.layer(pico.layer.world())
-    val w1 = pico.get.window()
+    pin w1 = pico.get.window()
     pico.set.window(w1)
-    val w2 = pico.get.window()
+    pin w2 = pico.get.window()
     assert(w2.fullscreen == w1.fullscreen)
     assert(w2.title == w1.title)
     pico.set.layer(pico.layer.window())
-    val c = pico.get.effect().color
-    val d = pico.get.scene().dim
+    pin c = pico.get.effect().color
+    pin d = pico.get.scene().dim
     pico.set.layer(pico.layer.world())
     assert(c.r==0x12 && c.g==0x34 && c.b==0x56 && c.a==0x78)
     assert(d.w>0 && d.h>0)
@@ -101,9 +105,9 @@ do {
 ;; view roundtrip: get -> set -> get must be idempotent
 print("view roundtrip")
 do {
-    val v1 = pico.get.scene()
+    pin v1 = pico.get.scene()
     pico.set.scene(v1)
-    val v2 = pico.get.scene()
+    pin v2 = pico.get.scene()
     assert(v2.dim.w==v1.dim.w && v2.dim.h==v1.dim.h)
     assert(v2.target@0 == v1.target@0)
     assert(v2.source@0 == v1.source@0)
