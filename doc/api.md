@@ -96,45 +96,67 @@ Both are valid as arguments.
 
 ## Lifetimes
 
-Layers, fonts, and sounds are native values:
+Layers, fonts, and sounds are native values.
+As any dynamic value of Atmos, a resource is fresh when it is created, and
+belongs to the block that pins it:
 
 ```
-val l = pico.layer.empty [ dim=['!', w=32, h=32] ]
-val f = pico.font.load("x.ttf")
-val s = pico.sound.load("x.wav")
+pin l = pico.layer.empty [ dim=['!', w=32, h=32] ]
+pin f = pico.font.load("x.ttf")
+pin s = pico.sound.load("x.wav")
 ```
 
-- A resource lives as long as its value is referenced.
-  It is released
-    with its last reference, or
-    with the block of its `pin`.
-  There is no explicit `free`: to release a resource, drop its value
-  (`set l = nil`) or declare it in a block that ends.
-- A layer attached to a parent (`up`) must be kept somewhere: if its value is
-  dropped, the layer is released and disappears from the screen.
+- The first declaration of a resource is a `pin`, or the resource is stored in
+  a pinned table, which then owns it
+  (`pin ls = [] ; set ls.bg = pico.layer.image [...]`).
+  A `val` only refers to a resource that has an owner:
+  `val l = pico.layer.empty [...]` raises
+  `invalid assignment : expected pinned value`.
+- A resource is released at the end of the block that owns it.
+  There is no explicit `free`: to release a resource earlier, declare it in a
+  block that ends, or remove it from the table that owns it
+  (`set ls.bg = nil`).
+- A resource that is neither pinned nor stored is released at once.
+  Therefore, a layer attached to a parent (`up`) must also be pinned or
+  stored: otherwise it is released and disappears from the screen.
+- A pinned resource goes into a table argument with no further declaration:
+
+    ```
+    pin l = pico.layer.empty [...]
+    pin x = pico.layer.empty [ up=l, dim=... ]
+    ```
+
+- A layer holds its parent (`up`) and the source of a sub-layer (`sup`): it
+  belongs to their blocks, and to store it where it would outlive them (in a
+  table or variable of an outer block) raises
+  `invalid escape : native pinned at ...`.
+  The same holds for the table of `pico.layer.images [ up=... ]`.
 - What a resource depends on outlives it:
     the parent of a layer (`up`),
     the source of a sub-layer (`sup`),
     the current layer (`pico.set.layer`), and
     the font of a pencil.
-  If such a value is dropped, or pinned in a block that ends first, its release
-  is postponed until nothing depends on it.
+  If such a value is released first (it is removed from its table, or its
+  block ends while it is still the current layer or the font of a pencil), its
+  release is postponed until nothing depends on it.
   In this case, `pico.get.layer()` and `pico.get.pencil().font` evaluate to
   `nil` if the value is gone.
-- A plain `val` is enough to hold a resource.
-  A resource in a `pin` cannot go into a table argument (`[up=l]`), unless the
-  table is also pinned, as for any pinned value:
-
-    ```
-    pin l = pico.layer.empty [...]
-    pin t = [ up=l, dim=... ]
-    val x = pico.layer.empty(t)
-    ```
-
+- The current layer and the font of a pencil are state of pico, and not of a
+  block: `pico.set.layer(l)` and `pico.set.pencil [ font=f ]` accept a value of
+  any block, and do not make it last longer as a value.
+  `pico.get.layer()` and `pico.set.layer(l)` (the previous layer) evaluate to
+  the value that the program holds, to be kept in a `val`
+  (`val old = pico.set.layer(l)`).
+- The tables that the operations return (`pico.get.*`, `pico.cv.*` with a
+  mode, `pico.in.*`, `pico.color.*`, `pico.input.event`) are also fresh: they
+  are declared with `pin` (`pin d = pico.get.scene().dim`), or used at once
+  (`pico.get.scene().dim.w`).
+  The events of an `await` are held in a `val`.
 - `pico.close()` releases all resources: every value from before it is invalid
   afterwards, even after a new `pico.open()`, and any use raises an error.
 - `pico.layer.world()` and `pico.layer.window()` evaluate to the two root
-  layers, always as the same shared values, which cannot be pinned.
+  layers, always as the same shared values, which the binding owns: they are
+  held in a `val`, and cannot be pinned.
 - The resources that operations load from a path or content
   (`pico.output.draw.image`, `pico.output.draw.text`, `pico.output.draw.video`,
   `pico.output.sound(path)`, and `pico.set.pencil [font=path]`) are loaded
@@ -187,7 +209,7 @@ In alphabetical order:
     - **pico.font.load**: Loads a font from a TTF file.
         - `pico.font.load (path: string) -> Font`
         - The font is selected with `pico.set.pencil [font=f]`.
-        - The font is released with its last reference (see
+        - The font is released with the block that owns it (see
           [Lifetimes](#lifetimes)).
 - **pico.get**: Getters for various properties and settings.
     - **pico.get.aids**: Gets the state of the automatic aids (see
@@ -421,7 +443,7 @@ In alphabetical order:
             target: Rect,       -- scene.target placement (default: fill parent)
         ] -> Layer
         ```
-    - A layer is released with its last reference (see
+    - A layer is released with the block that owns it (see
       [Lifetimes](#lifetimes)): there is no `pico.layer.free`.
 - **pico.open**: Initializes pico and opens its window again, after a
   `pico.close`.
@@ -605,7 +627,7 @@ In alphabetical order:
     - **pico.sound.load**: Loads a sound from a file.
         - `pico.sound.load (path: string) -> Sound`
         - The sound is played with `pico.output.sound(s)`.
-        - The sound is released with its last reference (see
+        - The sound is released with the block that owns it (see
           [Lifetimes](#lifetimes)).
 - **pico.vs**
     - Collision checks.

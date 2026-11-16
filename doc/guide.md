@@ -316,7 +316,7 @@ The field `font` also accepts a font loaded with `pico.font.load(path)`, or
 `true` to switch back to the built-in font:
 
 ```
-val font = pico.font.load('../c/res/DejaVuSans.ttf')
+pin font = pico.font.load('../c/res/DejaVuSans.ttf')
 pico.set.pencil [ font=font ]       ;; same effect as the path
 pico.set.pencil [ font=true ]       ;; back to the built-in font
 ```
@@ -346,7 +346,7 @@ pico.output.clear()
 val _ = 'black'
 val o = 'blue'
 val x = 'silver'
-val PI = [
+pin PI = [
     [_,_,_,o,o,o,o,_,_,_],
     [_,o,o,o,o,o,o,o,o,_],
     [_,o,x,x,x,x,x,x,o,_],
@@ -358,7 +358,7 @@ val PI = [
     [_,o,o,o,o,o,o,o,o,_],
     [_,_,_,o,o,o,o,_,_,_],
 ]
-val pi = pico.layer.pixmap [ pixels=PI ]
+pin pi = pico.layer.pixmap [ pixels=PI ]
 pico.output.draw.layer(pi, ['!', x=50, y=50, w=80])
 </pre>
 </td><td>
@@ -671,7 +671,7 @@ Let's create a simple loop to explore the possibilities:
 
 ```
 loop {
-    val e,ms = pico.input.event()
+    pin e,ms = pico.input.event()
     print("EVENT", ms, e.tag)
     loop k,v in e {
         print('', k, v)
@@ -700,8 +700,8 @@ as in `e ?? :key.dn`.
 We can filter events and set timeouts:
 
 ```
-val e1 = pico.input.event('key.dn')         ;; wait for key press only
-val e2 = pico.input.event('key.dn', 5000)   ;; wait key up to 5000ms
+pin e1 = pico.input.event('key.dn')         ;; wait for key press only
+pin e2 = pico.input.event('key.dn', 5000)   ;; wait key up to 5000ms
 ```
 
 When a timeout expires without an event, `nil` is returned:
@@ -759,7 +759,7 @@ redirect further drawing operations to it:
 
 ```
 pico.close() ; pico.open()
-val flag = pico.layer.empty [ dim=['!', w=300, h=200] ]
+pin flag = pico.layer.empty [ dim=['!', w=300, h=200] ]
 pico.set.layer(flag)
 pico.set.pencil [ color=[ r=0x00, g=0x2B, b=0x7F ] ]
 pico.output.draw.rect [ '%', x=0.00, y=0.0, w=0.33, h=1.0, anchor='NW' ]
@@ -780,13 +780,15 @@ A layer is a value, like a table or a function: `pico.layer.empty` evaluates
 to the new layer, and every operation on layers receives such a value.
 There are no layer names.
 
-**A layer lives as long as its value is referenced.**
-When the last reference to a layer goes away (e.g., its variable goes out of
-scope, or is assigned another value), `atmos-pico` releases the layer.
-A plain `val` is enough to keep a layer alive.
+**A layer lives as long as the block that owns its value.**
+Like a table or a function in Atmos, a new layer is declared with `pin`, which
+attaches it to the enclosing block: when the block terminates, `atmos-pico`
+releases the layer.
+A plain `val` only refers to a layer that already has an owner, and cannot
+hold a new one.
 This rule has an important consequence, which we revisit in
 [#Hierarchy](#74-hierarchy): a layer that we attach to the screen must still
-be kept in a variable, otherwise it is released and disappears.
+be declared with `pin`, otherwise it is released at once and disappears.
 We detail the rules in [#Memory and Lifetimes](#75-memory-and-lifetimes).
 
 ### 7.2. Compositing
@@ -870,9 +872,9 @@ In the next example, we want to isolate each stripe of the flag as a sub layer:
 
 <table>
 <tr><td><pre>
-val blue   = pico.layer.sub [ sup=flag, crop=['%', x=0.25, y=0.5, w=0.1, h=0.15] ]
-val yellow = pico.layer.sub [ sup=flag, crop=['%', x=0.50, y=0.5, w=0.1, h=0.15] ]
-val red    = pico.layer.sub [ sup=flag, crop=['%', x=0.75, y=0.5, w=0.1, h=0.15] ]
+pin blue   = pico.layer.sub [ sup=flag, crop=['%', x=0.25, y=0.5, w=0.1, h=0.15] ]
+pin yellow = pico.layer.sub [ sup=flag, crop=['%', x=0.50, y=0.5, w=0.1, h=0.15] ]
+pin red    = pico.layer.sub [ sup=flag, crop=['%', x=0.75, y=0.5, w=0.1, h=0.15] ]
 pico.output.clear()
 pico.output.draw.layer(blue,   ['%', x=0.30, y=0.30, w=0.25])
 pico.output.draw.layer(yellow, ['%', x=0.70, y=0.45, w=0.25])
@@ -890,8 +892,8 @@ A sub-layer uses the same APIs as layers.
 For instance, the variables `blue`, `yellow`, and `red` hold the sub-layers for
 further operations.
 
-A sub-layer depends on its source: the flag is only released after its three
-sub-layers, even if the variable `flag` goes away first.
+A sub-layer depends on its source: it belongs to the block of the flag, cannot
+be stored where it would outlive it, and is released before it.
 
 ### 7.4. Hierarchy
 
@@ -902,7 +904,7 @@ When creating a new layer, we can pass an `up` layer to become its parent:
 
 ```
 ;; (this is just a sketch - do not execute)
-val me = pico.layer.empty [ up=up, ... ]    ;; `up` is parent of `me`
+pin me = pico.layer.empty [ up=up, ... ]    ;; `up` is parent of `me`
 pico.set.layer(me)                          ;; setup `me`
 pico.set.scene [                            ;; position `me` within `up`
     target = ['%', x=0.5, y=0.5, w=0.5, h=0.5]
@@ -928,22 +930,22 @@ The next code listing implements this layout:
 <table>
 <tr><td><pre>
 pico.close() ; pico.open()
-val pic = pico.layer.image [        ;; image at top-left
+pin pic = pico.layer.image [        ;; image at top-left
     up=pico.layer.world(), path="../c/res/open.png",
     target=['%', x=0.3, y=0.3, w=0.4],
 ]
                                     ;; panel at bottom-right
-val panel = pico.layer.empty [
+pin panel = pico.layer.empty [
     up=pico.layer.world(), clear=true, dim=['!', w=100, h=50],
 ]
 pico.set.layer(panel)
 pico.set.effect [ color='silver' ]
 pico.set.scene [ target = ['%', x=0.7, y=0.7, w=0.4] ]
-val H = pico.layer.text [
+pin H = pico.layer.text [
     up=panel, dim=['!', h=20], text="Hello",
     target=['%', x=0.5, y=0.3, h=0.6],
 ]
-val W = pico.layer.text [
+pin W = pico.layer.text [
     up=panel, dim=['!', h=20], text="World!",
     target=['%', x=0.5, y=0.7, h=0.4],
 ]
@@ -958,15 +960,16 @@ pico.output.present()
 After the scene is composed, we simply call `pico.output.present` to
 update the screen all at once.
 
-Note that we keep all four layers in variables (`pic`, `panel`, `H`, `W`),
-even though we only use `panel` afterwards.
-A layer that is dropped disappears from the screen: if we called
-`pico.layer.image [...]` without the `val pic =`, the image would be released
+Note that we pin all four layers (`pic`, `panel`, `H`, `W`), even though we
+only use `panel` afterwards.
+A layer that is not pinned disappears from the screen: if we called
+`pico.layer.image [...]` without the `pin pic =`, the image would be released
 immediately, and would not show up.
 
-The opposite direction is automatic: a parent is kept alive by its children.
-The layer `panel` would survive without its variable, as long as `H` or `W`
-are alive.
+Note also that we pass `panel`, a pinned value, directly in the arguments of
+its children (`up=panel`).
+A child belongs to the block of its parent: `H` and `W` cannot be stored where
+they would outlive `panel`, and are released before it.
 
 ### 7.5. Memory and Lifetimes
 
@@ -974,43 +977,54 @@ Layers, fonts, and sounds are memory resources that require a mechanism for
 consistent allocations and matching deallocations.
 
 In `atmos-pico`, these resources are values of the language, and follow its
-memory management: **a resource is released when its value is no longer
-referenced**.
+lexical memory management: **a resource belongs to a block, and is released
+when the block terminates**.
 There are no explicit scopes to open and close.
 
-In more detail, a resource is released in one of two ways:
+In more detail, a new resource is a *fresh* value, which gets an owner in one
+of two ways:
 
-1. With its last reference, when no variable or table holds its value.
-2. With the block in which it is pinned, if it is declared with `pin` instead
-   of `val`.
+1. With a `pin` declaration, which attaches it to the enclosing block.
+2. When it is stored in a table that is already pinned, which then owns it
+   (`set layers.bg = pico.layer.image [...]`).
 
-There is no explicit `free`: to release a resource earlier, we drop its value
-(`set l = nil`) or declare it in a block that terminates.
+A `val` only refers to a resource that has an owner:
+`val l = pico.layer.empty [...]` raises
+`invalid assignment : expected pinned value`.
+A fresh resource that is neither pinned nor stored is released at once.
+
+There is no explicit `free`: to release a resource earlier, we declare it in a
+block that terminates, or remove it from the table that owns it
+(`set layers.bg = nil`).
+
+A pinned resource can be passed inside the table of arguments of another
+operation, with no further declaration:
+
+```
+do {
+    pin l = pico.layer.empty [ dim=['!', w=32, h=32] ]
+    pin s = pico.layer.sub [ sup=l, crop=['%', x=0.5, y=0.5, w=0.5, h=0.5] ]
+}   ;; `s` and then `l` are released here
+```
+
+A layer holds its parent (`up`) and its source (`sup`): it belongs to their
+blocks, and an attempt to store it where it would outlive them (e.g., in a
+table of an outer block) raises `invalid escape : native pinned at ...`.
 
 What a resource depends on outlives it:
     the parent of a layer (`up`),
     the source of a sub-layer (`sup`),
     the current layer (`pico.set.layer`), and
     the font of a pencil.
-If such a value is dropped, or pinned in a block that terminates first, its
-release is postponed until nothing depends on it.
+The current layer and the font of a pencil are state of pico, and not of a
+block: if their block terminates first, or if a parent or source is removed
+from the table that owns it, the release is postponed until nothing depends on
+the resource.
 
-A `pin` requires extra care.
-Like any pinned value in Atmos, a pinned resource cannot be stored in a table,
-unless the table is also pinned.
-This includes the tables that we pass as arguments, as in `[sup=l]`:
-
-```
-do {
-    pin l = pico.layer.empty [ dim=['!', w=32, h=32] ]
-    pin t = [ sup=l, crop=['%', x=0.5, y=0.5, w=0.5, h=0.5] ]
-    val s = pico.layer.sub(t)
-    ;; (a direct `pico.layer.sub [ sup=l, ... ]` raises
-    ;;  `invalid escape : pinned value`)
-}   ;; `l` and `t` are reclaimed here
-```
-
-In general, a plain `val` is simpler and enough to hold a resource.
+The tables that the operations return, such as the event of
+`pico.input.event` or the position of `pico.get.mouse`, are also fresh values:
+we declare them with `pin`, or use them at once, as in
+`pico.get.scene().dim.w`.
 
 Finally, `pico.close()` releases all resources at once.
 The values from before the call become invalid, even after a new `pico.open()`,
@@ -1046,20 +1060,20 @@ However, `pico.output.draw.text` allocates implicitly: like for images,
 This is fine for constant texts, but not for texts that keep changing, such as
 clocks and counters, which would accumulate over time.
 
-In these cases, each scene should hold its own layers in local variables, which
-are released when the scene terminates:
+In these cases, each scene should pin its own layers in its block, which
+releases them when the scene terminates:
 
 ```
 loop i in (1,5) {
-    val txt = pico.layer.text [ dim=['!', h=70], text=i ]
+    pin txt = pico.layer.text [ dim=['!', h=70], text=i ]
     pico.output.clear()
     pico.output.draw.layer(txt, ['%', x=0.5, y=0.5, h=0.7])
     pico.input.delay(500)
 }   ;; releases `txt` at the end of each iteration
 ```
 
-Since the variable `txt` is local to the body of the loop, each text layer is
-released before the next one is created.
+Since `txt` is pinned in the body of the loop, each text layer is released
+before the next one is created.
 Lifetimes not only keep the memory footprint constant over time, but also help
 to organise and reason about the application memory.
 
@@ -1127,7 +1141,7 @@ loop {                              ;; main loop
     pico.output.*()                 ;; scene redrawing
     pico.output.present()
 
-    val e,dt = pico.input.event()   ;; event / timeout awaiting
+    pin e,dt = pico.input.event()   ;; event / timeout awaiting
 
     if e {
         (normal atmos code)         ;; event handler (keys, mouse)
@@ -1179,8 +1193,8 @@ Now, let's discuss the implementation:
 
 pico.set.expert(true)               ;; no timeouts
 
-val k = ['!', x=4, y=4]             ;; key pixel
-var m = ['!', x=5, y=5]             ;; mouse pixel
+pin k = ['!', x=4, y=4]             ;; key pixel
+pin m = ['!', x=5, y=5]             ;; mouse pixel
 
 loop {                              ;; main loop
     ;; redraw scene
@@ -1192,14 +1206,16 @@ loop {                              ;; main loop
     pico.output.present()
 
     ;; handle events
-    val e = pico.input.event()
+    pin e = pico.input.event()
     assert(e, "no FPS set here")
     ifs {
         e.tag == 'quit' => {
             break
         }
         e.tag == 'mouse.motion' => {
-            set m = pico.get.mouse('!')
+            pin p = pico.get.mouse('!')
+            set m.x = p.x
+            set m.y = p.y
         }
         e.tag == 'key.dn' => {
             match e.key {
@@ -1225,7 +1241,7 @@ The main loop first draws their initial positions and awaits
 In this example, we only handle `quit`, `mouse.motion` and `key.dn` events:
 
 - on a quit event, we escape the loop to terminate the application;
-- for the mouse, we update `m` to follow `pico.get.mouse`;
+- for the mouse, we update `m.x` and `m.y` to follow `pico.get.mouse`;
 - for the keyboard, we update `k.x` or `k.y` depending on `e.key`.
 
 Then, the loop iterates to redraw the scene and wait for the next event.
@@ -1293,7 +1309,7 @@ loop {                                      ;; main loop
     pico.output.present()
 
     ;; handle events
-    val e, dt = pico.input.event('quit')
+    pin e, dt = pico.input.event('quit')
     if e {
         break
     }
@@ -1318,11 +1334,11 @@ In the omitted initialization, we use [#sub-layers](#73-sub-layers) to crop the
 `4x4` sprite sheet above:
 
 ```
-val frames = pico.layer.images [
+pin frames = pico.layer.images [
     path="img/walk.png", sheet=['#', w=4, h=4],
 ]
 
-val dirs = [
+pin dirs = [
     down  = [ 0,  1,  2,  3],   ;; frames@0 -> frames@3
     up    = [ 4,  5,  6,  7],
     right = [ 8,  9, 10, 11],
@@ -1414,7 +1430,9 @@ par {
     }
 } with {
     loop on :mouse.motion {
-        set m = pico.get.mouse('!')
+        pin p = pico.get.mouse('!')
+        set m.x = p.x
+        set m.y = p.y
     }
 } with {
     loop e on :key.dn {
@@ -1442,7 +1460,7 @@ The set of `pico.cv.*` functions converts coordinates between modes and between
 layers:
 
 ```
-val pos = pico.cv.pos('!', ['%', x=0.5, y=0.5])
+pin pos = pico.cv.pos('!', ['%', x=0.5, y=0.5])
 print(pos.x, pos.y)     ;; --> 50.0    50.0
 ```
 
@@ -1452,7 +1470,7 @@ Here, we convert a percentage into raw coordinates, assuming the default
 Optional layer arguments can project across frames:
 
 ```
-val r = pico.cv.rect (
+pin r = pico.cv.rect (
     pico.layer.world(), '%',
     pico.layer.window(), ['!', x=250, y=250, w=100, h=100]
 )
@@ -1468,7 +1486,7 @@ number, as `0.20000000298023`.)*
 component:
 
 ```
-val d = pico.cv.dim (
+pin d = pico.cv.dim (
     pico.layer.world(), '!',
     pico.layer.window(), ['!', w=100, h=100]
 )
@@ -1511,7 +1529,7 @@ The set of `pico.in.*` functions composes a child onto a parent rect,
 returning a new flat value re-expressed in the current scene:
 
 ```
-val p = pico.in.pos (
+pin p = pico.in.pos (
     ['%', x=0.5, y=0.5, w=0.5, h=0.5],  ;; parent
     ['%', x=0, y=1]                     ;; child
 )
@@ -1570,7 +1588,7 @@ We can also create a new layer from a screenshot with `pico.layer.screenshot`:
 
 <table>
 <tr><td><pre>
-val snap = pico.layer.screenshot [ sup=pico.layer.window() ]
+pin snap = pico.layer.screenshot [ sup=pico.layer.window() ]
 pico.output.draw.layer(snap, ['%', x=0.5, y=0.5, w=0.3])
 </pre>
 </td><td>
@@ -1592,7 +1610,7 @@ pico.output.sound("path/to/sound.wav")
 A sound that plays many times may also be loaded once, as a value:
 
 ```
-val snd = pico.sound.load("path/to/sound.wav")
+pin snd = pico.sound.load("path/to/sound.wav")
 pico.output.sound(snd)
 ```
 
@@ -1613,6 +1631,6 @@ pico.set.window [ fullscreen=false ]
 The current fullscreen state can be queried with `pico.get.window()`:
 
 ```
-val w = pico.get.window()
+pin w = pico.get.window()
 print(w.fullscreen)     ;; --> false
 ```
