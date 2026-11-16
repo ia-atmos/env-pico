@@ -5,8 +5,12 @@ Layout:
 
 - repository root is the Atmos binding; the C library moved to `c/`
 - `pico.atm`: binding for Atmos, replaces the Lua binding (`lua/`)
-    - layers, fonts, sounds are values released by their last
-      reference (no keys, no explicit free)
+    - layers, fonts, sounds are values that belong to the block that
+      pins them (`pin l = pico.layer.empty [...]`), under the pin rules
+      of Atmos (no keys, no explicit free)
+    - a pinned layer goes directly into a table argument (`[up=l]`); a
+      child layer and a sub-layer belong to the block of their parent
+      and source
     - `atmos-pico file.atm`: the compiler dedicated to pico (built by
       the root `Makefile`), which includes the binding; the window is
       open before the program runs (`pico.open` only reopens after

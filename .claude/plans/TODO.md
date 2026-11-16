@@ -4,7 +4,7 @@ Everything that is pending: asked and not decided, reported and not
 acknowledged, or known and not done. Keep it current: remove an item
 when it is settled, add one whenever something is left open.
 
-Last update: 2026-11-13 (after the third batch: font=true, guide 5.1, atmos-pico).
+Last update: 2026-11-16 (after the migration to the pin rules of Atmos).
 
 ## A. Decisions waiting for an answer
 
@@ -16,11 +16,13 @@ Last update: 2026-11-13 (after the third batch: font=true, guide 5.1, atmos-pico
 2. **Android / Termux.** Not tried. Plausible inside Termux with the
    `x11-repo` SDL2 packages and Termux:X11; not a native APK.
    `SDL2_gfx` availability unknown.
-3. **Pinned values in table arguments** (`pin l = ..; f [up=l]` is
-   `invalid escape`). Being discussed in the "Pin rules discussion"
-   session. On our side the options are: keep resources in plain `val`s
-   (today), or positional resource arguments (`pico.layer.empty(up,
-   [dim=..])`, which accept pinned values).
+3. **Tables returned by the binding are fresh** (pin rules of
+   2026-11-15): `pin e = pico.input.event()`, `pin d = pico.get.scene().dim`,
+   `pin p = pico.get.mouse('!')`, and a variable cannot follow the last
+   result (`set m = pico.get.mouse('!')` became two assignments of
+   fields in `doc/rects.atm`). Options: operations that fill a table
+   given by the program (as `pico.cv.*` already do), or results as
+   plain numbers. Not decided.
 4. **Event vocabulary across bindings.** Decided: unprefixed tags
    (signalled to the compiler session). Open: field names of key events
    (`key='A'` + `ctrl/shift/alt` here; `name=` in sdl; `key=262,
@@ -123,6 +125,26 @@ Last update: 2026-11-13 (after the third batch: font=true, guide 5.1, atmos-pico
 16. **Programs cannot run code before the window exists** (implicit
     open): a `setenv` in the program for a variable read at `pico_open`
     is too late.
+17. **Binding: the counters of the layers remain** after the pin rules.
+    `a_nat_holds` gives the floor of a child, but a parent may still be
+    finalized before it: removed from the table that owns it, never
+    pinned (`up=pico.layer.empty [...]`), pinned after the table that
+    holds the child, or left behind when the child is the result of a
+    block. The struct of a layer keeps `rc`/`up`/`sup` to postpone the
+    free. To simplify if the compiler comes to order these cases
+    (reported, with the programs).
+18. **Current layer and font of a pencil** are global state that points
+    to a value of a block, which the pin rules do not cover: the binding
+    keeps its own reference, the release is postponed when the block
+    ends first, and `pico.get.layer()` / `pico.get.pencil().font` are
+    `nil` meanwhile. A layer that was never pinned and is only the
+    current one comes back fresh from `pico.set.layer` (a `val` refuses
+    it). Open: an error at the end of the block, or a scoped
+    `with pico.layer = l { ... }` if the language gets one.
+19. **Storm: `set G.car = spawn Car(G)`** fails inside the task
+    (`val phy = pub.phy`: a task spawned in a `set` is not pinned while
+    its body starts): `exs/storm/main.atm` keeps `pin car` + `set`.
+    Reported to the compiler session.
 12. **`.claude/plans/`** still describes realms, keys and push/pop
     (historical; nothing was updated).
 13. **Release**: `HISTORY.md` has the `v0.8` entry open; version strings
@@ -132,10 +154,10 @@ Last update: 2026-11-13 (after the third batch: font=true, guide 5.1, atmos-pico
 
 Changes made on judgement during the port, reported once, with no answer.
 
-1. **A layer lives as long as its value is referenced** (Atmos): an
-   attached child whose value is dropped is freed and disappears; a
-   parent, a sub-layer source, the current layer and a pencil's font are
-   kept alive by what depends on them.
+1. **A layer lives as long as the block that owns its value** (Atmos,
+   `pin`): an attached child that is not pinned is freed and disappears;
+   a parent, a sub-layer source, the current layer and a pencil's font
+   are kept alive by what depends on them.
 2. **`pico.set.scene [dim=..]` with live sub-layers is an error even
    when the size does not change** (the C code replaces the texture
    anyway).
@@ -156,9 +178,10 @@ Changes made on judgement during the port, reported once, with no answer.
 7. **`tst/lsan.supp`** suppresses the SDL start-up leak (libdbus) under
    `ATMOS_ASAN`, as `c/valgrind.supp` does for valgrind.
 8. **Storm README** was written from scratch (it was only a title).
-9. **Language rule met by the binding** (on the compiler author's list):
-   a temporary table argument cannot hold a pinned value
-   (`pin l = ..; f [up=l]`).
+9. **Pin rules of 2026-11-15** (migration done, reported to the
+   compiler session): a layer holds its parent and its source
+   (`a_nat_holds`), so that a child cannot be stored outside the block
+   of its parent, which was valid (and postponed the parent) before.
 10. **Storm rework**: drop-vs-drop and drop-vs-car collisions run once
     per frame, with a grid in plain Atmos filtering near pairs; a drop
     may travel up to one frame further before reacting. Boom pushes stay
