@@ -14,6 +14,8 @@ Layout:
     - `atmos-pico file.atm`: the compiler dedicated to pico (built by
       the root `Makefile`), which includes the binding; a program
       still opens the window itself, with `pico.open`
+    - `pico.layer.world`, `pico.layer.window`: values (fields set by
+      `pico.open`, `nil` while pico is closed), no longer functions
     - reactive programs run inside the loop of pico, which emits the
       time, `:draw`, and input events (`:key.dn`, `:mouse.button.dn`, ...)
     - the clear of each frame applies to the world

@@ -4,7 +4,7 @@ Everything that is pending: asked and not decided, reported and not
 acknowledged, or known and not done. Keep it current: remove an item
 when it is settled, add one whenever something is left open.
 
-Last update: 2026-11-16 (after the migration to the pin rules of Atmos, and the explicit `pico.open` again).
+Last update: 2026-11-16 (after the migration to the pin rules of Atmos, the explicit `pico.open` again, and the roots as values).
 
 ## A. Decisions waiting for an answer
 
@@ -47,8 +47,6 @@ Last update: 2026-11-16 (after the migration to the pin rules of Atmos, and the 
     but it still needs the compiler's checkout (runtime), a C compiler
     and the SDL development packages on the user's machine. A download
     that needs none of them is open (also on the compiler's list).
-15. **`pico.layer.world` / `.window` as values** instead of functions
-    (possible: they would be fields refreshed at each open). Waiting.
 16. **Relaxing the games for expressiveness** (author's rule for every
     port, relayed by the compiler session): once a game is faithful to
     its original, exactness-only code may go, as long as the original
