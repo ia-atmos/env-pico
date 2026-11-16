@@ -12,9 +12,8 @@ Layout:
       child layer and a sub-layer belong to the block of their parent
       and source
     - `atmos-pico file.atm`: the compiler dedicated to pico (built by
-      the root `Makefile`), which includes the binding; the window is
-      open before the program runs (`pico.open` only reopens after
-      `pico.close`)
+      the root `Makefile`), which includes the binding; a program
+      still opens the window itself, with `pico.open`
     - reactive programs run inside the loop of pico, which emits the
       time, `:draw`, and input events (`:key.dn`, `:mouse.button.dn`, ...)
     - the clear of each frame applies to the world

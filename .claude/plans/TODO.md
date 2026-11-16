@@ -4,7 +4,7 @@ Everything that is pending: asked and not decided, reported and not
 acknowledged, or known and not done. Keep it current: remove an item
 when it is settled, add one whenever something is left open.
 
-Last update: 2026-11-16 (after the migration to the pin rules of Atmos).
+Last update: 2026-11-16 (after the migration to the pin rules of Atmos, and the explicit `pico.open` again).
 
 ## A. Decisions waiting for an answer
 
@@ -40,11 +40,6 @@ Last update: 2026-11-16 (after the migration to the pin rules of Atmos).
 8. **Documentation site and releases of this repository.** The version
    branches were deleted here; `c/README.md` (badge, versions, Doxygen)
    still points to `fsantanna/pico-sdl`.
-9. **First window options.** With the implicit open, a hidden or
-   fullscreen window needs `pico.close()` + `pico.open [...]`, which
-   shows a default window first. A way to give the options before the
-   window exists (environment variable? a declaration read by the
-   runner?) is not designed.
 10. **Programs no longer run from their own directory automatically**
     (the old script did a `cd`): run them from there, as the READMEs say.
 11. **Self-contained download.** `atmos-pico` is now a real executable
@@ -52,8 +47,6 @@ Last update: 2026-11-16 (after the migration to the pin rules of Atmos).
     but it still needs the compiler's checkout (runtime), a C compiler
     and the SDL development packages on the user's machine. A download
     that needs none of them is open (also on the compiler's list).
-14. **Implicit open: confirm.** `main` opens the window before the
-    program; the author asked whether this had been vetoed. Waiting.
 15. **`pico.layer.world` / `.window` as values** instead of functions
     (possible: they would be fields refreshed at each open). Waiting.
 16. **Relaxing the games for expressiveness** (author's rule for every
@@ -122,9 +115,6 @@ Last update: 2026-11-16 (after the migration to the pin rules of Atmos).
 15. **`pico.atm` prelude formatting**: after the rename to
     `_pico_atmos_`, 155 lines are over 80 columns and the macro
     backslashes are misaligned.
-16. **Programs cannot run code before the window exists** (implicit
-    open): a `setenv` in the program for a variable read at `pico_open`
-    is too late.
 17. **Binding: the counters of the layers remain** after the pin rules.
     `a_nat_holds` gives the floor of a child, but a parent may still be
     finalized before it: removed from the table that owns it, never
