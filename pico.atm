@@ -9,13 +9,14 @@
 ;; of the Makefile in ATMOS_CFLAGS and ATMOS_LDFLAGS (an `include` under
 ;; `atmos-pico` is harmless: a file is only included once).
 ;;
-;; A program starts with pico open, with the default window: `main` opens it
-;; before the main chunk runs, and closes it when the program terminates.
-;; `pico.close()` closes it earlier, and `pico.open([...])` is only valid
-;; after a `pico.close()`, to open pico again (this is how a program gets a
-;; window that is hidden or in fullscreen from its creation; otherwise, see
-;; `pico.set.window`). All operations, except `pico.open`, `pico.color.*`,
-;; and `pico.equal`, raise an error while pico is closed.
+;; A program opens pico itself, with `pico.open()` or with
+;; `pico.open [title=, fs=, show=]` (this is how a program gets a window that
+;; is hidden or in fullscreen from its creation; afterwards, see
+;; `pico.set.window`). `main` only closes pico when the program terminates.
+;; `pico.close()` closes it earlier, and `pico.open` is then valid again: it
+;; is an error to call it while pico is open. All operations, except
+;; `pico.open`, `pico.color.*`, and `pico.equal`, raise the error
+;; `pico is not open` before `pico.open` and after `pico.close`.
 ;;
 ;; Everything lives in the single table `pico`, with the names of the C
 ;; library split at the underscores:
@@ -114,8 +115,9 @@
 ;; layers, always as the same shared values, which the binding owns: they are
 ;; held in a `val`, and cannot be pinned.
 ;;
-;; IMPERATIVE PROGRAMS draw, wait for input with `pico.input.*`, and call
-;; `pico.close()` (or leave it to the end of the program).
+;; IMPERATIVE PROGRAMS call `pico.open()`, draw, wait for input with
+;; `pico.input.*`, and call `pico.close()` (or leave it to the end of the
+;; program).
 ;;
 ;; `pico.input.event` evaluates to the event (or nil on a timeout) and to the
 ;; time passed in milliseconds, and accepts these forms:
@@ -132,7 +134,7 @@
 ;; unknown name, or a timeout below -1. Arguments after the second are
 ;; ignored, as in the other functions.
 ;;
-;; REACTIVE PROGRAMS await. When the main chunk awaits
+;; REACTIVE PROGRAMS call `pico.open()` and await. When the main chunk awaits
 ;; (it does not terminate) and pico is open, the program runs inside the loop
 ;; of pico, which runs in expert mode and leaves it on:
 ;;
@@ -882,8 +884,7 @@ static int _pico_atmos_enum (AVal v, const char* what, const char** names, int n
 // OPEN / CLOSE
 ///////////////////////////////////////////////////////////////////////////////
 
-// Opens pico and creates what the binding holds: `main` at the start of the
-// program (the default window), and `pico.open` after a `pico.close`.
+// Opens pico and creates what the binding holds.
 static void _pico_atmos_open (Pico_Window* win) {
     pico_open(win);
     _PICO_ATMOS.open = 1;
@@ -898,7 +899,7 @@ static void _pico_atmos_open (Pico_Window* win) {
     _pico_atmos_cur(_PICO_ATMOS.world);
 }
 
-// pico.open([title=, fs=|fullscreen=, show=]): only after a `pico.close`
+// pico.open([title=, fs=|fullscreen=, show=]): an error if pico is open
 static AStatus _pico_atmos_l_open (AFunc* self, int argc, AVal* argv) {
     _PICO_ATMOS_IN0("open")
     if (_PICO_ATMOS.open) {
@@ -2509,9 +2510,6 @@ static AStatus _pico_atmos_loop (void) {
 int main (int argc, char** argv) {
     atm_init(argc, argv);
 
-    // pico is open, with the default window, when the program starts
-    _pico_atmos_open(NULL);
-
     AStatus st = atm_main();
     if (st==A_OK && _PICO_ATMOS.open && atm_alive()) {
         st = _pico_atmos_loop();
@@ -2541,9 +2539,9 @@ int main (int argc, char** argv) {
 ```
 
 pin pico = [
-    ;; pico.open([title=, fs=, show=]): opens pico and its window again,
-    ;; after a `pico.close()`: the program starts with pico open
-    ;; (`fs` may also be named `fullscreen`)
+    ;; pico.open([title=, fs=, show=]): opens pico and its window: the
+    ;; program calls it before any other operation, and again only after
+    ;; a `pico.close()` (`fs` may also be named `fullscreen`)
     open  = `:value a_func(_pico_atmos_l_open,  0)`,
     ;; pico.close(): closes pico, and invalidates all layers, fonts, sounds
     close = `:value a_func(_pico_atmos_l_close, 0)`,
