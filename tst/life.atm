@@ -3,7 +3,7 @@
 val OUT = "../c/tst/out/"
 
 func bytes (path) {
-    val f = io.open(path, "rb")
+    pin f = io.open(path, "rb")
     assert(f, "cannot open " ++ path)
     val c = io.read(f, :all)
     io.close(f)
@@ -37,8 +37,8 @@ func fill (l, clr) {
     pico.set.layer(old)
 }
 
-val RED  = ['!', x=0, y=0, w=10, h=10, anchor='NW']
-val HALF = ['%', x=0.5, y=0.5, w=0.5, h=0.5]
+pin RED  = ['!', x=0, y=0, w=10, h=10, anchor='NW']
+pin HALF = ['%', x=0.5, y=0.5, w=0.5, h=0.5]
 
 ;; the program starts with pico open
 assert(pico.get.window().title == "pico-SDL")
@@ -61,52 +61,66 @@ val empty = shot("empty")
 
 print("1. parent dropped before its child")
 do {
-    var parent = pico.layer.empty [ up=world, dim=['!',w=20,h=20], target=HALF ]
-    val child  = pico.layer.empty [ up=parent, dim=['!',w=4,h=4], target=HALF ]
-    fill(parent, 'blue')
+    ;; a field of a pinned table may be dropped
+    pin t = [
+        parent = pico.layer.empty [ up=world, dim=['!',w=20,h=20], target=HALF ],
+    ]
+    pin child = pico.layer.empty [ up=t.parent, dim=['!',w=4,h=4], target=HALF ]
+    fill(t.parent, 'blue')
     fill(child, 'red')
     val both = redraw("1-both")
     assert(both != empty)
-    set parent = nil                ;; still alive: the child depends on it
+    set t.parent = nil              ;; still alive: the child depends on it
     assert(redraw("1-drop") == both)
     fill(child, 'red')              ;; the child is still usable
     assert(redraw("1-fill") == both)
 }                                   ;; the child goes, then the parent
 assert(redraw("1-none") == empty)
 
-print("2. parent pinned in a block that ends before its child")
+print("2. a child belongs to the block of its parent")
 do {
-    var child
+    pin out = []
     var both
     do {
         pin parent = pico.layer.empty [ up=world, dim=['!',w=20,h=20], target=HALF ]
-        ;; a table that holds a pinned value must be pinned itself
-        pin args = [ up=parent, dim=['!',w=4,h=4], target=HALF ]
-        set child = pico.layer.empty(args)
+        ;; the table of arguments holds a pinned value, with no pin
+        pin child = pico.layer.empty [ up=parent, dim=['!',w=4,h=4], target=HALF ]
         fill(parent, 'blue')
         fill(child, 'red')
         set both = redraw("2-both")
         assert(both != empty)
-    }                               ;; the parent is postponed
-    assert(redraw("2-drop") == both)
-    set child = nil
+        ;; a child cannot leave the block of its parent
+        fails("invalid escape : native pinned at", \{
+            set out.child = pico.layer.empty [ up=parent, dim=['!',w=4,h=4] ]
+        })
+        assert(redraw("2-fail") == both)
+    }                               ;; the child goes, then the parent
     assert(redraw("2-none") == empty)
+    do {
+        ;; the table is pinned before the parent of what it holds: the
+        ;; parent is finalized first, and postponed until the child goes
+        pin ts = []
+        pin parent = pico.layer.empty [ up=world, dim=['!',w=20,h=20], target=HALF ]
+        set ts.child = pico.layer.empty [ up=parent, dim=['!',w=4,h=4], target=HALF ]
+        fill(parent, 'blue')
+        fill(ts.child, 'red')
+        assert(redraw("2-order") == both)
+    }
+    assert(redraw("2-gone") == empty)
 }
 
 print("3. current layer dropped")
 do {
-    do {
-        val l = pico.layer.empty [ dim=['!',w=8,h=8] ]
-        pico.set.layer(l)
-        fails("onto itself", \{ pico.output.draw.layer(l) })
-    }                               ;; still alive: it is the current layer
-    val cur = pico.get.layer()
-    assert(cur != nil && cur != world)
+    ;; never pinned: it is only alive as the current layer
+    pico.set.layer(pico.layer.empty [ dim=['!',w=8,h=8] ])
+    assert(pico.get.layer() != nil)
+    assert(pico.get.layer() != world)
+    fails("onto itself", \{ pico.output.draw.layer(pico.get.layer()) })
     pico.output.clear()
     pico.output.draw.rect(RED)
     assert(pico.get.scene().dim.w == 8)
-    val old = pico.set.layer(world)
-    assert(old == cur)
+    ;; the previous layer comes back fresh: a `val` cannot hold it
+    fails("expected pinned value", \{ val old = pico.set.layer(world) })
     assert(pico.get.layer() == world)
 }
 
@@ -114,7 +128,9 @@ print("4. current layer pinned in a block that ends")
 do {
     do {
         pin l = pico.layer.empty [ dim=['!',w=8,h=8] ]
-        pico.set.layer(l)
+        val old = pico.set.layer(l)
+        assert(old == world)
+        assert(pico.get.layer() == l)
     }                               ;; postponed: it is the current layer
     assert(pico.get.layer() == nil) ;; but its value is gone
     pico.output.clear()
@@ -126,9 +142,9 @@ do {
 
 print("5. source of a sub-layer dropped")
 do {
-    var src = pico.layer.empty [ dim=['!',w=8,h=8] ]
-    fill(src, 'green')
-    val sub = pico.layer.sub [ sup=src, crop=['!',x=0,y=0,w=4,h=4,anchor='NW'] ]
+    pin t = [ src = pico.layer.empty [ dim=['!',w=8,h=8] ] ]
+    fill(t.src, 'green')
+    pin sub = pico.layer.sub [ sup=t.src, crop=['!',x=0,y=0,w=4,h=4,anchor='NW'] ]
     fails("sub-layer of a sub-layer", \{
         pico.layer.sub [ sup=sub, crop=['!',x=0,y=0,w=2,h=2,anchor='NW'] ]
     })
@@ -136,40 +152,55 @@ do {
     pico.output.draw.layer(sub, HALF)
     val drawn = shot("5-with")
     assert(drawn != empty)
-    set src = nil                   ;; still alive: the sub-layer depends on it
+    set t.src = nil                 ;; still alive: the sub-layer depends on it
     pico.output.clear()
     pico.output.draw.layer(sub, HALF)
     assert(shot("5-drop") == drawn)
     pico.output.clear()
+    do {
+        ;; a sub-layer cannot leave the block of its source
+        pin src = pico.layer.empty [ dim=['!',w=8,h=8] ]
+        fails("invalid escape : native pinned at", \{
+            set t.sub = pico.layer.sub [ sup=src, crop=['!',x=0,y=0,w=4,h=4,anchor='NW'] ]
+        })
+    }
 }
 
 print("6. sprite sheet: the image lives while a sub-layer does")
 do {
-    var imgs = pico.layer.images [ path="../c/res/open.png", sheet=['#', w=2, h=2] ]
-    assert(#imgs == 4)
-    var one = imgs@3
-    set imgs = nil
+    pin t = [
+        imgs = pico.layer.images [ path="../c/res/open.png", sheet=['#', w=2, h=2] ],
+    ]
+    assert(#t.imgs == 4)
+    val one = t.imgs@3
+    set t.imgs = nil
     pico.output.clear()
     pico.output.draw.layer(one, HALF)
     assert(shot("6-one") != empty)
-    set one = nil
     pico.output.clear()
 
-    val named = pico.layer.images [ path="../c/res/open.png",
+    pin named = pico.layer.images [ path="../c/res/open.png",
         sheet=['!', a=['!',x=0,y=0,w=10,h=10,anchor='NW'],
                     b=['!',x=10,y=10,w=20,h=20,anchor='NW']] ]
     assert(type(named.a)=='native' && type(named.b)=='native' && #named==0)
     val old = pico.set.layer(named.b)
     assert(pico.get.scene().dim.w == 20)
     pico.set.layer(old)
+
+    ;; the sub-layers of a sheet belong to the block of their parent
+    do {
+        pin parent = pico.layer.empty [ dim=['!',w=20,h=20] ]
+        pin subs = pico.layer.images [ up=parent, path="../c/res/open.png", sheet=['#', w=2, h=2] ]
+        assert(#subs == 4)
+        fails("invalid escape : native pinned at", \{ set t.sub = subs@0 })
+    }
 }
 
 print("7. fonts and sounds")
 do {
     do {
         pin f = pico.font.load("../c/res/DejaVuSans.ttf")
-        pin args = [ font=f ]
-        pico.set.pencil(args)
+        pico.set.pencil [ font=f ]          ;; a pinned value in a table, with no pin
     }                               ;; postponed: the pencil uses it
     assert(pico.get.pencil().font == nil)   ;; but its value is gone
     pico.output.draw.text("abc", ['!', x=10, y=10, h=10, anchor='NW'])
@@ -179,14 +210,14 @@ do {
 
     ;; the font of a layer that is dropped goes with it
     do {
-        val l = pico.layer.empty [ dim=['!',w=40,h=20] ]
+        pin l = pico.layer.empty [ dim=['!',w=40,h=20] ]
         val old = pico.set.layer(l)
         pico.set.pencil [ font=pico.font.load("../c/res/DejaVuSans.ttf") ]
         pico.output.draw.text("abc", ['!', x=0, y=0, h=10, anchor='NW'])
         pico.set.layer(old)
     }
 
-    val s = pico.sound.load("../c/res/start.wav")
+    pin s = pico.sound.load("../c/res/start.wav")
     pico.output.sound(s)
     pico.output.sound("../c/res/start.wav")
     do {
@@ -198,7 +229,7 @@ do {
 }
 
 print("8. wrong arguments")
-;; no explicit free: the last reference or the end of a `pin` block
+;; no explicit free: the end of the block that owns the value
 assert(pico.layer.free==nil && pico.font.free==nil && pico.sound.free==nil)
 fails("expected layer",        \{ pico.set.layer(nil) })
 fails("expected layer",        \{ pico.set.layer("world") })
@@ -218,16 +249,16 @@ fails("cannot open file",      \{ pico.layer.image [ path="no-such.png" ] })
 fails("required 'text'",       \{ pico.layer.text [ dim=['!',h=10] ] })
 fails("expected row tables",   \{ pico.layer.pixmap [ pixels=[1,2] ] })
 fails("cannot host children",  \{
-    val img = pico.layer.image [ path="../c/res/open.png" ]
+    pin img = pico.layer.image [ path="../c/res/open.png" ]
     pico.layer.empty [ up=img, dim=['!',w=1,h=1] ]
 })
 assert(redraw("8-none") == empty)
 
 print("9. use after pico.close")
-val kept  = pico.layer.empty [ up=world, dim=['!',w=8,h=8] ]
-val kfont = pico.font.load("../c/res/DejaVuSans.ttf")
-val ksnd  = pico.sound.load("../c/res/start.wav")
-val ksub  = pico.layer.sub [ sup=kept, crop=['!',x=0,y=0,w=4,h=4,anchor='NW'] ]
+pin kept  = pico.layer.empty [ up=world, dim=['!',w=8,h=8] ]
+pin kfont = pico.font.load("../c/res/DejaVuSans.ttf")
+pin ksnd  = pico.sound.load("../c/res/start.wav")
+pin ksub  = pico.layer.sub [ sup=kept, crop=['!',x=0,y=0,w=4,h=4,anchor='NW'] ]
 pico.set.layer(kept)
 pico.close()
 fails("pico is not open", \{ pico.set.layer(kept) })
@@ -249,10 +280,10 @@ pico.output.clear()
 assert(shot("10-empty") == empty)
 
 print("11. termination with values alive and pico open")
-val last1 = pico.layer.empty [ up=world, dim=['!',w=8,h=8] ]
-val last2 = pico.layer.empty [ up=last1, dim=['!',w=2,h=2] ]
-val last3 = pico.layer.sub [ sup=last1, crop=['!',x=0,y=0,w=4,h=4,anchor='NW'] ]
-val last4 = pico.font.load("../c/res/DejaVuSans.ttf")
+pin last1 = pico.layer.empty [ up=world, dim=['!',w=8,h=8] ]
+pin last2 = pico.layer.empty [ up=last1, dim=['!',w=2,h=2] ]
+pin last3 = pico.layer.sub [ sup=last1, crop=['!',x=0,y=0,w=4,h=4,anchor='NW'] ]
+pin last4 = pico.font.load("../c/res/DejaVuSans.ttf")
 pico.set.layer(last2)
 pico.set.pencil [ font=last4 ]
 print("ok")
