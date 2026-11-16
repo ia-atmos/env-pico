@@ -1,7 +1,7 @@
 val SHIP_FRAMES   = 4
 val SHIP_ACC_DIV  = 10
-val SHIP_VEL_MAX  = [ '%', x=0.4, y=0.4 ]
-val SHOT_COLOR    = [ r=0xFF, g=0xFF, b=0x88 ]
+pin SHIP_VEL_MAX  = [ '%', x=0.4, y=0.4 ]
+pin SHOT_COLOR    = [ r=0xFF, g=0xFF, b=0x88 ]
 val METEOR_FRAMES = 6
 val METEOR_AWAIT  = 5000
 
@@ -41,7 +41,7 @@ task Move_T (rect, vel) {
     }
 }
 
-val meteors = pico.layer.images [
+pin meteors = pico.layer.images [
     path  = "imgs/meteor.gif",
     sheet = ['#', w=METEOR_FRAMES, h=1],
 ]
@@ -54,14 +54,15 @@ task Meteor () {
 
     var frame = 0
 
-    val rect = [ '%', x=x, y=y, w=0.075, h=0.075 ] where {
-        x = math.random()
-        y = if y_sig==1 => 0 => 1
-    }
+    ;; the task owns what it publishes
     set pub = [
         tag  = :M,
-        rect = rect,
+        rect = [ '%', x=x, y=y, w=0.075, h=0.075 ] where {
+            x = math.random()
+            y = if y_sig==1 => 0 => 1
+        },
     ]
+    val rect = pub.rect
 
     par :any {
         val dt = math.random(1, METEOR_AWAIT)
@@ -88,11 +89,11 @@ task Meteor () {
 
 task Shot (V, pos, vy) {
     pico.output.sound "snds/shot.wav"
-    val rect = [ '%', x=pos.x, y=pos.y, w=0.02, h=0.01 ]
     set pub = [
         tag  = V.tag,
-        rect = rect,
+        rect = [ '%', x=pos.x, y=pos.y, w=0.02, h=0.01 ],
     ]
+    val rect = pub.rect
     par :any {
         await :collided
     } with {
@@ -105,7 +106,7 @@ task Shot (V, pos, vy) {
     }
 }
 
-val ships = [
+pin ships = [
     @("imgs/ship-L.gif") = pico.layer.images [
         path  = "imgs/ship-L.gif",
         sheet = ['#', w=1, h=SHIP_FRAMES],
@@ -118,15 +119,15 @@ val ships = [
 
 task Ship (V, shots) {
     val frames = ships@(V.img)
-    val vel = [x=0,y=0]
-    val rect = [ '%', x=V.pos, y=0.5, w=0.075, h=0.075 ]
+    pin vel = [x=0,y=0]
 
     set pub = [
         tag  = V.tag,
-        rect = rect,
+        rect = [ '%', x=V.pos, y=0.5, w=0.075, h=0.075 ],
     ]
+    val rect = pub.rect
 
-    var acc = [x=0,y=0]
+    pin acc = [x=0,y=0]
     var key
     spawn {
         par {
@@ -143,7 +144,8 @@ task Ship (V, shots) {
         } with {
             loop on :key.up {
                 set key = nil
-                set acc = [x=0,y=0]
+                set acc.x = 0
+                set acc.y = 0
             }
         }
     }

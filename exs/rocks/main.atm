@@ -12,13 +12,13 @@ spawn {    ;; BACKGROUND
     ;; This task is the first to spawn, which makes the background image to
     ;; always be rendered first.
     ;;;
-    val p = [ '%', x=0.5, y=0.5 ]
+    pin p = [ '%', x=0.5, y=0.5 ]
     loop on :draw {
         pico.output.draw.image("imgs/bg.png", p)
     }
 }
 
-val points = [ L=0, R=0 ]
+pin points = [ L=0, R=0 ]
 
 spawn {    ;; POINTS
     ;;;
@@ -28,8 +28,8 @@ spawn {    ;; POINTS
     ;; Since points must outlive each individual battle, we spawn them here,
     ;; outside the main game loop.
     ;;;
-    val l = [ '%', x=0.1, y=0.9, h=0.075 ]
-    val r = [ '%', x=0.9, y=0.9, h=0.075 ]
+    pin l = [ '%', x=0.1, y=0.9, h=0.075 ]
+    pin r = [ '%', x=0.9, y=0.9, h=0.075 ]
     loop on :draw {
         pico.set.pencil [ color="white" ]
         pico.output.draw.text(tostring(points.L), l)
@@ -53,7 +53,7 @@ loop {
         loop {
             ;; 500ms on
             watching 500ms {
-                val p = [ '%', x=0.5, y=0.5, h=0.075 ]
+                pin p = [ '%', x=0.5, y=0.5, h=0.075 ]
                 loop on :draw {
                     pico.set.pencil [ color="white" ]
                     pico.output.draw.text("= PRESS ENTER TO START =", p)
@@ -79,7 +79,7 @@ loop {
             await(:key.dn [key='P'])
             toggle battle(false)
             spawn {
-                val p = [ '%', x=0.5, y=0.5 ]
+                pin p = [ '%', x=0.5, y=0.5 ]
                 loop on :draw {
                     pico.output.draw.image("imgs/pause.png", p)
                 }
