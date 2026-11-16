@@ -111,9 +111,12 @@
 ;; `pico.close()` releases all resources: every value from before it is
 ;; invalid afterwards, even after a new `pico.open()`, and any use raises an
 ;; error.
-;; `pico.layer.world()` and `pico.layer.window()` evaluate to the two root
-;; layers, always as the same shared values, which the binding owns: they are
-;; held in a `val`, and cannot be pinned.
+;; `pico.layer.world` and `pico.layer.window` are the two root layers: fields
+;; (not functions) that `pico.open` sets and that are `nil` before it and
+;; after `pico.close()`. They are always the same shared values, which the
+;; table `pico.layer` owns: a program refers to them directly or through a
+;; `val`, and cannot pin them
+;; (`invalid assignment : unexpected pinned value`).
 ;;
 ;; IMPERATIVE PROGRAMS call `pico.open()`, draw, wait for input with
 ;; `pico.input.*`, and call `pico.close()` (or leave it to the end of the
@@ -248,6 +251,7 @@ static struct {
     int     closing;        // the program terminates: no more calls to pico
     _PICO_ATMOS_Lay* cur;
     AVal    cur_box;
+    AVal    layer;          // the table `pico.layer`, for its two roots
     AVal    world;
     AVal    window;
     struct {                // mouse of PICO_ATM_MOUSE, in window pixels,
@@ -363,11 +367,35 @@ static void _pico_atmos_cur (AVal box) {
     _pico_atmos_lay_unref(old);
 }
 
+// The table `pico.layer`, when the binding is loaded.
+static void _pico_atmos_init (AVal pico) {
+    AVal key = a_strz("layer");
+    a_cpy(&_PICO_ATMOS.layer, a_tab_get(A_TAB_OF(pico), key));
+    a_dec(key);
+}
+
+// Sets `pico.layer.world` or `pico.layer.window`: the box of a root when
+// pico opens, and nil when it closes. The table is pinned and owns the box
+// that it receives, which the program refers to and cannot pin.
+static void _pico_atmos_root (const char* k, AVal v) {
+    if (_PICO_ATMOS.layer.type == A_TAB) {
+        AVal key = a_strz(k);
+        a_setindex(_PICO_ATMOS.layer, key, v);
+        a_dec(key);
+    }
+}
+
 // Releases what the binding holds. The layers themselves go with pico.
 static void _pico_atmos_release (void) {
     _PICO_ATMOS_Lay* cur = _PICO_ATMOS.cur;
     _PICO_ATMOS.cur = NULL;
     a_clr(&_PICO_ATMOS.cur_box);
+    if (_PICO_ATMOS.closing) {
+        a_clr(&_PICO_ATMOS.layer);      // the table goes with the program
+    } else {
+        _pico_atmos_root("world",  a_nil());
+        _pico_atmos_root("window", a_nil());
+    }
     a_clr(&_PICO_ATMOS.world);
     a_clr(&_PICO_ATMOS.window);
     _pico_atmos_lay_unref(cur);
@@ -892,10 +920,10 @@ static void _pico_atmos_open (Pico_Window* win) {
     _PICO_ATMOS.gen++;
     a_set(&_PICO_ATMOS.world,  _pico_atmos_lay_new(pico_layer_world(),  _PICO_ATMOS_ROOT, a_nil(), a_nil()));
     a_set(&_PICO_ATMOS.window, _pico_atmos_lay_new(pico_layer_window(), _PICO_ATMOS_ROOT, a_nil(), a_nil()));
-    // the two roots are given to the program many times: the binding
-    // owns them, and the program refers to them with a plain `val`
-    a_own(_PICO_ATMOS.world);
-    a_own(_PICO_ATMOS.window);
+    // the two roots are fields of `pico.layer`, which owns them: the
+    // program refers to them with a plain `val`
+    _pico_atmos_root("world",  _PICO_ATMOS.world);
+    _pico_atmos_root("window", _PICO_ATMOS.window);
     _pico_atmos_cur(_PICO_ATMOS.world);
 }
 
@@ -1749,20 +1777,6 @@ static int _pico_atmos_path (AVal t, const char** path) {
     }
     *path = A_STR_OF(v)->s;
     return _pico_atmos_file(*path);
-}
-
-// pico.layer.world()
-static AStatus _pico_atmos_l_layer_world (AFunc* self, int argc, AVal* argv) {
-    _PICO_ATMOS_IN("layer.world")
-    a_pushc(_PICO_ATMOS.world);
-    return A_OK;
-}
-
-// pico.layer.window()
-static AStatus _pico_atmos_l_layer_window (AFunc* self, int argc, AVal* argv) {
-    _PICO_ATMOS_IN("layer.window")
-    a_pushc(_PICO_ATMOS.window);
-    return A_OK;
 }
 
 // pico.layer.empty [up=, clear=, dim=, tile=, target=]
@@ -2625,8 +2639,8 @@ pin pico = [
     ;;  - up: the parent to attach it to (default: detached)
     ;;  - target: its placement in the parent (default: all of it)
     layer = [
-        world      = `:value a_func(_pico_atmos_l_layer_world,      0)`,  ;; ()
-        window     = `:value a_func(_pico_atmos_l_layer_window,     0)`,  ;; ()
+        ;; world, window: the two root layers, as values (not functions),
+        ;; which `pico.open` sets and `pico.close` resets to nil
         empty      = `:value a_func(_pico_atmos_l_layer_empty,      0)`,  ;; [up=, clear=, dim=, tile=, target=]
         image      = `:value a_func(_pico_atmos_l_layer_image,      0)`,  ;; [up=, path=, target=]
         ;; a table with the sub-layers of a sprite sheet:
@@ -2684,3 +2698,7 @@ pin pico = [
         ],
     ],
 ]
+
+;; gives the table to the binding, which sets `pico.layer.world` and
+;; `pico.layer.window` at each `pico.open`
+`_pico_atmos_init($pico);`
