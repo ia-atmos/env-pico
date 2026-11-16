@@ -159,9 +159,13 @@ pin s = pico.sound.load("x.wav")
   The events of an `await` are held in a `val`.
 - `pico.close()` releases all resources: every value from before it is invalid
   afterwards, even after a new `pico.open()`, and any use raises an error.
-- `pico.layer.world()` and `pico.layer.window()` evaluate to the two root
-  layers, always as the same shared values, which the binding owns: they are
-  held in a `val`, and cannot be pinned.
+- `pico.layer.world` and `pico.layer.window` are the two root layers: fields
+  that `pico.open` sets, and that are `nil` before it and after
+  `pico.close()`.
+  They are always the same shared values (`pico.get.layer() ==
+  pico.layer.world` holds while the world is the current layer), which the
+  table `pico.layer` owns: a program refers to them directly or through a
+  `val`, and cannot pin them.
 - The resources that operations load from a path or content
   (`pico.output.draw.image`, `pico.output.draw.text`, `pico.output.draw.video`,
   `pico.output.sound(path)`, and `pico.set.pencil [font=path]`) are loaded
@@ -268,7 +272,7 @@ In alphabetical order:
         - Forms:
             - `pico.get.mouse('!')` — cur, pixels, C anchor
             - `pico.get.mouse(nil, '!')` — explicit nil = cur
-            - `pico.get.mouse(pico.layer.world(), '%')` — given layer's frame
+            - `pico.get.mouse(pico.layer.world, '%')` — given layer's frame
             - `pico.get.mouse(['!', anchor='NW'])` — explicit anchor
     - **pico.get.now**: Gets milliseconds since initialization.
         - `pico.get.now () -> integer`
@@ -347,10 +351,14 @@ In alphabetical order:
       `Layer` (see [Lifetimes](#lifetimes)).
     - The parent `up` must be able to host children: the world, the window,
       a layer created by `pico.layer.empty`, or a sub-layer of those.
-    - **pico.layer.world**: Evaluates to the world layer.
-        - `pico.layer.world () -> Layer`
-    - **pico.layer.window**: Evaluates to the window layer.
-        - `pico.layer.window () -> Layer`
+    - **pico.layer.world**: The world layer.
+        - `pico.layer.world : Layer?`
+    - **pico.layer.window**: The window layer.
+        - `pico.layer.window : Layer?`
+    - The two are values (fields of `pico.layer`), and not functions:
+      `pico.set.layer(pico.layer.world)`.
+      `pico.open` sets them, and they are `nil` before it and after
+      `pico.close` (see [Lifetimes](#lifetimes)).
     - **pico.layer.empty**: Creates an empty layer.
         ```
         pico.layer.empty [
@@ -569,8 +577,8 @@ In alphabetical order:
         - Returns the previous layer (useful for save/restore), or `nil` if
           its value is gone (see [Lifetimes](#lifetimes)).
         - `layer` must be a layer; `nil` errors. The two predefined
-          layers are `pico.layer.world()` (default) and
-          `pico.layer.window()`.
+          layers are `pico.layer.world` (default) and
+          `pico.layer.window`.
     - **pico.set.mouse**: Sets mouse cursor position. `pos` is
       interpreted in `layer`'s frame and projected to window for the
       SDL warp. `layer` defaults to cur when omitted or `nil`.
@@ -579,7 +587,7 @@ In alphabetical order:
         - Forms:
             - `pico.set.mouse(pos)` — cur
             - `pico.set.mouse(nil, pos)` — explicit nil = cur
-            - `pico.set.mouse(pico.layer.window(), pos)` — given layer's frame
+            - `pico.set.mouse(pico.layer.window, pos)` — given layer's frame
     - **pico.set.pencil**: Sets pencil configuration.
         ```
         pico.set.pencil [

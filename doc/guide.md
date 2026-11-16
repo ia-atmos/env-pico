@@ -104,9 +104,9 @@ appropriate layer:
 
 <table>
 <tr><td><pre>
-pico.set.layer(pico.layer.window())
+pico.set.layer(pico.layer.window)
 pico.set.scene [ dim=[ '!', w=200, h=200 ] ]
-pico.set.layer(pico.layer.world())
+pico.set.layer(pico.layer.world)
 pico.set.scene [ dim=[ '!', w=200, h=200 ] ]
 </pre>
 </td><td>
@@ -119,7 +119,7 @@ We discuss [#Positioning Modes](#4-positioning-modes--anchors) further.
 
 The `window` and `world` are pre-defined layers, which we can manipulate
 independently.
-The calls `pico.layer.window()` and `pico.layer.world()` evaluate to them.
+The values `pico.layer.window` and `pico.layer.world` hold them.
 We discuss [#Layers](#7-layers) further.
 Using the same dimensions for both makes the grid disappear, since the pixel
 size becomes `1x1`.
@@ -551,9 +551,9 @@ the world background when we zoom out):
 <table>
 <tr><td><pre>
 pico.close() ; pico.open()
-pico.set.layer(pico.layer.window()) ;; (typically grey to distinguish from world)
+pico.set.layer(pico.layer.window) ;; (typically grey to distinguish from world)
 pico.set.effect [ color='black' ]
-pico.set.layer(pico.layer.world())
+pico.set.layer(pico.layer.world)
 pico.output.draw.image('../c/res/open.png',
     ['%', x=0.5, y=0.5, w=0.5, h=0.5])
 </pre>
@@ -793,7 +793,7 @@ To compose a layer on top of the current layer, we call
 
 <table>
 <tr><td><pre>
-pico.set.layer(pico.layer.world())  ;; back to the world layer
+pico.set.layer(pico.layer.world)  ;; back to the world layer
 pico.output.draw.layer(flag, ['%', x=0.33, y=0.33, w=0.2])
 pico.output.draw.layer(flag, ['%', x=0.66, y=0.66, w=0.5])
 </pre>
@@ -802,7 +802,7 @@ pico.output.draw.layer(flag, ['%', x=0.66, y=0.66, w=0.5])
 </td></tr>
 </table>
 
-We first use `pico.set.layer(pico.layer.world())` to target the world layer.
+We first use `pico.set.layer(pico.layer.world)` to target the world layer.
 Then, we compose the flag twice, with different arguments.
 
 We can also flip and rotate layers when compositing them, by setting their
@@ -815,7 +815,7 @@ pico.set.effect [
     flip   = 'horizontal',
     rotate = [angle=30, anchor='C'],
 ]
-pico.set.layer(pico.layer.world())
+pico.set.layer(pico.layer.world)
 pico.output.clear()
 pico.output.draw.layer(flag, ['%', x=0.75, y=0.25, w=0.3])
 </pre>
@@ -839,7 +839,7 @@ pico.set.effect [
     flip   = 'none',
     alpha  = 0x80,
 ]
-pico.set.layer(pico.layer.world())
+pico.set.layer(pico.layer.world)
 pico.output.draw.layer(flag, ['%', x=0.5, y=0.5, w=0.6])
 </pre>
 </td><td>
@@ -926,12 +926,12 @@ The next code listing implements this layout:
 <tr><td><pre>
 pico.close() ; pico.open()
 pin pic = pico.layer.image [        ;; image at top-left
-    up=pico.layer.world(), path="../c/res/open.png",
+    up=pico.layer.world, path="../c/res/open.png",
     target=['%', x=0.3, y=0.3, w=0.4],
 ]
                                     ;; panel at bottom-right
 pin panel = pico.layer.empty [
-    up=pico.layer.world(), clear=true, dim=['!', w=100, h=50],
+    up=pico.layer.world, clear=true, dim=['!', w=100, h=50],
 ]
 pico.set.layer(panel)
 pico.set.effect [ color='silver' ]
@@ -944,7 +944,7 @@ pin W = pico.layer.text [
     up=panel, dim=['!', h=20], text="World!",
     target=['%', x=0.5, y=0.7, h=0.4],
 ]
-pico.set.layer(pico.layer.world())
+pico.set.layer(pico.layer.world)
 pico.output.present()
 </pre>
 </td><td>
@@ -1024,8 +1024,9 @@ we declare them with `pin`, or use them at once, as in
 Finally, `pico.close()` releases all resources at once.
 The values from before the call become invalid, even after a new `pico.open()`,
 and any use of them raises an error.
-This includes the values of `pico.layer.world()` and `pico.layer.window()`,
-which we must evaluate again.
+This includes the values that we took from `pico.layer.world` and
+`pico.layer.window`, which hold new layers after each `pico.open()` (and `nil`
+while `atmos-pico` is closed).
 
 As the next example illustrates, lifetimes are convenient for applications that
 move through long sequences of scenes (e.g., menu `->` game `->` game-over
@@ -1468,8 +1469,8 @@ Optional layer arguments can project across frames:
 
 ```
 pin r = pico.cv.rect (
-    pico.layer.world(), '%',
-    pico.layer.window(), ['!', x=250, y=250, w=100, h=100]
+    pico.layer.world, '%',
+    pico.layer.window, ['!', x=250, y=250, w=100, h=100]
 )
 print(r.x, r.y, r.w, r.h)   ;; --> 0.5     0.5     0.2     0.2
 ```
@@ -1484,8 +1485,8 @@ component:
 
 ```
 pin d = pico.cv.dim (
-    pico.layer.world(), '!',
-    pico.layer.window(), ['!', w=100, h=100]
+    pico.layer.world, '!',
+    pico.layer.window, ['!', w=100, h=100]
 )
 print(d.w, d.h)     ;; --> 20.0    20.0
 ```
@@ -1509,8 +1510,8 @@ When a rect side is omitted, it defaults to that layer's bounds:
 
 ```
 print(pico.vs.rect.rect (
-    pico.layer.world(),
-    pico.layer.window(), ['%', x=0.5, y=0.5, w=0.5, h=0.5]
+    pico.layer.world,
+    pico.layer.window, ['%', x=0.5, y=0.5, w=0.5, h=0.5]
 ))                  ;; --> true
 ```
 
@@ -1558,7 +1559,7 @@ To save a screenshot of the current window, we call
 pico.close() ; pico.open()
 pico.set.pencil [ color='red' ]
 pico.output.draw.rect [ '%', x=0.5, y=0.5, w=0.5, h=0.5 ]
-pico.output.screenshot(pico.layer.window(), "my-screenshot.png")
+pico.output.screenshot(pico.layer.window, "my-screenshot.png")
 </pre>
 </td><td>
 <img src="../c/tst/asr/guide-10-01-01.png" width="200">
@@ -1571,7 +1572,7 @@ An optional rectangle crops the screenshot:
 <table>
 <tr><td><pre>
 pico.output.screenshot (
-    pico.layer.window(),
+    pico.layer.window,
     "crop.png",
     ['%', x=0.5, y=0.5, w=0.25, h=0.25]
 )
@@ -1585,7 +1586,7 @@ We can also create a new layer from a screenshot with `pico.layer.screenshot`:
 
 <table>
 <tr><td><pre>
-pin snap = pico.layer.screenshot [ sup=pico.layer.window() ]
+pin snap = pico.layer.screenshot [ sup=pico.layer.window ]
 pico.output.draw.layer(snap, ['%', x=0.5, y=0.5, w=0.3])
 </pre>
 </td><td>
