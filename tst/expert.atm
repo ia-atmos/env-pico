@@ -1,6 +1,6 @@
 pico.set.window [ title="Expert" ]
 
-val r = ['%', x=0.5, y=0.5, w=0.5, h=0.5]
+pin r = ['%', x=0.5, y=0.5, w=0.5, h=0.5]
 pico.output.draw.rect(r)
 pico.check("expert-01")
 

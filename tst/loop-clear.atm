@@ -9,14 +9,14 @@ val OUT   = "../c/tst/out/"
 val world = pico.layer.world()
 
 ;; two children of the world, and a detached layer
-val acc = pico.layer.empty [ up=world, dim=['!',w=40,h=10],
+pin acc = pico.layer.empty [ up=world, dim=['!',w=40,h=10],
     target=['!', x=5, y=40, w=40, h=10, anchor='NW'] ]
-val clr = pico.layer.empty [ up=world, clear=true, dim=['!',w=40,h=10],
+pin clr = pico.layer.empty [ up=world, clear=true, dim=['!',w=40,h=10],
     target=['!', x=55, y=40, w=40, h=10, anchor='NW'] ]
-val other = pico.layer.empty [ dim=['!',w=40,h=10] ]
+pin other = pico.layer.empty [ dim=['!',w=40,h=10] ]
 
 func bytes (path) {
-    val f = io.open(path, "rb")
+    pin f = io.open(path, "rb")
     assert(f, "cannot open " ++ path)
     val c = io.read(f, :all)
     io.close(f)

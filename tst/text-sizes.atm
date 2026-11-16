@@ -13,7 +13,7 @@ do {
     var y = 5
     loop i in (1,12) {
         val h = 5 * i
-        val r = ['!', x=5, y=y, w=0, h=h, anchor='NW']
+        pin r = ['!', x=5, y=y, w=0, h=h, anchor='NW']
         pico.output.draw.text("Hello World!", r)
         set y = y + h + 4
     }
@@ -28,8 +28,8 @@ do {
 ;; a border (r1 bottom = r2 top = y211).
 do {
     val msg = "For a long time, the Pingus have lived hapilly."
-    val r1 = ['!', x=20, y=200, w=0, h=22, anchor='W']
-    val r2 = ['%', x=0.04, y=0.444, w=0, h=0.044, anchor='W']
+    pin r1 = ['!', x=20, y=200, w=0, h=22, anchor='W']
+    pin r2 = ['%', x=0.04, y=0.444, w=0, h=0.044, anchor='W']
     val n = #msg
     loop i in (1,n) {
         val s = string.sub(msg, 0, i-1)
@@ -42,10 +42,10 @@ do {
 
         ;; enclosing boxes (red stroke), sized to the measured text
         pico.set.pencil [ color='red', style='stroke' ]
-        val m1 = ['!', w=0, h=22]
+        pin m1 = ['!', w=0, h=22]
         pico.get.text(m1, s)
         pico.output.draw.rect(['!', x=20, y=200, w=m1.w, h=22, anchor='W'])
-        val m2 = ['%', w=0, h=0.044]
+        pin m2 = ['%', w=0, h=0.044]
         pico.get.text(m2, s)
         pico.output.draw.rect(['%', x=0.04, y=0.444, w=m2.w, h=0.044, anchor='W'])
 
@@ -65,10 +65,10 @@ do {
 do {
     val msg = "For a long time, the Pingus have lived hapilly."
     val h = 22
-    val an = ['NW', 'C', 'SE']
-    val ax = [20, 250, 480]
-    val ay = [100, 250, 400]
-    val lens = [6, 10, #msg]
+    pin an = ['NW', 'C', 'SE']
+    pin ax = [20, 250, 480]
+    pin ay = [100, 250, 400]
+    pin lens = [6, 10, #msg]
     loop c in 3 {
         val s = string.sub(msg, 0, lens@c-1)
         pico.output.clear()
@@ -83,7 +83,7 @@ do {
 
             ;; measured box (red stroke)
             pico.set.pencil [ color='red', style='stroke' ]
-            val m = ['!', w=0, h=h]
+            pin m = ['!', w=0, h=h]
             pico.get.text(m, s)
             pico.output.draw.rect(['!', x=ax@a, y=ay@a, w=m.w, h=h, anchor=an@a])
 

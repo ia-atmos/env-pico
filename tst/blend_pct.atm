@@ -8,7 +8,7 @@ pico.set.scene [ dim=['!', w=64, h=36] ]
 
 do {
     print("image dimming")
-    val r = ['%', x=0.5, y=0.5, w=0.5, h=0, anchor='C']
+    pin r = ['%', x=0.5, y=0.5, w=0.5, h=0, anchor='C']
     loop i in 51 {
         val a = 255 - i*5
         pico.output.clear()
@@ -23,7 +23,7 @@ do {
 
 do {
     print("pixel dimming")
-    val p = ['%', x=0.5, y=0.5, anchor='NW']
+    pin p = ['%', x=0.5, y=0.5, anchor='NW']
     loop i in 51 {
         val a = 255 - i*5
         pico.output.clear()
@@ -38,8 +38,8 @@ do {
 
 do {
     print("text dimming")
-    val r = ['%', x=0.5, y=0.5, w=0, h=0.28, anchor='C']
-    val z = ['!', x=6.296000, y=12.960000, w=51.408001, h=10.080000, anchor='NW']
+    pin r = ['%', x=0.5, y=0.5, w=0, h=0.28, anchor='C']
+    pin z = ['!', x=6.296000, y=12.960000, w=51.408001, h=10.080000, anchor='NW']
     loop i in 51 {
         val a = 255 - i*5
         pico.output.clear()
@@ -55,7 +55,7 @@ do {
 
 do {
     print("rect dimming")
-    val r = ['%', x=0.5, y=0.5, w=0.95, h=0.34, anchor='C']
+    pin r = ['%', x=0.5, y=0.5, w=0.95, h=0.34, anchor='C']
     loop i in 51 {
         val a = 255 - i*5
         pico.output.clear()
@@ -70,7 +70,7 @@ do {
 
 do {
     print("oval dimming")
-    val r = ['%', x=0.5, y=0.5, w=0.95, h=0.34, anchor='C']
+    pin r = ['%', x=0.5, y=0.5, w=0.95, h=0.34, anchor='C']
     loop i in 51 {
         val a = 255 - i*5
         pico.output.clear()
@@ -85,9 +85,9 @@ do {
 
 do {
     print("tri dimming")
-    val p1 = ['%', x=0.50, y=0.33, anchor='C']
-    val p2 = ['%', x=0.33, y=0.66, anchor='C']
-    val p3 = ['%', x=0.66, y=0.66, anchor='C']
+    pin p1 = ['%', x=0.50, y=0.33, anchor='C']
+    pin p2 = ['%', x=0.33, y=0.66, anchor='C']
+    pin p3 = ['%', x=0.66, y=0.66, anchor='C']
     loop i in 51 {
         val a = 255 - i*5
         pico.output.clear()
@@ -102,8 +102,8 @@ do {
 
 do {
     print("line dimming")
-    val p1 = ['%', x=0.33, y=0.33, anchor='C']
-    val p2 = ['%', x=0.66, y=0.66, anchor='C']
+    pin p1 = ['%', x=0.33, y=0.33, anchor='C']
+    pin p2 = ['%', x=0.66, y=0.66, anchor='C']
     loop i in 51 {
         val a = 255 - i*5
         pico.output.clear()
@@ -118,7 +118,7 @@ do {
 
 do {
     print("poly dimming")
-    val poly = [
+    pin poly = [
         ['%', x=0.50, y=0.33, anchor='C'],
         ['%', x=0.33, y=0.66, anchor='C'],
         ['%', x=0.66, y=0.66, anchor='C'],

@@ -11,14 +11,14 @@ assert(layer == pico.layer.world())
 
 ;; create bg layer (32x32)
 print("create and switch to layer")
-val background = pico.layer.empty [ dim=['!', w=32, h=32] ]
+pin background = pico.layer.empty [ dim=['!', w=32, h=32] ]
 assert(pico.set.layer(background) == pico.layer.world())
 set layer = pico.get.layer()
 assert(layer == background)
 
 ;; create ui layer (48x48)
 print("switch to another layer")
-val ui = pico.layer.empty [ dim=['!', w=48, h=48] ]
+pin ui = pico.layer.empty [ dim=['!', w=48, h=48] ]
 assert(pico.set.layer(ui) == background)
 set layer = pico.get.layer()
 assert(layer == ui)
@@ -66,7 +66,7 @@ pico.output.present()
 
 ;; layer.empty (content preserved)
 print("layer.empty")
-val reuse = pico.layer.empty [ dim=['!', w=32, h=32] ]
+pin reuse = pico.layer.empty [ dim=['!', w=32, h=32] ]
 pico.set.layer(reuse)
 pico.set.effect [ color=['!', r=0x00, g=0x80, b=0x00] ]
 pico.output.clear()
@@ -80,7 +80,7 @@ pico.check("layers-04")
 
 ;; layer.pixmap
 print("layer.pixmap")
-val mybuf = pico.layer.pixmap [ pixels=[
+pin mybuf = pico.layer.pixmap [ pixels=[
     [ ['!',r=255,g=0,b=0], ['!',r=0,g=255,b=0]   ],
     [ ['!',r=0,g=0,b=255], ['!',r=255,g=255,b=0] ],
 ] ]
@@ -92,10 +92,10 @@ pico.check("layers-05")
 print("layer.empty: target as dim")
 do {
     ;; world is 100x100; '%' w=0.5,h=0.5 -> 50x50 layer
-    val r = ['%', x=0.25, y=0.75, w=0.5, h=0.5, anchor='C']
-    val l = pico.layer.empty [ up=pico.layer.world(), clear=true, target=r ]
+    pin r = ['%', x=0.25, y=0.75, w=0.5, h=0.5, anchor='C']
+    pin l = pico.layer.empty [ up=pico.layer.world(), clear=true, target=r ]
     pico.set.layer(l)
-    val s = pico.get.scene()
+    pin s = pico.get.scene()
     assert(s.dim.w==50 && s.dim.h==50)
     assert(s.target@0 == '%')
     assert(s.target.x==0.25 && s.target.y==0.75)
@@ -106,12 +106,12 @@ do {
 ;; target on other constructors
 print("layer.pixmap: target sets scene.target")
 do {
-    val r = ['%', x=0.5, y=0.5, w=0.25, h=0.25, anchor='C']
-    val px = [ [ ['!',r=0xFF,g=0,b=0], ['!',r=0,g=0xFF,b=0]    ],
+    pin r = ['%', x=0.5, y=0.5, w=0.25, h=0.25, anchor='C']
+    pin px = [ [ ['!',r=0xFF,g=0,b=0], ['!',r=0,g=0xFF,b=0]    ],
                [ ['!',r=0,g=0,b=0xFF], ['!',r=0xFF,g=0xFF,b=0] ] ]
-    val l = pico.layer.pixmap [ up=pico.layer.world(), pixels=px, target=r ]
+    pin l = pico.layer.pixmap [ up=pico.layer.world(), pixels=px, target=r ]
     pico.set.layer(l)
-    val s = pico.get.scene()
+    pin s = pico.get.scene()
     assert(s.target@0 == '%')
     assert(s.target.x==0.5  && s.target.y==0.5)
     assert(s.target.w==0.25 && s.target.h==0.25)

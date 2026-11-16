@@ -11,7 +11,7 @@ func fails (msg, f) {
 
 print("1. open from the start, with the defaults")
 do {
-    val w = pico.get.window()
+    pin w = pico.get.window()
     assert(w.title=="pico-SDL" && w.show==true && w.fullscreen==false)
     assert(pico.get.layer() == pico.layer.world())
     assert(pico.get.scene().dim.w == 100)
@@ -26,7 +26,7 @@ do {
     pico.close()
     fails("pico is not open", \{ pico.get.window() })
     pico.open [ title="Hidden", show=false ]
-    val w = pico.get.window()
+    pin w = pico.get.window()
     assert(w.title=="Hidden" && w.show==false)
     fails("pico is already open", \{ pico.open() })
 }

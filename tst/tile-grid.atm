@@ -1,4 +1,4 @@
-val phy = ['!', w=480, h=480]
+pin phy = ['!', w=480, h=480]
 pico.set.window [ title="Grid" ]
 pico.set.layer(pico.layer.window())
 pico.set.scene [ dim=phy ]
@@ -64,7 +64,7 @@ pico.set.effect [ grid=false ]
     pico.set.scene [ dim=['!', w=480, h=480] ]
 
 ;; Layer A: 4x4 tiles of 4x4 pixels, grid enabled
-val layerA = pico.layer.empty [ dim=['!', w=16, h=16] ]
+pin layerA = pico.layer.empty [ dim=['!', w=16, h=16] ]
 do {
     print("layer A: 4x4 tiles, grid on")
     pico.set.layer(layerA)
@@ -77,7 +77,7 @@ do {
 }
 
 ;; Layer B: 8x4 non-square tiles, grid enabled
-val layerB = pico.layer.empty [ dim=['!', w=16, h=16] ]
+pin layerB = pico.layer.empty [ dim=['!', w=16, h=16] ]
 do {
     print("layer B: 8x4 non-square tiles, grid on")
     pico.set.layer(layerB)
@@ -90,7 +90,7 @@ do {
 }
 
 ;; Layer C: 4x4 tiles of 4x4 pixels, grid disabled
-val layerC = pico.layer.empty [ dim=['!', w=16, h=16] ]
+pin layerC = pico.layer.empty [ dim=['!', w=16, h=16] ]
 do {
     print("layer C: 4x4 tiles, grid off")
     pico.set.layer(layerC)

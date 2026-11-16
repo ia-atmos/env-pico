@@ -9,7 +9,7 @@ pico.set.layer(pico.layer.world())
 pico.set.scene [ dim=['!', w=64, h=18] ]
 math.randomseed(0)
 
-val pos = ['!', x=32, y=9]
+pin pos = ['!', x=32, y=9]
 loop i in (0,99) {
     pico.set.pencil [ color=[r=0xFF, g=0xFF, b=0xFF] ]
     pico.output.draw.pixel(pos)

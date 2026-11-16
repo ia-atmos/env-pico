@@ -95,7 +95,7 @@ pico.set.window [ title="guide-03-03-03" ]
 val _ = 'black'
 val o = 'blue'
 val x = 'silver'
-val PI = [
+pin PI = [
     [_,_,_,o,o,o,o,_,_,_],
     [_,o,o,o,o,o,o,o,o,_],
     [_,o,x,x,x,x,x,x,o,_],
@@ -107,7 +107,7 @@ val PI = [
     [_,o,o,o,o,o,o,o,o,_],
     [_,_,_,o,o,o,o,_,_,_],
 ]
-val pi = pico.layer.pixmap [ pixels=PI ]
+pin pi = pico.layer.pixmap [ pixels=PI ]
 pico.output.draw.layer(pi, ['!', x=50, y=50, w=80])
 pico.check("guide-03-03-03")
 
@@ -230,7 +230,7 @@ pico.check("guide-06-03-01")
 
 ;; §7.1: create the `flag` layer (no check; nothing on screen yet)
 pico.output.clear()
-val flag = pico.layer.empty [ dim=['!', w=300, h=200] ]
+pin flag = pico.layer.empty [ dim=['!', w=300, h=200] ]
 pico.set.layer(flag)
 pico.set.pencil [ color=[ r=0x00, g=0x2B, b=0x7F ] ]
 pico.output.draw.rect [ '%', x=0.00, y=0.0, w=0.33, h=1.0, anchor='NW' ]
@@ -272,9 +272,9 @@ pico.check("guide-07-02-03")
 
 ;; §7.3: sub-layers cropping each stripe of the flag
 pico.set.window [ title="guide-07-03-01" ]
-val blue   = pico.layer.sub [ sup=flag, crop=['%', x=0.25, y=0.5, w=0.1, h=0.15] ]
-val yellow = pico.layer.sub [ sup=flag, crop=['%', x=0.50, y=0.5, w=0.1, h=0.15] ]
-val red    = pico.layer.sub [ sup=flag, crop=['%', x=0.75, y=0.5, w=0.1, h=0.15] ]
+pin blue   = pico.layer.sub [ sup=flag, crop=['%', x=0.25, y=0.5, w=0.1, h=0.15] ]
+pin yellow = pico.layer.sub [ sup=flag, crop=['%', x=0.50, y=0.5, w=0.1, h=0.15] ]
+pin red    = pico.layer.sub [ sup=flag, crop=['%', x=0.75, y=0.5, w=0.1, h=0.15] ]
 pico.output.clear()
 pico.output.draw.layer(blue,   ['%', x=0.30, y=0.30, w=0.25])
 pico.output.draw.layer(yellow, ['%', x=0.70, y=0.45, w=0.25])
@@ -284,18 +284,18 @@ pico.check("guide-07-03-01")
 ;; §7.4: hierarchy -- root has image (top) and panel (bottom); panel has 2 texts
 pico.close(); pico.open()
 pico.set.window [ title="guide-07-04-01" ]
-val pic = pico.layer.image [
+pin pic = pico.layer.image [
     up=pico.layer.world(), path="../c/res/open.png", target=['%', x=0.3, y=0.3, w=0.4],
 ]
 ;; (the layers are kept in variables: a layer that is dropped disappears)
-val panel = pico.layer.empty [ up=pico.layer.world(), clear=true, dim=['!', w=100, h=50] ]
+pin panel = pico.layer.empty [ up=pico.layer.world(), clear=true, dim=['!', w=100, h=50] ]
 pico.set.layer(panel)
 pico.set.effect [ color='silver' ]
 pico.set.scene [ target = ['%', x=0.7, y=0.7, w=0.4] ]
-val H = pico.layer.text [
+pin H = pico.layer.text [
     up=panel, dim=['!', h=20], text="Hello", target=['%', x=0.5, y=0.3, h=0.6],
 ]
-val W = pico.layer.text [
+pin W = pico.layer.text [
     up=panel, dim=['!', h=20], text="World!", target=['%', x=0.5, y=0.7, h=0.4],
 ]
 pico.set.layer(pico.layer.world())
@@ -335,16 +335,16 @@ pico.check("guide-08-00-02")
 
 ;; §9.1.a: cv.pos -- percentage to raw (default 100x100 world)
 pico.close(); pico.open()
-val pos = pico.cv.pos('!', ['%', x=0.5, y=0.5])
+pin pos = pico.cv.pos('!', ['%', x=0.5, y=0.5])
 assert(pos.x == 50 && pos.y == 50)
 
 ;; §9.1.b: cv.rect -- cross-frame projection (window ! -> world %)
-val r = pico.cv.rect(pico.layer.world(), '%', pico.layer.window(), ['!', x=250, y=250, w=100, h=100])
+pin r = pico.cv.rect(pico.layer.world(), '%', pico.layer.window(), ['!', x=250, y=250, w=100, h=100])
 assert(r.x*100//1 == 50 && r.y*100//1 == 50
    && r.w*100//1 == 20 && r.h*100//1 == 20)
 
 ;; §9.1.c: cv.dim -- cross-frame dimension projection
-val d = pico.cv.dim(pico.layer.world(), '!', pico.layer.window(), ['!', w=100, h=100])
+pin d = pico.cv.dim(pico.layer.world(), '!', pico.layer.window(), ['!', w=100, h=100])
 assert(d.w == 20 && d.h == 20)
 
 ;; §9.2.a: vs.pos.rect -- point outside rectangle
@@ -359,14 +359,14 @@ assert(pico.vs.rect.rect(
 ) == true)
 
 ;; §9.3.a: in.pos -- nest child point at parent's SW corner into world
-val p = pico.in.pos(
+pin p = pico.in.pos(
     ['%', x=0.5, y=0.5, w=0.5, h=0.5],
     ['%', x=0, y=1]
 )
 assert(p.x*100//1 == 25 && p.y*100//1 == 75)
 
 ;; §9.3.b: in.rect -- centered 50% child of centered 50% parent -> 25% of world
-val rr = pico.in.rect(
+pin rr = pico.in.rect(
     ['%', x=0.5, y=0.5, w=0.5, h=0.5],
     ['%', x=0.5, y=0.5, w=0.5, h=0.5]
 )
@@ -374,7 +374,7 @@ assert(rr.x*100//1 == 50 && rr.y*100//1 == 50
    && rr.w*100//1 == 25 && rr.h*100//1 == 25)
 
 ;; §9.3.c: in.dim -- 50% child of 50% parent -> 25% of world
-val dd = pico.in.dim(
+pin dd = pico.in.dim(
     ['%', x=0.5, y=0.5, w=0.5, h=0.5],
     ['%', w=0.5, h=0.5]
 )
@@ -401,7 +401,7 @@ pico.output.screenshot(pico.layer.window(), "../c/tst/out/guide-10-01-02.png",
 
 ;; §10.1.c: screenshot a layer into a new layer, then redraw it
 pico.set.window [ title="guide-10-01-03" ]
-val snap = pico.layer.screenshot [ sup=pico.layer.window() ]
+pin snap = pico.layer.screenshot [ sup=pico.layer.window() ]
 pico.output.draw.layer(snap, ['%', x=0.5, y=0.5, w=0.3])
 pico.check("guide-10-01-03")
 

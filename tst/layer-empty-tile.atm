@@ -5,7 +5,7 @@ pico.set.effect [ grid=false ]
 ;; dim='#' (cells) with tile in px: D = 20*16 x 15*16 = 320x240.
 ;; view.tile set at birth so '#'-mode works without pico.set.scene.
 print("layer map: 20x15 tiles of 16x16")
-val map = pico.layer.empty [ dim=['#', w=20, h=15], tile=['!', w=16, h=16] ]
+pin map = pico.layer.empty [ dim=['#', w=20, h=15], tile=['!', w=16, h=16] ]
 do {
     val old = pico.set.layer(map)
     pico.set.effect [ grid=true ]
@@ -36,7 +36,7 @@ do {
 
 ;; Layer `fx`: no tile arg -> dim is pixels, view.tile stays {0,0}
 print("layer fx: plain pixel layer (no tile)")
-val fx = pico.layer.empty [ dim=['!', w=64, h=64] ]
+pin fx = pico.layer.empty [ dim=['!', w=64, h=64] ]
 do {
     val old = pico.set.layer(fx)
     pico.set.pencil [ color='yellow' ]

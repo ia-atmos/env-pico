@@ -5,7 +5,7 @@ assert(pico.get.aids() == false)
 
 ;; aids off: quit is not auto-handled even in non-expert mode
 pico.quit()
-val e = pico.input.event('quit', 100)
+pin e = pico.input.event('quit', 100)
 assert(e)
 assert(e.tag == 'quit')
 

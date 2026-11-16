@@ -1,5 +1,5 @@
 ;; Create a 4x4 "sprite sheet" layer with colored quadrants
-val sheet = pico.layer.empty [ dim=['!', w=4, h=4] ]
+pin sheet = pico.layer.empty [ dim=['!', w=4, h=4] ]
 pico.set.layer(sheet)
 pico.set.effect [ color='black' ]
 pico.output.clear()
@@ -28,13 +28,13 @@ pico.check("sheet-01")
 
 ;; Create sub-layers for each quadrant
 print("Test 2: explicit sub-layers (swapped)")
-val tl = pico.layer.sub [ sup=sheet,
+pin tl = pico.layer.sub [ sup=sheet,
     crop=['!', x=0, y=0, w=2, h=2, anchor='NW'] ]
-val tr = pico.layer.sub [ sup=sheet,
+pin tr = pico.layer.sub [ sup=sheet,
     crop=['!', x=2, y=0, w=2, h=2, anchor='NW'] ]
-val bl = pico.layer.sub [ sup=sheet,
+pin bl = pico.layer.sub [ sup=sheet,
     crop=['!', x=0, y=2, w=2, h=2, anchor='NW'] ]
-val br = pico.layer.sub [ sup=sheet,
+pin br = pico.layer.sub [ sup=sheet,
     crop=['!', x=2, y=2, w=2, h=2, anchor='NW'] ]
 
 ;; Draw sub-layers swapped: TL->BR, TR->BL, BL->TR, BR->TL
@@ -63,7 +63,7 @@ pico.output.draw.rect(
 pico.output.screenshot(pico.layer.window(), "../c/tst/out/sheet-grid.png")
 
 ;; a vector with the layers, left to right (the names "grid-NN" are gone)
-val grid = pico.layer.images [
+pin grid = pico.layer.images [
     path="../c/tst/out/sheet-grid.png",
     sheet=['#', w=2, h=1],
 ]
@@ -82,7 +82,7 @@ pico.check("sheet-03")
 ;; Test 4: pico.layer.images (explicit form)
 print("Test 4: explicit form")
 ;; a table with the layers, with the same names of the sheet
-val expl = pico.layer.images [
+pin expl = pico.layer.images [
     path="../c/tst/out/sheet-grid.png",
     sheet=[
         '!',
@@ -93,7 +93,7 @@ val expl = pico.layer.images [
     ],
 ]
 do {
-    val names = []
+    pin names = []
     loop k,_ in expl {
         set names@+ = k
     }

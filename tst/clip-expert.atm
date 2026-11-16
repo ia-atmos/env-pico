@@ -1,8 +1,8 @@
 pico.set.window [ title="Clip x Expert" ]
 pico.set.pencil [ style='fill' ]
 
-val full = ['%', x=0.5, y=0.5, w=1.0, h=1.0, anchor='C']
-val box  = ['%', x=0.5, y=0.5, w=0.5, h=0.5, anchor='C']
+pin full = ['%', x=0.5, y=0.5, w=1.0, h=1.0, anchor='C']
+pin box  = ['%', x=0.5, y=0.5, w=0.5, h=0.5, anchor='C']
 
 ;; PLAIN: red full, then blue full clipped to a centered half-box
 pico.set.pencil [ color='red' ]

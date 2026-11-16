@@ -11,7 +11,7 @@ assert(root, "PICO_ROOT is not set")
 assert(string.sub(root,0,0) == "/", "PICO_ROOT is not absolute")
 
 func exists (path) {
-    val f = io.open(path, "rb")
+    pin f = io.open(path, "rb")
     if f {
         io.close(f)
     }

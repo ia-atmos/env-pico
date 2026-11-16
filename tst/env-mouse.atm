@@ -12,7 +12,7 @@ val window = pico.layer.window()
 
 ;; the fields of a table, sorted, with the types of their values
 func shape (t) {
-    val ks = []
+    pin ks = []
     loop k,v in t {
         set ks@+ = tostring(k) ++ ":" ++ type(v)
     }
@@ -26,7 +26,7 @@ func shape (t) {
 
 ;; a real event, from the warp of the mouse, to compare with the scripted ones
 pico.set.mouse(window, ['!', x=30, y=40, anchor='NW'])
-val real = pico.input.event('mouse.motion', 500)
+pin real = pico.input.event('mouse.motion', 500)
 assert(real, "no real event")
 print("real", real.tag, shape(real), shape(real.anchor))
 assert(real@0=='!' && real.x==30.5 && real.y==40.5)
@@ -44,13 +44,13 @@ func check (e, tag, x, y, left) {
     assert(e.anchor.x==0.5 && e.anchor.y==0.5)
     assert(e.left==left && e.right==false && e.middle==false)
     ;; `pico.get.mouse` agrees with the event, in any layer and mode
-    val m1 = pico.get.mouse(window, '!')
+    pin m1 = pico.get.mouse(window, '!')
     assert(m1.x==e.x && m1.y==e.y && m1.left==left)
-    val m2 = pico.get.mouse(window, ['!', anchor='NW'])
+    pin m2 = pico.get.mouse(window, ['!', anchor='NW'])
     assert(m2.x==x && m2.y==y && m2.left==left)
-    val m3 = pico.get.mouse(['%', anchor='NW'])     ;; world
+    pin m3 = pico.get.mouse(['%', anchor='NW'])     ;; world
     assert(pico.equal(m3.x,x/500) && pico.equal(m3.y,y/500) && m3.left==left)
-    val m4 = pico.get.mouse(['!', anchor='NW'])     ;; world: 100x100
+    pin m4 = pico.get.mouse(['!', anchor='NW'])     ;; world: 100x100
     assert(pico.equal(m4.x,x/5) && pico.equal(m4.y,y/5))
 }
 
@@ -83,7 +83,7 @@ par :any {
         loop e on :mouse.motion {
             assert(frames == 5)
             check(e, 'mouse.motion', 300, 260, true)
-            val m = pico.get.mouse(['!', anchor='NW'])
+            pin m = pico.get.mouse(['!', anchor='NW'])
             set x = m.x
             set y = m.y
         }
@@ -112,7 +112,7 @@ assert(pico.equal(x,60) && pico.equal(y,52))
 
 ;; with no more entries, the mouse stays where the script left it
 do {
-    val m = pico.get.mouse(window, ['!', anchor='NW'])
+    pin m = pico.get.mouse(window, ['!', anchor='NW'])
     assert(m.x==10 && m.y==20 && m.left==false)
 }
 
@@ -124,8 +124,8 @@ pico.output.draw.rect(['!', x=60, y=52, w=10, h=10, anchor='NW'])
 pico.output.screenshot(window, "../c/tst/out/env-mouse-02.png")
 
 func same (a, b) {
-    val f1 = io.open(a, "rb")
-    val f2 = io.open(b, "rb")
+    pin f1 = io.open(a, "rb")
+    pin f2 = io.open(b, "rb")
     val c1 = io.read(f1, :all)
     val c2 = io.read(f2, :all)
     io.close(f1)
@@ -137,7 +137,7 @@ assert(same("../c/tst/out/env-mouse-01.png", "../c/tst/out/env-mouse-02.png"), "
 ;; `pico.set.mouse` brings the real mouse back
 pico.set.mouse(window, ['!', x=70, y=90, anchor='NW'])
 do {
-    val m = pico.get.mouse(window, ['!', anchor='NW'])
+    pin m = pico.get.mouse(window, ['!', anchor='NW'])
     assert(m.x==70 && m.y==90)
 }
 
