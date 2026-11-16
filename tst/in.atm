@@ -1,3 +1,4 @@
+pico.open()
 pico.set.scene [ dim=['!', w=100, h=100] ]
 
 print("pico.in.rect smoke")

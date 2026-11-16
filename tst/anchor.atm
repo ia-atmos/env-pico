@@ -1,3 +1,4 @@
+pico.open()
 pin phy = ['!', w=200, h=200]
 pin log = ['!', w=10, h=10]
 pico.set.window [ title="Anchoring..." ]

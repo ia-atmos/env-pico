@@ -1,3 +1,5 @@
+pico.open()
+
 ;; get.layer is the world initially
 print("get.layer returns world initially")
 var layer = pico.get.layer()

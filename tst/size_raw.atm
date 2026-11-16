@@ -1,3 +1,4 @@
+pico.open()
 pico.set.window [ title="Size - Fullscreen" ]
 
 pico.set.layer(pico.layer.window())

@@ -1,3 +1,4 @@
+pico.open()
 pico.set.window [ title="View Target" ]
 
 ;; 01: target = bottom-right quadrant, draw centered rect

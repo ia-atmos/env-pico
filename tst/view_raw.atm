@@ -1,3 +1,5 @@
+pico.open()
+
 ;; TITLE
 print("title: set and get")
 pico.set.window [ title="Test Title" ]

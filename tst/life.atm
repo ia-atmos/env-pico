@@ -40,7 +40,13 @@ func fill (l, clr) {
 pin RED  = ['!', x=0, y=0, w=10, h=10, anchor='NW']
 pin HALF = ['%', x=0.5, y=0.5, w=0.5, h=0.5]
 
-;; the program starts with pico open
+;; errors before pico.open
+fails("pico is not open", \{ pico.output.clear() })
+fails("pico is not open", \{ pico.layer.world() })
+fails("pico is not open", \{ pico.close() })
+
+;; the first open, with the defaults
+pico.open()
 assert(pico.get.window().title == "pico-SDL")
 fails("pico is already open", \{ pico.open() })
 val first = pico.layer.world()

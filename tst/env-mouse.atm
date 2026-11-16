@@ -7,7 +7,7 @@
 `setenv("PICO_ATM_MOUSE", "2:mv:100:50,4:dn:250:250,6:mv:300:260,8:up:300:260,8:mv:10:20", 0);`
 `setenv("PICO_ATM_SHOT", "7:../c/tst/out/env-mouse-01.png", 0);`
 
-pico.set.window [ title="Env Mouse" ]
+pico.open [ title="Env Mouse" ]
 val window = pico.layer.window()
 
 ;; the fields of a table, sorted, with the types of their values

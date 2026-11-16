@@ -3,7 +3,7 @@
 ;; the children with `clear=true` only, and the current layer is restored.
 `setenv("PICO_ATM_FRAMES", "3:20", 0);`
 
-pico.set.window [ title="Loop clear" ]
+pico.open [ title="Loop clear" ]
 
 val OUT   = "../c/tst/out/"
 val world = pico.layer.world()

@@ -1,3 +1,4 @@
+pico.open()
 assert(pico.get.aids() == true)
 
 pico.set.aids(false)

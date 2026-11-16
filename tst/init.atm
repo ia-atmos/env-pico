@@ -1,4 +1,4 @@
-;; the program starts with pico open: closes it, opens it again, and checks
+pico.open()
 pico.close()
 pico.open()
 pico.check("init-01")

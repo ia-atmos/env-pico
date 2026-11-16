@@ -1,3 +1,5 @@
+pico.open()
+
 ;; helper: window-pixel mouse set (NW anchor)
 func mouse_w (x, y) {
     val prev = pico.set.layer(pico.layer.window())

@@ -1,3 +1,4 @@
+pico.open()
 pico.set.window [ title="Clip x Expert" ]
 pico.set.pencil [ style='fill' ]
 

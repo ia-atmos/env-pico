@@ -1,3 +1,4 @@
+pico.open()
 pin phy = ['!', w=100, h=100]
 pin log = ['!', w=10, h=10]
 pico.set.window [ title="Pixmap" ]

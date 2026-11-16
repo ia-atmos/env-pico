@@ -2,6 +2,8 @@
 ;; Relies on auto-composite (present walk) to blit onto root.
 ;; No explicit pico.output.draw.layer call.
 
+pico.open()
+
 pico.set.effect [ color='black' ]
 pico.output.clear()
 

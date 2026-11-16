@@ -1,3 +1,4 @@
+pico.open()
 pico.set.window [ title="Expert FPS" ]
 
 ;; test 1: returns ms

@@ -1,3 +1,5 @@
+pico.open()
+
 ;; pico.get.text: empty string, abs mode -> w stays 0 (no fill)
 do {
     pin dim = pico.get.text(['!', w=nil, h=10], "")

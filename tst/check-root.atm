@@ -25,6 +25,7 @@ os.remove(root ++ "/c/tst/out/init-01.png")
 assert(`:boolean chdir("/") == 0`)
 assert(!exists("../c/tst/asr/init-01.png"))
 
+pico.open()
 pico.check("init-01")
 assert(exists(root ++ "/c/tst/out/init-01.png"), "no output")
 

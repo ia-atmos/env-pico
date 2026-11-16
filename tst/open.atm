@@ -1,5 +1,4 @@
-;; A program starts with pico open (the default window), with no `include`
-;; of the binding and no call to `pico.open`.
+;; A program opens pico itself, with no `include` of the binding.
 include "../pico.atm"       ;; harmless: a file is only included once
 
 func fails (msg, f) {
@@ -9,8 +8,12 @@ func fails (msg, f) {
     print("error", err)
 }
 
-print("1. open from the start, with the defaults")
+print("1. nothing is open before the program opens it")
 do {
+    fails("pico is not open", \{ pico.get.window() })
+    fails("pico is not open", \{ pico.set.window [ title="X" ] })
+    fails("pico is not open", \{ pico.layer.world() })
+    pico.open()
     pin w = pico.get.window()
     assert(w.title=="pico-SDL" && w.show==true && w.fullscreen==false)
     assert(pico.get.layer() == pico.layer.world())
@@ -21,7 +24,7 @@ do {
     assert(pico.get.window().title == "Open")
 }
 
-print("2. a hidden window from its creation: close and open")
+print("2. a hidden window from its creation")
 do {
     pico.close()
     fails("pico is not open", \{ pico.get.window() })

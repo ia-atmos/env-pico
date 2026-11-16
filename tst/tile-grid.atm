@@ -1,3 +1,5 @@
+pico.open()
+
 pin phy = ['!', w=480, h=480]
 pico.set.window [ title="Grid" ]
 pico.set.layer(pico.layer.window())

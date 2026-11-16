@@ -1,5 +1,7 @@
 val FONT = "../c/res/DejaVuSans.ttf"
 
+pico.open()
+
 ;; pico.get.text
 do {
     pin dim = pico.get.text(['!', w=nil, h=10], "ABC")

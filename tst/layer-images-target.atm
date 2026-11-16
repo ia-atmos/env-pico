@@ -1,7 +1,7 @@
 ;; `target=` in `pico.layer.images`: the placement of every sub-layer, as in
 ;; `pico.layer.image` and `pico.layer.sub`.
 
-pico.set.window [ title="Images Target" ]
+pico.open [ title="Images Target" ]
 
 val OUT = "../c/tst/out/"
 

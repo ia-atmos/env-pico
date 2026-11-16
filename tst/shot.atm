@@ -14,6 +14,7 @@ func check (out, asr) {
     assert(c1 == c2, "files differ: " ++ out ++ " vs " ++ asr)
 }
 
+pico.open()
 pico.output.clear()
 
 val world  = pico.layer.world()
