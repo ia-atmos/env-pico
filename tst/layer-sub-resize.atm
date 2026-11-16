@@ -12,7 +12,7 @@ func fails (msg, f) {
 
 val MSG  = "cannot resize a layer with live sub-layers"
 pin CROP = ['!', x=0, y=0, w=4, h=4, anchor='NW']
-val world = pico.layer.world()
+val world = pico.layer.world
 
 print("1. pico.set.scene [dim=]")
 do {
@@ -64,7 +64,7 @@ do {
         fails(MSG, \{ pico.set.scene [ dim=['!',w=50,h=50] ] })
     }
     do {
-        pin sub = pico.layer.sub [ sup=pico.layer.window(), crop=CROP ]
+        pin sub = pico.layer.sub [ sup=pico.layer.window, crop=CROP ]
         fails(MSG, \{ pico.set.dim(['!',w=200,h=200]) })
         pico.set.scene [ dim=['!',w=50,h=50] ]          ;; the world is free
     }

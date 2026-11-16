@@ -2,7 +2,7 @@ pico.open()
 
 ;; helper: window-pixel mouse set (NW anchor)
 func mouse_w (x, y) {
-    val prev = pico.set.layer(pico.layer.window())
+    val prev = pico.set.layer(pico.layer.window)
     pico.set.mouse(['!', x=x, y=y, anchor='NW'])
     pico.set.layer(prev)
 }
@@ -13,9 +13,9 @@ pin phy  = ['!', w=160, h=160]
 pin log  = ['#', w=4, h=4]
 pin tile = ['!', w=4, h=4]
 pico.set.window [ title="Tiles" ]
-pico.set.layer(pico.layer.window())
+pico.set.layer(pico.layer.window)
 pico.set.scene [ dim=phy ]
-pico.set.layer(pico.layer.world())
+pico.set.layer(pico.layer.world)
 pico.set.scene [ dim=log, tile=tile ]
 
 ;; 4x4 pixel white tile

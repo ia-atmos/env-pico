@@ -16,7 +16,7 @@ func bytes (path) {
 func shot (name, f) {
     pico.output.clear()
     f()
-    bytes(pico.output.screenshot(pico.layer.window(), OUT ++ "layer-images-target-" ++ name ++ ".png"))
+    bytes(pico.output.screenshot(pico.layer.window, OUT ++ "layer-images-target-" ++ name ++ ".png"))
 }
 
 ;; the target of a layer
@@ -79,7 +79,7 @@ do {
 
 print("attached: the same as pico.layer.sub with the target")
 do {
-    val world = pico.layer.world()
+    val world = pico.layer.world
     var a
     var b
     do {

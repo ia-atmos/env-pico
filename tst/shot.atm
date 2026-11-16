@@ -17,8 +17,8 @@ func check (out, asr) {
 pico.open()
 pico.output.clear()
 
-val world  = pico.layer.world()
-val window = pico.layer.window()
+val world  = pico.layer.world
+val window = pico.layer.window
 
 do {
     print("entire screen - 01")

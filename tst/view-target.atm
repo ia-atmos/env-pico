@@ -46,7 +46,7 @@ do {
     pico.output.clear()
     pico.set.pencil [ color='white' ]
     pico.output.draw.rect(['%', x=0.5, y=0.5, w=0.5, h=0.5])
-    pico.set.layer(pico.layer.world())
+    pico.set.layer(pico.layer.world)
     pico.set.effect [ color='black' ]
     pico.output.clear()
     pico.output.draw.layer(bg, ['%', x=1, y=1, w=0.5, h=0.5, anchor='SE'])
@@ -61,7 +61,7 @@ do {
     print("target: detached stored target matches explicit rect (04)")
     pico.set.layer(bg)
     pico.set.scene [ target = ['%', x=1, y=1, w=0.5, h=0.5, anchor='SE'] ]
-    pico.set.layer(pico.layer.world())
+    pico.set.layer(pico.layer.world)
     pico.set.effect [ color='black' ]
     pico.output.clear()
     pico.output.draw.layer(bg)
@@ -71,7 +71,7 @@ do {
 ;; 05: target h only, w=0 -> w inferred from 2:1 layer aspect
 ;; (the layer is declared out of the block: it is also used in 06, 07, and
 ;; remains attached to the world until the end)
-pin bg2 = pico.layer.empty [ up=pico.layer.world(), dim=['!', w=80, h=40] ]
+pin bg2 = pico.layer.empty [ up=pico.layer.world, dim=['!', w=80, h=40] ]
 do {
     print("target: h only, w inferred")
     pico.set.layer(bg2)
@@ -80,7 +80,7 @@ do {
     ]
     pico.set.effect [ color=[r=0x80, g=0x00, b=0x00] ]
     pico.output.clear()
-    pico.set.layer(pico.layer.world())
+    pico.set.layer(pico.layer.world)
     pico.set.effect [ color='black' ]
     pico.output.clear()
     pico.output.draw.layer(bg2)
@@ -94,7 +94,7 @@ do {
     pico.set.scene [
         target = ['%', x=0.5, y=0.5, w=0.4, h=0]
     ]
-    pico.set.layer(pico.layer.world())
+    pico.set.layer(pico.layer.world)
     pico.output.clear()
     pico.output.draw.layer(bg2)
     pico.check("view-target-06")
@@ -107,7 +107,7 @@ do {
     pico.set.scene [
         target = ['%', x=0, y=0, w=0, anchor='NW']
     ]
-    pico.set.layer(pico.layer.world())
+    pico.set.layer(pico.layer.world)
     pico.output.clear()
     pico.output.draw.layer(bg2)
     pico.check("view-target-07")
@@ -119,13 +119,13 @@ do {
 do {
     print("target: rect-as-dim shortcut")
     pin r = ['%', x=1, y=1, w=0.5, h=0.5, anchor='SE']
-    pin bg3 = pico.layer.empty [ up=pico.layer.world(), target=r ]
+    pin bg3 = pico.layer.empty [ up=pico.layer.world, target=r ]
     pico.set.layer(bg3)
     pico.set.effect [ color=[r=0x80, g=0x00, b=0x00] ]
     pico.output.clear()
     pico.set.pencil [ color='white' ]
     pico.output.draw.rect(['%', x=0.5, y=0.5, w=0.5, h=0.5])
-    pico.set.layer(pico.layer.world())
+    pico.set.layer(pico.layer.world)
     pico.set.effect [ color='black' ]
     pico.output.clear()
     pico.output.draw.layer(bg3)

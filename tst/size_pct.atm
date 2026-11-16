@@ -7,10 +7,10 @@ pin r = ['%', x=0.5, y=0.5, w=0.5, h=0.5]
 print("WINDOW")
 do {
     print("normal")
-    pico.set.layer(pico.layer.window())
+    pico.set.layer(pico.layer.window)
     pin win = pico.get.scene().dim
     pico.set.scene [ dim=['!', w=win.w*1, h=win.h*1] ]
-    pico.set.layer(pico.layer.world())
+    pico.set.layer(pico.layer.world)
     pico.output.clear()
     pico.output.draw.rect(r)
     pico.check("size_pct-01")
@@ -18,10 +18,10 @@ do {
 
 do {
     print("double")
-    pico.set.layer(pico.layer.window())
+    pico.set.layer(pico.layer.window)
     pin win = pico.get.scene().dim
     pico.set.scene [ dim=['!', w=win.w*2, h=win.h*2] ]
-    pico.set.layer(pico.layer.world())
+    pico.set.layer(pico.layer.world)
     pico.output.clear()
     pico.output.draw.rect(r)
     pico.check("size_pct-02")
@@ -29,10 +29,10 @@ do {
 
 do {
     print("half")
-    pico.set.layer(pico.layer.window())
+    pico.set.layer(pico.layer.window)
     pin win = pico.get.scene().dim
     pico.set.scene [ dim=['!', w=win.w*0.25, h=win.h*0.25] ]
-    pico.set.layer(pico.layer.world())
+    pico.set.layer(pico.layer.world)
     pico.output.clear()
     pico.output.draw.rect(r)
     pico.check("size_pct-03")
@@ -40,10 +40,10 @@ do {
 
 do {
     print("normal")
-    pico.set.layer(pico.layer.window())
+    pico.set.layer(pico.layer.window)
     pin win = pico.get.scene().dim
     pico.set.scene [ dim=['!', w=win.w*2, h=win.h*2] ]
-    pico.set.layer(pico.layer.world())
+    pico.set.layer(pico.layer.world)
     pico.output.clear()
     pico.output.draw.rect(r)
     pico.check("size_pct-04")

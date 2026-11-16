@@ -1,6 +1,6 @@
 pico.open()
-val world  = pico.layer.world()
-val window = pico.layer.window()
+val world  = pico.layer.world
+val window = pico.layer.window
 
 ;; Layer 120x50 with 3 centered buttons equally spaced
 pin btn1 = ['%', x=0.25, y=0.50, w=0.15, h=0.30, anc='C']

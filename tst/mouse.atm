@@ -1,6 +1,6 @@
 pico.open()
-val world  = pico.layer.world()
-val window = pico.layer.window()
+val world  = pico.layer.world
+val window = pico.layer.window
 pin st = []
 
 ;; helper: window-pixel mouse set (NW anchor)

@@ -6,7 +6,7 @@ pico.set.window [ title="Layer clip" ]
 pico.set.effect [ color='white' ]
 pico.output.clear()
 
-pin img = pico.layer.image [ up=pico.layer.world(), path="../c/res/open.png" ]
+pin img = pico.layer.image [ up=pico.layer.world, path="../c/res/open.png" ]
 
 ;; case 1: dst fully inside world (aux no-op)
 do {
@@ -76,7 +76,7 @@ do {
 
 ;; case 6: child layer src y-overflow (Phase A aux on layer->world blit)
 do {
-    pin L = pico.layer.empty [ up=pico.layer.world(), clear=true, dim=['!', w=48, h=48] ]
+    pin L = pico.layer.empty [ up=pico.layer.world, clear=true, dim=['!', w=48, h=48] ]
     do {
         val old = pico.set.layer(L)
         pico.set.effect [ color='green' ]

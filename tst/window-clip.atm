@@ -20,14 +20,14 @@ pin box  = ['%', x=0.5, y=0.5, w=0.5, h=0.5, anchor='C']
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; GREEN backdrop: the plain present clears the window to this each frame
-pico.set.layer(pico.layer.window())
+pico.set.layer(pico.layer.window)
 pico.set.effect [ color='green' ]
 
 ;; clip the WINDOW to a centred box; the composite should honour it
 pico.set.scene [ clip=box ]
 
 ;; WORLD: full red -> should reach the window only inside the box
-pico.set.layer(pico.layer.world())
+pico.set.layer(pico.layer.world)
 pico.set.pencil [ color='red' ]
 pico.output.draw.rect(full)
 
@@ -42,7 +42,7 @@ pico.check("window-clip-01")
 pico.set.expert(true, 0)
 
 ;; GREEN background painted on the WINDOW layer (full)
-pico.set.layer(pico.layer.window())
+pico.set.layer(pico.layer.window)
 pico.set.scene [ clip=full ]
 pico.set.pencil [ color='green' ]
 pico.output.draw.rect(full)
@@ -51,7 +51,7 @@ pico.output.draw.rect(full)
 pico.set.scene [ clip=box ]
 
 ;; WORLD: full red -> should reach the window only inside the box
-pico.set.layer(pico.layer.world())
+pico.set.layer(pico.layer.world)
 pico.output.clear()
 pico.set.pencil [ color='red' ]
 pico.output.draw.rect(full)

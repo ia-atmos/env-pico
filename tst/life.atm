@@ -13,7 +13,7 @@ func bytes (path) {
 ;; the window, as it is presented, as a string of bytes
 func shot (name) {
     pico.output.present()
-    bytes(pico.output.screenshot(pico.layer.window(), OUT ++ "life-" ++ name ++ ".png"))
+    bytes(pico.output.screenshot(pico.layer.window, OUT ++ "life-" ++ name ++ ".png"))
 }
 
 ;; the call must fail with a message that contains `msg`
@@ -42,24 +42,30 @@ pin HALF = ['%', x=0.5, y=0.5, w=0.5, h=0.5]
 
 ;; errors before pico.open
 fails("pico is not open", \{ pico.output.clear() })
-fails("pico is not open", \{ pico.layer.world() })
+assert(pico.layer.world==nil && pico.layer.window==nil)    ;; values, not yet set
 fails("pico is not open", \{ pico.close() })
 
 ;; the first open, with the defaults
 pico.open()
 assert(pico.get.window().title == "pico-SDL")
 fails("pico is already open", \{ pico.open() })
-val first = pico.layer.world()
+val first = pico.layer.world
+assert(type(first)=='native' && type(pico.layer.window)=='native')
+assert(first==pico.layer.world && first!=pico.layer.window)
+assert(pico.get.layer() == pico.layer.world)
+;; the roots belong to the binding: a program cannot pin them
+fails("unexpected pinned value", \{ pin w = pico.layer.world })
 
 ;; errors while pico is closed
 pico.close()
 fails("pico is not open", \{ pico.output.clear() })
-fails("pico is not open", \{ pico.layer.world() })
+assert(pico.layer.world==nil && pico.layer.window==nil)    ;; reset by the close
 fails("pico is not open", \{ pico.close() })
 
 ;; open again: only after a close
 pico.open()
-var world = pico.layer.world()
+var world = pico.layer.world
+assert(world!=nil && world!=first)    ;; new values at each open
 fails("pico is already open", \{ pico.open() })
 fails("invalid layer", \{ pico.set.layer(first) })
 pico.output.clear()
@@ -280,7 +286,7 @@ fails("invalid layer", \{ pico.output.draw.layer(ksub) })
 fails("invalid layer", \{ pico.layer.empty [ up=kept, dim=['!',w=1,h=1] ] })
 fails("invalid font",  \{ pico.set.pencil [ font=kfont ] })
 fails("invalid sound", \{ pico.output.sound(ksnd) })
-set world = pico.layer.world()
+set world = pico.layer.world
 assert(pico.get.layer() == world)
 pico.output.clear()
 assert(shot("10-empty") == empty)

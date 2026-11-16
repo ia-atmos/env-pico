@@ -26,7 +26,7 @@ do {
     pico.set.layer(vid)
     val ok = pico.set.video(vid, 0)
     assert(ok == true)
-    pico.set.layer(pico.layer.world())
+    pico.set.layer(pico.layer.world)
     pico.output.clear()
     pico.output.draw.layer(vid, full)
     pico.check("video-01")
@@ -88,7 +88,7 @@ do {
 
 ;; errors
 do {
-    val ok, err = catch true { pico.set.video(pico.layer.world(), 0) }
+    val ok, err = catch true { pico.set.video(pico.layer.world, 0) }
     assert(!ok)
     print(err)
 }

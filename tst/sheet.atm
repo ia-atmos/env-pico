@@ -19,7 +19,7 @@ pico.output.draw.rect(['!', x=0, y=2, w=2, h=2, anchor='NW'])
 pico.set.pencil [ color='white' ]
 pico.output.draw.rect(['!', x=2, y=2, w=2, h=2, anchor='NW'])
 
-pico.set.layer(pico.layer.world())
+pico.set.layer(pico.layer.world)
 
 ;; Shot 1: draw full layer (normal quadrants)
 print("Test 1: full layer")
@@ -62,7 +62,7 @@ pico.output.draw.rect(
 pico.set.pencil [ color='green' ]
 pico.output.draw.rect(
     ['%', x=0.5, y=0, w=0.5, h=1, anchor='NW'])
-pico.output.screenshot(pico.layer.window(), "../c/tst/out/sheet-grid.png")
+pico.output.screenshot(pico.layer.window, "../c/tst/out/sheet-grid.png")
 
 ;; a vector with the layers, left to right (the names "grid-NN" are gone)
 pin grid = pico.layer.images [

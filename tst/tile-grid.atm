@@ -2,9 +2,9 @@ pico.open()
 
 pin phy = ['!', w=480, h=480]
 pico.set.window [ title="Grid" ]
-pico.set.layer(pico.layer.window())
+pico.set.layer(pico.layer.window)
 pico.set.scene [ dim=phy ]
-pico.set.layer(pico.layer.world())
+pico.set.layer(pico.layer.world)
 
 ;; Test 1: main layer, no tile mode, pixel grid only
 do {
@@ -75,7 +75,7 @@ do {
     pico.output.clear()
     pico.set.pencil [ color='red' ]
     pico.output.draw.rect ['#', x=1, y=1, w=2, h=2, anchor='NW']
-    pico.set.layer(pico.layer.world())
+    pico.set.layer(pico.layer.world)
 }
 
 ;; Layer B: 8x4 non-square tiles, grid enabled
@@ -88,7 +88,7 @@ do {
     pico.output.clear()
     pico.set.pencil [ color='green' ]
     pico.output.draw.rect ['#', x=5, y=2, w=2, h=1, anchor='NW']
-    pico.set.layer(pico.layer.world())
+    pico.set.layer(pico.layer.world)
 }
 
 ;; Layer C: 4x4 tiles of 4x4 pixels, grid disabled
@@ -101,7 +101,7 @@ do {
     pico.output.clear()
     pico.set.pencil [ color='blue' ]
     pico.output.draw.rect ['#', x=3, y=3, w=1, h=1, anchor='NW']
-    pico.set.layer(pico.layer.world())
+    pico.set.layer(pico.layer.world)
 }
 
 ;; Test 6: draw all 3 layers side by side on main

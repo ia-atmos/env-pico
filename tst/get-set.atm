@@ -1,8 +1,8 @@
 pico.open()
 pico.set.window [ title="Get-Set" ]
-pico.set.layer(pico.layer.window())
+pico.set.layer(pico.layer.window)
 pico.set.scene [ dim=['!', w=640, h=480] ]
-pico.set.layer(pico.layer.world())
+pico.set.layer(pico.layer.world)
 pico.set.scene [ dim=['!', w=64, h=48] ]
 
 ;; color_clear
@@ -87,18 +87,18 @@ do {
 ;; window roundtrip: get -> set -> get must be idempotent
 print("window roundtrip")
 do {
-    pico.set.layer(pico.layer.window())
+    pico.set.layer(pico.layer.window)
     pico.set.effect [ color=['!', r=0x12, g=0x34, b=0x56, a=0x78] ]
-    pico.set.layer(pico.layer.world())
+    pico.set.layer(pico.layer.world)
     pin w1 = pico.get.window()
     pico.set.window(w1)
     pin w2 = pico.get.window()
     assert(w2.fullscreen == w1.fullscreen)
     assert(w2.title == w1.title)
-    pico.set.layer(pico.layer.window())
+    pico.set.layer(pico.layer.window)
     pin c = pico.get.effect().color
     pin d = pico.get.scene().dim
-    pico.set.layer(pico.layer.world())
+    pico.set.layer(pico.layer.world)
     assert(c.r==0x12 && c.g==0x34 && c.b==0x56 && c.a==0x78)
     assert(d.w>0 && d.h>0)
 }

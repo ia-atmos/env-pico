@@ -7,9 +7,9 @@ pin win = pico.get.window()
 assert(win.title == "Test Title", "title mismatch: " ++ tostring(win.title))
 pico.set.window [ title="View Raw" ]
 
-pico.set.layer(pico.layer.window())
+pico.set.layer(pico.layer.window)
 pin window = pico.get.scene().dim
-pico.set.layer(pico.layer.world())
+pico.set.layer(pico.layer.world)
 pin all = pico.get.scene()
 val world = all.dim
 assert(window.w == 500 && window.h == 500)

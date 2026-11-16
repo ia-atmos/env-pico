@@ -5,9 +5,9 @@ pico.open()
 
 pin phy = ['!', w=200, h=200]
 pin log = ['!', w=100, h=100]
-pico.set.layer(pico.layer.window())
+pico.set.layer(pico.layer.window)
 pico.set.scene [ dim=phy ]
-pico.set.layer(pico.layer.world())
+pico.set.layer(pico.layer.world)
 pico.set.scene [ dim=log ]
 
 print("pico.vs.pos.rect (cur vs cur, 2-arg)")
@@ -50,7 +50,7 @@ do {
 }
 
 print("child layer projection (4-arg)")
-pin sub_vs = pico.layer.empty [ up=pico.layer.world(), clear=true, dim=['!', w=50, h=50] ]
+pin sub_vs = pico.layer.empty [ up=pico.layer.world, clear=true, dim=['!', w=50, h=50] ]
 do {
 
     print('', 'pos in sub vs rect in cur')
@@ -70,8 +70,8 @@ do {
 }
 
 print("rect_rect bounds (2-string)")
-pin sub_a = pico.layer.empty [ up=pico.layer.world(), clear=true, dim=['!', w=50, h=50] ]
-pin sub_b = pico.layer.empty [ up=pico.layer.world(), clear=true, dim=['!', w=50, h=50] ]
+pin sub_a = pico.layer.empty [ up=pico.layer.world, clear=true, dim=['!', w=50, h=50] ]
+pin sub_b = pico.layer.empty [ up=pico.layer.world, clear=true, dim=['!', w=50, h=50] ]
 do {
     ;; two direct children of world; cur is world
     ;; both default scene.dst fills world; bounds overlap
@@ -186,11 +186,11 @@ do {
     ;; world:20,40 -> sub_vs:10,20 (scale 0.5x)
     pin p1 = ['!', x=20, y=40, anchor='NW']
     pin p2 = ['!', x=10, y=20, anchor='NW']
-    assert(pico.vs.pos.pos(pico.layer.world(), p1, nil, p2))
+    assert(pico.vs.pos.pos(pico.layer.world, p1, nil, p2))
     pin r1 = ['!', x=20, y=40, w=10, h=20, anchor='NW']
     pin r2 = ['!', x=10, y=20, w= 5, h=10, anchor='NW']
-    assert(pico.vs.rect.rect(pico.layer.world(), r1, nil, r2))
-    pico.set.layer(pico.layer.world())
+    assert(pico.vs.rect.rect(pico.layer.world, r1, nil, r2))
+    pico.set.layer(pico.layer.world)
 }
 
 print("deep descendant bounds default (r==NULL) -- should match explicit r")
@@ -248,14 +248,14 @@ do {
 
 print("detached layer w/ target (reference = current layer)")
 pin det_vs = pico.layer.empty [ dim=['!', w=50, h=50] ]
-pin att_vs = pico.layer.empty [ up=pico.layer.world(), clear=true, dim=['!', w=50, h=50] ]
+pin att_vs = pico.layer.empty [ up=pico.layer.world, clear=true, dim=['!', w=50, h=50] ]
 do {
     ;; det 50x50, target = world (10,10,40,40); the reference frame is
     ;; resolved at vs time against the current layer (world). Mirrors a
     ;; manual draw.layer(det, target) blit.
     pico.set.layer(det_vs)
     pico.set.scene [ target = ['!', x=10, y=10, w=40, h=40, anchor='NW'] ]
-    pico.set.layer(pico.layer.world())
+    pico.set.layer(pico.layer.world)
 
     print('', 'p in world vs det bounds (r2=nil)')
     pin p_in  = ['!', x=20, y=20, anchor='NW']
@@ -272,7 +272,7 @@ do {
     print('', 'detached matches attached sibling')
     pico.set.layer(att_vs)
     pico.set.scene [ target = ['!', x=10, y=10, w=40, h=40, anchor='NW'] ]
-    pico.set.layer(pico.layer.world())
+    pico.set.layer(pico.layer.world)
     assert(pico.vs.pos.rect(nil, p_in,  det_vs, nil) ==
            pico.vs.pos.rect(nil, p_in,  att_vs, nil))
     assert(pico.vs.pos.rect(nil, p_out, det_vs, nil) ==
@@ -287,7 +287,7 @@ do {
     ;; det_asp dim 50x50 (1:1): (10,10,40,0) fills to (10,10,40,40)
     pico.set.layer(det_asp)
     pico.set.scene [ target = ['!', x=10, y=10, w=40, h=0, anchor='NW'] ]
-    pico.set.layer(pico.layer.world())
+    pico.set.layer(pico.layer.world)
     pin p_in  = ['!', x=20, y=20, anchor='NW']
     pin p_out = ['!', x=20, y=60, anchor='NW']
     assert(    pico.vs.pos.rect(nil, p_in,  det_asp, nil))
@@ -297,7 +297,7 @@ do {
     ;; world 100x100: (0.5,0.5,0.4,0.4) C -> (30,30,40,40)
     pico.set.layer(det_pct)
     pico.set.scene [ target = ['%', x=0.5, y=0.5, w=0.4, h=0.4, anchor='C'] ]
-    pico.set.layer(pico.layer.world())
+    pico.set.layer(pico.layer.world)
     pin q_in  = ['!', x=35, y=35, anchor='NW']
     pin q_out = ['!', x=75, y=75, anchor='NW']
     assert(    pico.vs.pos.rect(nil, q_in,  det_pct, nil))
@@ -305,12 +305,12 @@ do {
 }
 
 print("attached target re-resolves on parent resize (lazy)")
-pin att_lazy = pico.layer.empty [ up=pico.layer.world(), clear=true, dim=['!', w=50, h=50] ]
+pin att_lazy = pico.layer.empty [ up=pico.layer.world, clear=true, dim=['!', w=50, h=50] ]
 do {
     ;; world 100x100: (0,0,50,50); p (75,75) outside
     pico.set.layer(att_lazy)
     pico.set.scene [ target = ['%', x=0, y=0, w=0.5, h=0, anchor='NW'] ]
-    pico.set.layer(pico.layer.world())
+    pico.set.layer(pico.layer.world)
     pin p = ['!', x=75, y=75, anchor='NW']
     assert(!   pico.vs.pos.rect(nil, p, att_lazy, nil))
     ;; world 200x200: same target now (0,0,100,100); p inside

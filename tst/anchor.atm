@@ -2,9 +2,9 @@ pico.open()
 pin phy = ['!', w=200, h=200]
 pin log = ['!', w=10, h=10]
 pico.set.window [ title="Anchoring..." ]
-pico.set.layer(pico.layer.window())
+pico.set.layer(pico.layer.window)
 pico.set.scene [ dim=phy ]
-pico.set.layer(pico.layer.world())
+pico.set.layer(pico.layer.world)
 pico.set.scene [ dim=log ]
 
 ;; PIXELS

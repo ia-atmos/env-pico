@@ -8,7 +8,7 @@
 `setenv("PICO_ATM_SHOT", "7:../c/tst/out/env-mouse-01.png", 0);`
 
 pico.open [ title="Env Mouse" ]
-val window = pico.layer.window()
+val window = pico.layer.window
 
 ;; the fields of a table, sorted, with the types of their values
 func shape (t) {

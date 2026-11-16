@@ -1,7 +1,7 @@
 pico.open()
-pico.set.layer(pico.layer.window())
+pico.set.layer(pico.layer.window)
 pico.set.scene [ dim=['!', w=640, h=360] ]
-pico.set.layer(pico.layer.world())
+pico.set.layer(pico.layer.world)
 pico.set.scene [ dim=['!', w=64, h=36] ]
 
 ;; red background on main
@@ -17,13 +17,13 @@ pico.set.pencil [ color='white' ]
 pico.output.draw.rect(['%', x=0.5, y=0.5, w=0.5, h=0.5, anchor='C'])
 
 ;; composite overlay on main
-pico.set.layer(pico.layer.world())
+pico.set.layer(pico.layer.world)
 pico.output.draw.layer(overlay, ['%', x=0.5, y=0.5, w=0.75, h=0.75, anchor='C'])
 pico.check("clear_alpha-01")
 
 ;; default effect.color is transparent: red shows through
 pico.output.clear()
-pin defclr = pico.layer.empty [ up=pico.layer.world(), clear=true, dim=['!', w=64, h=36] ]
+pin defclr = pico.layer.empty [ up=pico.layer.world, clear=true, dim=['!', w=64, h=36] ]
 pico.output.clear()
 pico.output.present()
 pico.check("clear_alpha-02")
@@ -31,10 +31,10 @@ pico.check("clear_alpha-02")
 ;; a transparent clear must WIPE the layer (not blend a no-op): paint a
 ;; detached layer red, clear it back to transparent, then composite over
 ;; a plain green world -- the world must stay plain green
-pico.set.layer(pico.layer.world())
+pico.set.layer(pico.layer.world)
 pico.set.effect [ color=['!', r=0x00, g=0xFF, b=0x00] ]
 pico.output.clear()
-pico.output.screenshot(pico.layer.world(), "../c/tst/out/clear_alpha-transp-ref.png")
+pico.output.screenshot(pico.layer.world, "../c/tst/out/clear_alpha-transp-ref.png")
 
 pin wipe = pico.layer.empty [ dim=['!', w=64, h=36] ]
 pico.set.layer(wipe)
@@ -43,9 +43,9 @@ pico.output.clear()
 pico.set.effect [ color=['!', r=0x00, g=0x00, b=0x00, a=0x00] ]
 pico.output.clear()
 
-pico.set.layer(pico.layer.world())
+pico.set.layer(pico.layer.world)
 pico.output.draw.layer(wipe)
-pico.output.screenshot(pico.layer.world(), "../c/tst/out/clear_alpha-transp-01.png")
+pico.output.screenshot(pico.layer.world, "../c/tst/out/clear_alpha-transp-01.png")
 
 ;; self-compare (no golden): world must be byte-identical to the ref
 func slurp (p) {

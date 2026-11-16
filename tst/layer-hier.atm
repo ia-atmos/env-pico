@@ -7,7 +7,7 @@ pico.open()
 pico.set.effect [ color='black' ]
 pico.output.clear()
 
-pin L = pico.layer.empty [ up=pico.layer.world(), dim=['!', w=8, h=8] ]
+pin L = pico.layer.empty [ up=pico.layer.world, dim=['!', w=8, h=8] ]
 
 var old = pico.set.layer(L)
 pico.set.scene([
@@ -25,12 +25,12 @@ pico.set.layer(old)
 pico.output.present()
 pico.check("layer-hier-01")
 
-pin img = pico.layer.image [ up=pico.layer.world(), path="../c/res/open.png",
+pin img = pico.layer.image [ up=pico.layer.world, path="../c/res/open.png",
     target=['%', x=0.7, y=0.7, w=0.4, h=0.4, anchor='C'] ]
 pico.output.present()
 pico.check("layer-hier-02")
 
-pin buf = pico.layer.pixmap [ up=pico.layer.world(), pixels=[
+pin buf = pico.layer.pixmap [ up=pico.layer.world, pixels=[
     [[r=255, g=0,   b=0,   a=255], [r=0, g=255, b=0,   a=255]],
     [[r=0,   g=0,   b=255, a=255], [r=255, g=255, b=0, a=255]],
 ], target=['%', x=0.7, y=0.3, w=0.4, h=0.4, anchor='C'] ]
@@ -38,7 +38,7 @@ pico.output.present()
 pico.check("layer-hier-03")
 
 pico.set.pencil [ color='green' ]
-pin txt = pico.layer.text [ up=pico.layer.world(), dim=['!', h=10], text="hello",
+pin txt = pico.layer.text [ up=pico.layer.world, dim=['!', h=10], text="hello",
     target=['%', x=0.3, y=0.7, w=0.4, h=0.4, anchor='C'] ]
 pico.output.present()
 pico.check("layer-hier-04")
@@ -46,7 +46,7 @@ pico.check("layer-hier-04")
 ;;-------------------------------------------------------------------------
 
 ;; transparent overlay with yellow background
-pin over = pico.layer.empty [ up=pico.layer.world(), clear=false, dim=['!', w=500, h=500] ]
+pin over = pico.layer.empty [ up=pico.layer.world, clear=false, dim=['!', w=500, h=500] ]
 set old = pico.set.layer(over)
 pico.set.effect [ color=[r=0xFF, g=0xFF, b=0x00], alpha=0x80 ]
 pico.output.clear()

@@ -6,7 +6,7 @@
 pico.open [ title="Loop clear" ]
 
 val OUT   = "../c/tst/out/"
-val world = pico.layer.world()
+val world = pico.layer.world
 
 ;; two children of the world, and a detached layer
 pin acc = pico.layer.empty [ up=world, dim=['!',w=40,h=10],
@@ -43,7 +43,7 @@ func hand (name, w, a, c) {
     marks(acc, a)
     marks(clr, c)
     pico.output.present()
-    bytes(pico.output.screenshot(pico.layer.window(), OUT ++ name))
+    bytes(pico.output.screenshot(pico.layer.window, OUT ++ name))
 }
 
 var frames = 0
@@ -67,7 +67,7 @@ par :any {
 assert(frames == 3)
 assert(pico.get.layer() == other)
 
-val got = bytes(pico.output.screenshot(pico.layer.window(), OUT ++ "loop-clear-01.png"))
+val got = bytes(pico.output.screenshot(pico.layer.window, OUT ++ "loop-clear-01.png"))
 
 ;; `other` was never cleared by the loop: its 3 marks are still there
 val oth = bytes(pico.output.screenshot(other, OUT ++ "loop-clear-02.png"))

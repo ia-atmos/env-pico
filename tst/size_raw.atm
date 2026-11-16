@@ -1,9 +1,9 @@
 pico.open()
 pico.set.window [ title="Size - Fullscreen" ]
 
-pico.set.layer(pico.layer.window())
+pico.set.layer(pico.layer.window)
 pin phy = pico.get.scene().dim
-pico.set.layer(pico.layer.world())
+pico.set.layer(pico.layer.world)
 pin all = pico.get.scene()
 val log = all.dim
 set phy@0 = '!'
@@ -15,9 +15,9 @@ pin r = ['!', x=50-25, y=50-25, w=50, h=50, anchor='NW']
 print("WINDOW")
 do {
     print("normal")
-    pico.set.layer(pico.layer.window())
+    pico.set.layer(pico.layer.window)
     pico.set.scene [ dim=phy ]
-    pico.set.layer(pico.layer.world())
+    pico.set.layer(pico.layer.world)
     pico.output.clear()
     pico.output.draw.rect(r)
     pico.check("size_raw-01")
@@ -26,9 +26,9 @@ do {
 do {
     print("double")
     pin dim = ['!', w=phy.w*2, h=phy.h*2]
-    pico.set.layer(pico.layer.window())
+    pico.set.layer(pico.layer.window)
     pico.set.scene [ dim=dim ]
-    pico.set.layer(pico.layer.world())
+    pico.set.layer(pico.layer.world)
     pico.output.clear()
     pico.output.draw.rect(r)
     pico.check("size_raw-02")
@@ -37,9 +37,9 @@ do {
 do {
     print("half")
     pin dim = ['!', w=phy.w/2, h=phy.h/2]
-    pico.set.layer(pico.layer.window())
+    pico.set.layer(pico.layer.window)
     pico.set.scene [ dim=dim ]
-    pico.set.layer(pico.layer.world())
+    pico.set.layer(pico.layer.world)
     pico.output.clear()
     pico.output.draw.rect(r)
     pico.check("size_raw-03")
@@ -47,9 +47,9 @@ do {
 
 do {
     print("normal")
-    pico.set.layer(pico.layer.window())
+    pico.set.layer(pico.layer.window)
     pico.set.scene [ dim=phy ]
-    pico.set.layer(pico.layer.world())
+    pico.set.layer(pico.layer.world)
     pico.output.clear()
     pico.output.draw.rect(r)
     pico.check("size_raw-04")

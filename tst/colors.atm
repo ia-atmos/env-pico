@@ -1,8 +1,8 @@
 pico.open()
 pico.set.window [ title="Colors Test" ]
-pico.set.layer(pico.layer.window())
+pico.set.layer(pico.layer.window)
 pico.set.scene [ dim=['!', w=640, h=480] ]
-pico.set.layer(pico.layer.world())
+pico.set.layer(pico.layer.world)
 pico.set.scene [ dim=['!', w=64, h=48] ]
 
 do {
@@ -224,9 +224,9 @@ do {
     }
     do {
         print("window color default: gray {0x77,0x77,0x77,0xFF}")
-        pico.set.layer(pico.layer.window())
+        pico.set.layer(pico.layer.window)
         pin c = pico.get.effect().color
-        pico.set.layer(pico.layer.world())
+        pico.set.layer(pico.layer.world)
         assert(c.r==0x77 && c.g==0x77 && c.b==0x77 && c.a==0xFF)
         pico.output.clear()
         pico.set.pencil [ color='white' ]
@@ -235,10 +235,10 @@ do {
     }
     do {
         print("window color: red letterbox")
-        pico.set.layer(pico.layer.window())
+        pico.set.layer(pico.layer.window)
         pico.set.effect [ color=['!', r=0xFF, g=0, b=0, a=0xFF] ]
         pin c = pico.get.effect().color
-        pico.set.layer(pico.layer.world())
+        pico.set.layer(pico.layer.world)
         assert(c.r==0xFF && c.g==0 && c.b==0 && c.a==0xFF)
         pico.output.clear()
         pico.output.draw.rect(['%', x=0.5, y=0.5, w=0.5, h=0.5])
@@ -246,10 +246,10 @@ do {
     }
     do {
         print("window color: green via bulk")
-        pico.set.layer(pico.layer.window())
+        pico.set.layer(pico.layer.window)
         pico.set.effect [ color=['!', r=0, g=0xFF, b=0, a=0xFF] ]
         pin c = pico.get.effect().color
-        pico.set.layer(pico.layer.world())
+        pico.set.layer(pico.layer.world)
         assert(c.r==0 && c.g==0xFF && c.b==0 && c.a==0xFF)
         pico.output.clear()
         pico.output.draw.rect(['%', x=0.5, y=0.5, w=0.5, h=0.5])
@@ -257,10 +257,10 @@ do {
     }
     do {
         print("window color: alpha preserved by storage")
-        pico.set.layer(pico.layer.window())
+        pico.set.layer(pico.layer.window)
         pico.set.effect [ color=['!', r=0, g=0, b=0xFF, a=0x80] ]
         pin c = pico.get.effect().color
-        pico.set.layer(pico.layer.world())
+        pico.set.layer(pico.layer.world)
         assert(c.a == 0x80)
     }
 }

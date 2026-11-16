@@ -1,8 +1,8 @@
 pico.open()
 pico.set.window [ title="Text Sizes" ]
-pico.set.layer(pico.layer.window())
+pico.set.layer(pico.layer.window)
 pico.set.scene [ dim=['!', w=500, h=500] ]
-pico.set.layer(pico.layer.world())
+pico.set.layer(pico.layer.world)
 pico.set.scene [ dim=['!', w=500, h=500] ]
 
 ;; 12 lines, small to big, stacked top-to-bottom
