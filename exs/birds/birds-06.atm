@@ -1,3 +1,4 @@
+pico.open()
 pico.set.window [ title="Birds - 06 (pool/scope)" ]
 pico.set.dim ['!', w=640, h=480]
 
