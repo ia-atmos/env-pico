@@ -22,10 +22,7 @@ pin G = [
 
 include "ts.atm"
 
-;; (a task that is spawned in a `set` is not pinned while its body
-;; starts, and could not refer to what it publishes)
-pin car = spawn Car(G)
-set G.car = car
+set G.car = spawn Car(G)
 
 spawn Clouds(G)
 spawn Collisions(G)
