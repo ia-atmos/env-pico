@@ -11,17 +11,17 @@ func fails (msg, f) {
 }
 
 val MSG  = "cannot resize a layer with live sub-layers"
-val CROP = ['!', x=0, y=0, w=4, h=4, anchor='NW']
+pin CROP = ['!', x=0, y=0, w=4, h=4, anchor='NW']
 val world = pico.layer.world()
 
 print("1. pico.set.scene [dim=]")
 do {
-    val src = pico.layer.empty [ dim=['!',w=8,h=8] ]
+    pin src = pico.layer.empty [ dim=['!',w=8,h=8] ]
     pico.set.layer(src)
     pico.set.scene [ dim=['!',w=16,h=16] ]              ;; no sub-layers yet
     assert(pico.get.scene().dim.w == 16)
     do {
-        val sub = pico.layer.sub [ sup=src, crop=CROP ]
+        pin sub = pico.layer.sub [ sup=src, crop=CROP ]
         fails(MSG, \{ pico.set.scene [ dim=['!',w=32,h=32] ] })
         fails(MSG, \{ pico.set.scene [ dim=['!',w=32,h=32], tile=['!',w=4,h=4] ] })
         fails(MSG, \{ pico.set.scene [ dim=['!',w=16,h=16] ] })   ;; even the same
@@ -40,14 +40,17 @@ do {
 
 print("2. two sub-layers: both must go")
 do {
-    val src = pico.layer.empty [ dim=['!',w=8,h=8] ]
-    var s1 = pico.layer.sub [ sup=src, crop=CROP ]
-    var s2 = pico.layer.sub [ sup=src, crop=CROP ]
+    pin src = pico.layer.empty [ dim=['!',w=8,h=8] ]
+    ;; fields of a pinned table, which may be dropped
+    pin st = [
+        s1 = pico.layer.sub [ sup=src, crop=CROP ],
+        s2 = pico.layer.sub [ sup=src, crop=CROP ],
+    ]
     pico.set.layer(src)
     fails(MSG, \{ pico.set.scene [ dim=['!',w=4,h=4] ] })
-    set s1 = nil
+    set st.s1 = nil
     fails(MSG, \{ pico.set.scene [ dim=['!',w=4,h=4] ] })
-    set s2 = nil
+    set st.s2 = nil
     pico.set.scene [ dim=['!',w=4,h=4] ]
     assert(pico.get.scene().dim.w == 4)
     pico.set.layer(world)
@@ -56,12 +59,12 @@ do {
 print("3. pico.set.dim: world and window")
 do {
     do {
-        val sub = pico.layer.sub [ sup=world, crop=CROP ]
+        pin sub = pico.layer.sub [ sup=world, crop=CROP ]
         fails(MSG, \{ pico.set.dim(['!',w=200,h=200]) })
         fails(MSG, \{ pico.set.scene [ dim=['!',w=50,h=50] ] })
     }
     do {
-        val sub = pico.layer.sub [ sup=pico.layer.window(), crop=CROP ]
+        pin sub = pico.layer.sub [ sup=pico.layer.window(), crop=CROP ]
         fails(MSG, \{ pico.set.dim(['!',w=200,h=200]) })
         pico.set.scene [ dim=['!',w=50,h=50] ]          ;; the world is free
     }
@@ -71,8 +74,7 @@ do {
 
 print("4. sprite sheet: the image has sub-layers")
 do {
-    var imgs = pico.layer.images [ path="../c/res/open.png", sheet=['#', w=2, h=2] ]
-    set imgs = nil
+    pin imgs = pico.layer.images [ path="../c/res/open.png", sheet=['#', w=2, h=2] ]
 }
 
 print("ok")
