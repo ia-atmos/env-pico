@@ -2,8 +2,8 @@ pico.set.window [ title="Birds - 03 (pool)" ]
 pico.set.dim ['!', w=640, h=480]
 
 
-val up = pico.layer.image [ path="res/bird-up.png" ]
-val dn = pico.layer.image [ path="res/bird-dn.png" ]
+pin up = pico.layer.image [ path="res/bird-up.png" ]
+pin dn = pico.layer.image [ path="res/bird-dn.png" ]
 
 task Bird (y, speed) {
     var xx  = 0
