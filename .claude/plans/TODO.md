@@ -113,14 +113,15 @@ Last update: 2026-11-16 (after the migration to the pin rules of Atmos, the expl
 15. **`pico.atm` prelude formatting**: after the rename to
     `_pico_atmos_`, 155 lines are over 80 columns and the macro
     backslashes are misaligned.
-17. **Binding: the counters of the layers remain** after the pin rules.
-    `a_nat_holds` gives the floor of a child, but a parent may still be
-    finalized before it: removed from the table that owns it, never
-    pinned (`up=pico.layer.empty [...]`), pinned after the table that
-    holds the child, or left behind when the child is the result of a
-    block. The struct of a layer keeps `rc`/`up`/`sup` to postpone the
-    free. To simplify if the compiler comes to order these cases
-    (reported, with the programs).
+17. **Binding: the counters of the layers could be simplified.** Since
+    `ia-atmos/lang` `9e42d13`, a native keeps a reference to what it
+    holds (`a_nat_holds`) and a held native is finalized after its
+    holders, wherever each is pinned. The struct of a layer still keeps
+    `rc`/`up`/`sup` to postpone the free; for a child and its parent,
+    and a sub-layer and its source, that is now redundant. The counters
+    must stay for the current layer and the font of a pencil (next
+    item). Not done: it touches the core of the lifetimes for little
+    visible gain; the suite passes as it is on `9e42d13`.
 18. **Current layer and font of a pencil** are global state that points
     to a value of a block, which the pin rules do not cover: the binding
     keeps its own reference, the release is postponed when the block
@@ -129,10 +130,6 @@ Last update: 2026-11-16 (after the migration to the pin rules of Atmos, the expl
     current one comes back fresh from `pico.set.layer` (a `val` refuses
     it). Open: an error at the end of the block, or a scoped
     `with pico.layer = l { ... }` if the language gets one.
-19. **Storm: `set G.car = spawn Car(G)`** fails inside the task
-    (`val phy = pub.phy`: a task spawned in a `set` is not pinned while
-    its body starts): `exs/storm/main.atm` keeps `pin car` + `set`.
-    Reported to the compiler session.
 12. **`.claude/plans/`** still describes realms, keys and push/pop
     (historical; nothing was updated).
 13. **Release**: `HISTORY.md` has the `v0.8` entry open; version strings
