@@ -78,7 +78,7 @@ func Boom_Vel (boom, other, G) {
     }
     set pct = 1.0 - math.cos(pct * G.PI)
 
-    pin vel = [
+    val vel = [
         x = math.cos(pct) * magnitude,
         y = math.sin(pct) * magnitude * -1,
     ]
