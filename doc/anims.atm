@@ -15,7 +15,7 @@ pin frames = pico.layer.images [
     path="img/walk.png", sheet=['#', w=4, h=4],
 ]
 
-pin dirs = [
+val dirs = [
     down  = [ 0,  1,  2,  3],   ;; frames@0 -> frames@3
     up    = [ 4,  5,  6,  7],
     right = [ 8,  9, 10, 11],
@@ -23,7 +23,7 @@ pin dirs = [
 ]
 
 ;; start (x,y), direction, target (tx,ty)
-pin paths = [
+val paths = [
     clock = [
         [x=0.1, y=0.1, dir='right', tx=0.5, ty=0.1],
         [x=0.5, y=0.1, dir='down',  tx=0.5, ty=0.5],
@@ -71,7 +71,7 @@ loop {
     pico.output.draw.layer(f2, ['%', x=x2, y=y2, w=0.15])
     pico.output.present()
 
-    pin e, dt = pico.input.event('quit')
+    val e, dt = pico.input.event('quit')
     if e {
         break
     }

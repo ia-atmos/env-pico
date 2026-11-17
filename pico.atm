@@ -69,10 +69,10 @@
 ;;
 ;; A resource is released at the end of the block that owns it. There is no
 ;; explicit `free`: to release a resource earlier, declare it in a block that
-;; ends, or remove it from the table that owns it (`set ls.bg = nil`).
-;; A resource that is neither pinned nor stored is released at once.
-;; Therefore, a layer attached to a parent (`up=`) must also be pinned or
-;; stored: otherwise it is released and disappears from the screen.
+;; ends, drop the variable that holds it (`set l = nil`), or remove it from
+;; the table that owns it (`set ls.bg = nil`). A resource that nothing holds
+;; is released at once. Therefore, a layer attached to a parent (`up=`) must
+;; also be held: otherwise it is released and disappears from the screen.
 ;;
 ;; A pinned resource goes into a table argument with no further declaration:
 ;;
@@ -87,11 +87,11 @@
 ;;
 ;; What a resource depends on outlives it: the parent of a layer (`up`), the
 ;; source of a sub-layer (`sup`), the current layer (`pico.set.layer`), and
-;; the font of a pencil. If such a value is released first (it is removed
-;; from its table, or its block ends while it is still the current layer or
-;; the font of a pencil), its release is postponed until nothing depends on
-;; it (and `pico.get.layer()` or `pico.get.pencil().font` evaluate to `nil`
-;; if the value is gone).
+;; the font of a pencil. If such a value is released first (it is dropped,
+;; or its block ends while it is still the current layer or the font of a
+;; pencil), its release is postponed until nothing depends on it (and
+;; `pico.get.layer()` or `pico.get.pencil().font` evaluate to `nil` if the
+;; value is gone).
 ;;
 ;; The current layer and the font of a pencil are state of pico, and not of
 ;; a block: `pico.set.layer(l)` and `pico.set.pencil [font=f]` accept a value
@@ -104,9 +104,9 @@
 ;;      pico.set.layer(old)
 ;;
 ;; The tables that the operations return (`pico.get.*`, `pico.cv.*` with a
-;; mode, `pico.in.*`, `pico.color.*`, `pico.input.event`, ...) are also fresh:
-;; they are declared with `pin` (`pin d = pico.get.scene().dim`), or used at
-;; once (`pico.get.scene().dim.w`). The events of `await` are held in a `val`.
+;; mode, `pico.in.*`, `pico.color.*`, `pico.input.event`, ...) are plain
+;; data, held in a `val` or `var` (`val d = pico.get.scene().dim`) or used at
+;; once (`pico.get.scene().dim.w`). The events of `await` are in a `val` too.
 ;;
 ;; `pico.close()` releases all resources: every value from before it is
 ;; invalid afterwards, even after a new `pico.open()`, and any use raises an

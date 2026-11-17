@@ -341,7 +341,7 @@ pico.output.clear()
 val _ = 'black'
 val o = 'blue'
 val x = 'silver'
-pin PI = [
+val PI = [
     [_,_,_,o,o,o,o,_,_,_],
     [_,o,o,o,o,o,o,o,o,_],
     [_,o,x,x,x,x,x,x,o,_],
@@ -666,7 +666,7 @@ Let's create a simple loop to explore the possibilities:
 
 ```
 loop {
-    pin e,ms = pico.input.event()
+    val e,ms = pico.input.event()
     print("EVENT", ms, e.tag)
     loop k,v in e {
         print('', k, v)
@@ -695,8 +695,8 @@ as in `e ?? :key.dn`.
 We can filter events and set timeouts:
 
 ```
-pin e1 = pico.input.event('key.dn')         ;; wait for key press only
-pin e2 = pico.input.event('key.dn', 5000)   ;; wait key up to 5000ms
+val e1 = pico.input.event('key.dn')         ;; wait for key press only
+val e2 = pico.input.event('key.dn', 5000)   ;; wait key up to 5000ms
 ```
 
 When a timeout expires without an event, `nil` is returned:
@@ -779,11 +779,11 @@ There are no layer names.
 Like a table or a function in Atmos, a new layer is declared with `pin`, which
 attaches it to the enclosing block: when the block terminates, `atmos-pico`
 releases the layer.
-A plain `val` only refers to a layer that already has an owner, and cannot
-hold a new one.
+A `val` or `var` may also hold a new layer, which is then released with the
+name; `pin` is recommended, since it says which block owns the layer.
 This rule has an important consequence, which we revisit in
 [#Hierarchy](#74-hierarchy): a layer that we attach to the screen must still
-be declared with `pin`, otherwise it is released at once and disappears.
+be held, otherwise it is released at once and disappears.
 We detail the rules in [#Memory and Lifetimes](#75-memory-and-lifetimes).
 
 ### 7.2. Compositing
@@ -957,7 +957,7 @@ update the screen all at once.
 
 Note that we pin all four layers (`pic`, `panel`, `H`, `W`), even though we
 only use `panel` afterwards.
-A layer that is not pinned disappears from the screen: if we called
+A layer that nothing holds disappears from the screen: if we called
 `pico.layer.image [...]` without the `pin pic =`, the image would be released
 immediately, and would not show up.
 
@@ -989,8 +989,8 @@ says who owns the resource.
 A fresh resource that is not held by any name or table is released at once.
 
 There is no explicit `free`: to release a resource earlier, we declare it in a
-block that terminates, or remove it from the table that owns it
-(`set layers.bg = nil`).
+block that terminates, drop the variable that holds it (`set l = nil`), or
+remove it from the table that owns it (`set layers.bg = nil`).
 
 A pinned resource can be passed inside the table of arguments of another
 operation, with no further declaration:
@@ -1012,14 +1012,13 @@ What a resource depends on outlives it:
     the current layer (`pico.set.layer`), and
     the font of a pencil.
 The current layer and the font of a pencil are state of pico, and not of a
-block: if their block terminates first, or if a parent or source is removed
-from the table that owns it, the release is postponed until nothing depends on
-the resource.
+block: if their block terminates first, or if a parent or source is dropped,
+the release is postponed until nothing depends on the resource.
 
 The tables that the operations return, such as the event of
-`pico.input.event` or the position of `pico.get.mouse`, are also fresh values:
-we declare them with `pin`, or use them at once, as in
-`pico.get.scene().dim.w`.
+`pico.input.event` or the position of `pico.get.mouse`, are plain data: a
+`val` or `var` holds them, as in `val e = pico.input.event()`, or we use them
+at once, as in `pico.get.scene().dim.w`.
 
 Finally, `pico.close()` releases all resources at once.
 The values from before the call become invalid, even after a new `pico.open()`,
@@ -1137,7 +1136,7 @@ loop {                              ;; main loop
     pico.output.*()                 ;; scene redrawing
     pico.output.present()
 
-    pin e,dt = pico.input.event()   ;; event / timeout awaiting
+    val e,dt = pico.input.event()   ;; event / timeout awaiting
 
     if e {
         (normal atmos code)         ;; event handler (keys, mouse)
@@ -1189,8 +1188,8 @@ Now, let's discuss the implementation:
 
 pico.set.expert(true)               ;; no timeouts
 
-pin k = ['!', x=4, y=4]             ;; key pixel
-pin m = ['!', x=5, y=5]             ;; mouse pixel
+val k = ['!', x=4, y=4]             ;; key pixel
+var m = ['!', x=5, y=5]             ;; mouse pixel
 
 loop {                              ;; main loop
     ;; redraw scene
@@ -1202,16 +1201,14 @@ loop {                              ;; main loop
     pico.output.present()
 
     ;; handle events
-    pin e = pico.input.event()
+    val e = pico.input.event()
     assert(e, "no FPS set here")
     ifs {
         e.tag == 'quit' => {
             break
         }
         e.tag == 'mouse.motion' => {
-            pin p = pico.get.mouse('!')
-            set m.x = p.x
-            set m.y = p.y
+            set m = pico.get.mouse('!')
         }
         e.tag == 'key.dn' => {
             match e.key {
@@ -1237,7 +1234,7 @@ The main loop first draws their initial positions and awaits
 In this example, we only handle `quit`, `mouse.motion` and `key.dn` events:
 
 - on a quit event, we escape the loop to terminate the application;
-- for the mouse, we update `m.x` and `m.y` to follow `pico.get.mouse`;
+- for the mouse, we update `m` to follow `pico.get.mouse`;
 - for the keyboard, we update `k.x` or `k.y` depending on `e.key`.
 
 Then, the loop iterates to redraw the scene and wait for the next event.
@@ -1305,7 +1302,7 @@ loop {                                      ;; main loop
     pico.output.present()
 
     ;; handle events
-    pin e, dt = pico.input.event('quit')
+    val e, dt = pico.input.event('quit')
     if e {
         break
     }
@@ -1334,7 +1331,7 @@ pin frames = pico.layer.images [
     path="img/walk.png", sheet=['#', w=4, h=4],
 ]
 
-pin dirs = [
+val dirs = [
     down  = [ 0,  1,  2,  3],   ;; frames@0 -> frames@3
     up    = [ 4,  5,  6,  7],
     right = [ 8,  9, 10, 11],
@@ -1428,9 +1425,7 @@ par {
     }
 } with {
     loop on :mouse.motion {
-        pin p = pico.get.mouse('!')
-        set m.x = p.x
-        set m.y = p.y
+        set m = pico.get.mouse('!')
     }
 } with {
     loop e on :key.dn {
@@ -1458,7 +1453,7 @@ The set of `pico.cv.*` functions converts coordinates between modes and between
 layers:
 
 ```
-pin pos = pico.cv.pos('!', ['%', x=0.5, y=0.5])
+val pos = pico.cv.pos('!', ['%', x=0.5, y=0.5])
 print(pos.x, pos.y)     ;; --> 50.0    50.0
 ```
 
@@ -1468,7 +1463,7 @@ Here, we convert a percentage into raw coordinates, assuming the default
 Optional layer arguments can project across frames:
 
 ```
-pin r = pico.cv.rect (
+val r = pico.cv.rect (
     pico.layer.world, '%',
     pico.layer.window, ['!', x=250, y=250, w=100, h=100]
 )
@@ -1484,7 +1479,7 @@ number, as `0.20000000298023`.)*
 component:
 
 ```
-pin d = pico.cv.dim (
+val d = pico.cv.dim (
     pico.layer.world, '!',
     pico.layer.window, ['!', w=100, h=100]
 )
@@ -1527,7 +1522,7 @@ The set of `pico.in.*` functions composes a child onto a parent rect,
 returning a new flat value re-expressed in the current scene:
 
 ```
-pin p = pico.in.pos (
+val p = pico.in.pos (
     ['%', x=0.5, y=0.5, w=0.5, h=0.5],  ;; parent
     ['%', x=0, y=1]                     ;; child
 )
@@ -1629,6 +1624,6 @@ pico.set.window [ fullscreen=false ]
 The current fullscreen state can be queried with `pico.get.window()`:
 
 ```
-pin w = pico.get.window()
+val w = pico.get.window()
 print(w.fullscreen)     ;; --> false
 ```

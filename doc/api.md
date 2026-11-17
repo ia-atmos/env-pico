@@ -118,11 +118,12 @@ pin s = pico.sound.load("x.wav")
   name, at the latest at the end of its block.
 - A resource is released at the end of the block that owns it.
   There is no explicit `free`: to release a resource earlier, declare it in a
-  block that ends, or remove it from the table that owns it
-  (`set ls.bg = nil`).
-- A resource that is neither pinned nor stored is released at once.
-  Therefore, a layer attached to a parent (`up`) must also be pinned or
-  stored: otherwise it is released and disappears from the screen.
+  block that ends, drop the variable that holds it (`set l = nil`), or remove
+  it from the table that owns it (`set ls.bg = nil`).
+- A resource that is not pinned, stored, or held by a name is released at
+  once.
+  Therefore, a layer attached to a parent (`up`) must also be held: otherwise
+  it is released and disappears from the screen.
 - A pinned resource goes into a table argument with no further declaration:
 
     ```
@@ -140,9 +141,9 @@ pin s = pico.sound.load("x.wav")
     the source of a sub-layer (`sup`),
     the current layer (`pico.set.layer`), and
     the font of a pencil.
-  If such a value is released first (it is removed from its table, or its
-  block ends while it is still the current layer or the font of a pencil), its
-  release is postponed until nothing depends on it.
+  If such a value is released first (it is dropped, or its block ends while
+  it is still the current layer or the font of a pencil), its release is
+  postponed until nothing depends on it.
   In this case, `pico.get.layer()` and `pico.get.pencil().font` evaluate to
   `nil` if the value is gone.
 - The current layer and the font of a pencil are state of pico, and not of a
@@ -152,9 +153,9 @@ pin s = pico.sound.load("x.wav")
   the value that the program holds, to be kept in a `val`
   (`val old = pico.set.layer(l)`).
 - The tables that the operations return (`pico.get.*`, `pico.cv.*` with a
-  mode, `pico.in.*`, `pico.color.*`, `pico.input.event`) are also fresh: they
-  are declared with `pin` (`pin d = pico.get.scene().dim`), or used at once
-  (`pico.get.scene().dim.w`).
+  mode, `pico.in.*`, `pico.color.*`, `pico.input.event`) are plain data: they
+  are held in a `val` or `var` (`val d = pico.get.scene().dim`), or used at
+  once (`pico.get.scene().dim.w`).
   The events of an `await` are held in a `val`.
 - `pico.close()` releases all resources: every value from before it is invalid
   afterwards, even after a new `pico.open()`, and any use raises an error.
