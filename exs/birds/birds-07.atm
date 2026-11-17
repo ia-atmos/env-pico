@@ -5,15 +5,15 @@ pico.set.dim ['!', w=640, h=480]
 
 pin up = pico.layer.image [ path="res/bird-up.png" ]
 pin dn = pico.layer.image [ path="res/bird-dn.png" ]
-pin pct = pico.get.image("%", "res/bird-up.png")
+val pct = pico.get.image("%", "res/bird-up.png")
 
 math.randomseed(os.time())
 
 task Bird (y, speed) {
+    val rect = [ '%', x=0, y=y, w=pct.w, h=pct.h ]
     set pub = [
-        rect = [ '%', x=0, y=y, w=pct.w, h=pct.h ],
+        rect = rect,
     ]
-    val rect = pub.rect
     var img = dn
     watching <:collided || until (rect.x>1)> {
         par {
