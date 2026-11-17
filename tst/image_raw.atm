@@ -6,29 +6,29 @@ pico.set.effect [ color='white' ]
 
 ;; pico.get.image
 do {
-    pin dim = pico.get.image(IMG)
+    val dim = pico.get.image(IMG)
     assert(dim@0=='!' && dim.w==48 && dim.h==48)
 }
 do {
-    pin dim = pico.get.image(['!', h=24], IMG)
+    val dim = pico.get.image(['!', h=24], IMG)
     assert(dim.w==24 && dim.h==24)
 }
 do {
-    pin dim = pico.get.image(['!', w=48, h=nil], IMG)
+    val dim = pico.get.image(['!', w=48, h=nil], IMG)
     assert(dim.w==48 && dim.h==48)
 }
 do {
-    pin dim = pico.get.image(['!'], IMG)
+    val dim = pico.get.image(['!'], IMG)
     assert(dim.w==48 && dim.h==48)
 }
 do {
-    pin dim = pico.get.image('%', IMG)
+    val dim = pico.get.image('%', IMG)
     assert(dim@0=='%' && pico.equal(dim.w,0.48) && pico.equal(dim.h,0.48))
 }
 
 do {
     print("show top-left from center")
-    pin r = ['!', x=50, y=50, w=0, h=0, anchor='NW']
+    val r = ['!', x=50, y=50, w=0, h=0, anchor='NW']
     pico.output.clear()
     pico.output.draw.image(IMG, r)
     assert(r.w==48 && r.h==48)
@@ -37,7 +37,7 @@ do {
 
 do {
     print("show small centered")
-    pin r = ['!', x=50-5, y=50-5, w=10, h=10, anchor='NW']
+    val r = ['!', x=50-5, y=50-5, w=10, h=10, anchor='NW']
     pico.output.clear()
     pico.output.draw.image(IMG, r)
     pico.check("image_raw-02")
@@ -45,7 +45,7 @@ do {
 
 do {
     print("show small/medium distorted")
-    pin r = ['!', x=50-5, y=50-10, w=10, h=20, anchor='NW']
+    val r = ['!', x=50-5, y=50-10, w=10, h=20, anchor='NW']
     pico.output.clear()
     pico.output.draw.image(IMG, r)
     pico.check("image_raw-03")
@@ -54,7 +54,7 @@ do {
 do {
     print("show medium normal")
     pico.output.clear()
-    pin r = ['!', x=50-10, y=50-10, w=20, h=0, anchor='NW']
+    val r = ['!', x=50-10, y=50-10, w=20, h=0, anchor='NW']
     pico.output.draw.image(IMG, r)
     pico.check("image_raw-04")
 }
@@ -62,7 +62,7 @@ do {
 do {
     print("show small normal")
     pico.output.clear()
-    pin r = ['!', x=50-5, y=50-5, w=0, h=10, anchor='NW']
+    val r = ['!', x=50-5, y=50-5, w=0, h=10, anchor='NW']
     pico.output.draw.image(IMG, r)
     pico.check("image_raw-05")
 }
@@ -70,7 +70,7 @@ do {
 do {
     print("show big centered")
     pico.output.clear()
-    pin r = ['!', x=50-24, y=50-24, w=0, h=0, anchor='NW']
+    val r = ['!', x=50-24, y=50-24, w=0, h=0, anchor='NW']
     pico.output.draw.image(IMG, r)
     pico.check("image_raw-06")
 }
@@ -85,13 +85,13 @@ do {
         source = ['!', x=9, y=9, w=30, h=30, anchor='NW']
     ]
     pico.set.layer(pico.layer.world)
-    pin r1 = ['!', x=50-24, y=50-24, w=0, h=0, anchor='NW']
+    val r1 = ['!', x=50-24, y=50-24, w=0, h=0, anchor='NW']
     pico.output.draw.layer(crop, r1)
     pico.check("image_raw-07")
 
     print("show medium normal")
     pico.output.clear()
-    pin r2 = ['!', x=50-10, y=50-10, w=20, h=0, anchor='NW']
+    val r2 = ['!', x=50-10, y=50-10, w=20, h=0, anchor='NW']
     pico.output.draw.image(IMG, r2)
     pico.check("image_raw-08")
 }

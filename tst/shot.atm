@@ -205,11 +205,11 @@ do {
 ;;    with no rect (uses the target) into world's SE quadrant
 do {
     print("screenshot layer - target (+ crop)")
-    pin r = ['%', x=1, y=1, w=0.5, h=0.5, anchor='SE']
+    val r = ['%', x=1, y=1, w=0.5, h=0.5, anchor='SE']
     pin snap = pico.layer.screenshot [ sup=empty1,
         crop=['%', x=0, y=0, w=0.5, h=1.0, anchor='NW'], target=r ]
     pico.set.layer(snap)
-    pin s = pico.get.scene()
+    val s = pico.get.scene()
     assert(s.target@0 == '%')
     assert(s.target.x==1 && s.target.y==1)
     assert(s.target.w==0.5 && s.target.h==0.5)

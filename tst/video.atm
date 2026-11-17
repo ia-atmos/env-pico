@@ -7,7 +7,7 @@ pico.set.effect [ color=['!', r=0x00, g=0x00, b=0x00] ]
 ;; pico.get.video: check Y4M header parsing
 do {
     print("get.video: dimensions and fps")
-    pin info = pico.get.video(VIDEO)
+    val info = pico.get.video(VIDEO)
     assert(info.dim.w == 10)
     assert(info.dim.h == 10)
     assert(info.fps == 10)
@@ -18,7 +18,7 @@ do {
 ;; pico.layer.video: create layer
 print("layer.video: create")
 pin vid = pico.layer.video [ path=VIDEO ]
-pin full = ['%', x=0.5, y=0.5, w=1, h=1, anchor='C']
+val full = ['%', x=0.5, y=0.5, w=1, h=1, anchor='C']
 
 ;; pico.set.video: first frame (0)
 do {
@@ -72,7 +72,7 @@ do {
 ;; pico.get.video: check state after sync
 do {
     print("get.video: state after sync")
-    pin info = pico.get.video(vid)
+    val info = pico.get.video(vid)
     assert(info.done == true)
     assert(info.dim.w==10 && info.dim.h==10)
 }

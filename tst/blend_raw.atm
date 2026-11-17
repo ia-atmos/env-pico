@@ -9,7 +9,7 @@ pico.set.scene [ dim=['!', w=64, h=36] ]
 
 do {
     print("pixel dimming")
-    pin p = ['!', x=32, y=18, anchor='NW']
+    val p = ['!', x=32, y=18, anchor='NW']
     loop i in 51 {
         val a = 255 - i*5
         pico.output.clear()
@@ -24,9 +24,9 @@ do {
 
 do {
     print("text dimming")
-    pin d = ['!', w=0, h=10]
+    val d = ['!', w=0, h=10]
     pico.get.text(d, "SOME TEXT")
-    pin r = ['!', x=32-d.w//2, y=18-5, w=nil, h=10, anchor='NW']
+    val r = ['!', x=32-d.w//2, y=18-5, w=nil, h=10, anchor='NW']
     loop i in 51 {
         val a = 255 - i*5
         pico.output.clear()
@@ -41,7 +41,7 @@ do {
 
 do {
     print("rect dimming")
-    pin r = ['!', x=32-30, y=18-6, w=60, h=12, anchor='NW']
+    val r = ['!', x=32-30, y=18-6, w=60, h=12, anchor='NW']
     loop i in 51 {
         val a = 255 - i*5
         pico.output.clear()
@@ -56,7 +56,7 @@ do {
 
 do {
     print("oval dimming")
-    pin r = ['!', x=32-30, y=18-6, w=60, h=12, anchor='NW']
+    val r = ['!', x=32-30, y=18-6, w=60, h=12, anchor='NW']
     loop i in 51 {
         val a = 255 - i*5
         pico.output.clear()
@@ -71,9 +71,9 @@ do {
 
 do {
     print("tri dimming")
-    pin p1 = ['!', x=2,  y=12, anchor='NW']
-    pin p2 = ['!', x=2,  y=24, anchor='NW']
-    pin p3 = ['!', x=62, y=24, anchor='NW']
+    val p1 = ['!', x=2,  y=12, anchor='NW']
+    val p2 = ['!', x=2,  y=24, anchor='NW']
+    val p3 = ['!', x=62, y=24, anchor='NW']
     loop i in 51 {
         val a = 255 - i*5
         pico.output.clear()
@@ -88,8 +88,8 @@ do {
 
 do {
     print("line dimming")
-    pin p1 = ['!', x=12, y=12, anchor='NW']
-    pin p2 = ['!', x=52, y=24, anchor='NW']
+    val p1 = ['!', x=12, y=12, anchor='NW']
+    val p2 = ['!', x=52, y=24, anchor='NW']
     loop i in 51 {
         val a = 255 - i*5
         pico.output.clear()
@@ -104,7 +104,7 @@ do {
 
 do {
     print("poly dimming")
-    pin poly = [
+    val poly = [
         ['!', x=5,  y=5, anchor='NW'],
         ['!', x=59, y=10, anchor='NW'],
         ['!', x=20, y=31, anchor='NW'],

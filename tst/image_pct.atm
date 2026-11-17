@@ -11,19 +11,19 @@ pico.set.effect [ color='white' ]
 ;; pico.get.image
 do {
     do {
-        pin pct = ['%', h=0.24]
+        val pct = ['%', h=0.24]
         val dim = pico.get.image(pct, IMG)
         assert(dim == pct)
         assert(round(pct.w*100)==24 && round(pct.h*100)==24)
     }
     do {
-        pin pct = ['%', w=0.48]
+        val pct = ['%', w=0.48]
         val dim = pico.get.image(pct, IMG)
         assert(dim == pct)
         assert(round(pct.w*100)==48 && round(pct.h*100)==48)
     }
     do {
-        pin pct = ['%']
+        val pct = ['%']
         val dim = pico.get.image(pct, IMG)
         assert(dim == pct)
         assert(round(pct.w*100)==48 && round(pct.h*100)==48)
@@ -45,7 +45,7 @@ do {
 do {
     print("show original centered")
     pico.output.clear()
-    pin r = ['%', x=0.5, y=0.5]
+    val r = ['%', x=0.5, y=0.5]
     pico.output.draw.image(IMG, r)
     pico.check("image_pct-01")
 }
@@ -53,7 +53,7 @@ do {
 do {
     print("show big centered")
     pico.output.clear()
-    pin r = ['%', x=0.5, y=0.5, w=1.0, h=1.0]
+    val r = ['%', x=0.5, y=0.5, w=1.0, h=1.0]
     pico.output.draw.image(IMG, r)
     pico.check("image_pct-02")
 }
@@ -61,7 +61,7 @@ do {
 do {
     print("show small centered")
     pico.output.clear()
-    pin r = ['%', x=0.5, y=0.5, w=0.2, h=0.2]
+    val r = ['%', x=0.5, y=0.5, w=0.2, h=0.2]
     pico.output.draw.image(IMG, r)
     pico.check("image_pct-03")
 }
@@ -69,7 +69,7 @@ do {
 do {
     print("show w-half proportional")
     pico.output.clear()
-    pin r = ['%', x=0.5, y=0.5, w=0.5]
+    val r = ['%', x=0.5, y=0.5, w=0.5]
     pico.output.draw.image(IMG, r)
     pico.check("image_pct-04")
 }
@@ -77,7 +77,7 @@ do {
 do {
     print("show w-half h-quart distorted")
     pico.output.clear()
-    pin r = ['%', x=0.5, y=0.5, w=0.5, h=0.25]
+    val r = ['%', x=0.5, y=0.5, w=0.5, h=0.25]
     pico.output.draw.image(IMG, r)
     pico.check("image_pct-05")
 }

@@ -3,14 +3,14 @@ pico.open()
 ;; TITLE
 print("title: set and get")
 pico.set.window [ title="Test Title" ]
-pin win = pico.get.window()
+val win = pico.get.window()
 assert(win.title == "Test Title", "title mismatch: " ++ tostring(win.title))
 pico.set.window [ title="View Raw" ]
 
 pico.set.layer(pico.layer.window)
-pin window = pico.get.scene().dim
+val window = pico.get.scene().dim
 pico.set.layer(pico.layer.world)
-pin all = pico.get.scene()
+var all = pico.get.scene()
 val world = all.dim
 assert(window.w == 500 && window.h == 500)
 assert(world.w == 100 && world.h == 100)
@@ -19,8 +19,8 @@ set world@0 = '!'
 
 ;; SIZE (using set.dim for both window and world)
 pico.set.dim(window)
-pin now = pico.get.scene()
-assert(now.dim.w==window.w && now.dim.h==window.h)
+set all = pico.get.scene()
+assert(all.dim.w==window.w && all.dim.h==window.h)
 pico.set.scene [ dim=world ]   ;; fallback after test
 
 ;; WORLD - bigger

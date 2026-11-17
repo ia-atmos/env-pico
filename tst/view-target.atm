@@ -16,9 +16,9 @@ do {
 do {
     print("target: r2 inside r1")
     pico.output.clear()
-    pin r1 = ['%', x=0.5, y=0.5, w=0.5, h=0.5]
+    val r1 = ['%', x=0.5, y=0.5, w=0.5, h=0.5]
     pico.output.draw.rect(r1)
-    pin r2 = pico.in.rect(r1, ['%', x=0.5, y=0.5, w=0.5, h=0.5])
+    val r2 = pico.in.rect(r1, ['%', x=0.5, y=0.5, w=0.5, h=0.5])
     pico.set.pencil [ color='red' ]
     pico.output.draw.rect(r2)
     pico.check("view-target-02")
@@ -118,7 +118,7 @@ do {
 ;;     becomes scene.target.
 do {
     print("target: rect-as-dim shortcut")
-    pin r = ['%', x=1, y=1, w=0.5, h=0.5, anchor='SE']
+    val r = ['%', x=1, y=1, w=0.5, h=0.5, anchor='SE']
     pin bg3 = pico.layer.empty [ up=pico.layer.world, target=r ]
     pico.set.layer(bg3)
     pico.set.effect [ color=[r=0x80, g=0x00, b=0x00] ]

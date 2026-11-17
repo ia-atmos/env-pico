@@ -1,13 +1,13 @@
 pico.open()
 
-pin phy = ['!', w=200, h=200]
-pin log = ['!', w=20, h=20]
+val phy = ['!', w=200, h=200]
+val log = ['!', w=20, h=20]
 pico.set.layer(pico.layer.window)
 pico.set.scene [ dim=phy ]
 pico.set.layer(pico.layer.world)
 pico.set.scene [ dim=log ]
 
-pin r = ['!', x=10-2, y=10-2, w=4, h=4, anchor='NW']
+val r = ['!', x=10-2, y=10-2, w=4, h=4, anchor='NW']
 
 print("pos_vs_rect")
 ;; (`on` is a keyword in Atmos: the Lua variable `on` is `on_`)
@@ -17,7 +17,7 @@ loop y in (r.y-1, r.y+r.h) {
         pico.set.pencil [ color='white' ]
         pico.output.draw.rect(r)
 
-        pin p = ['!', x=x, y=y, anchor='NW']
+        val p = ['!', x=x, y=y, anchor='NW']
         pico.set.pencil [ color='red' ]
         pico.output.draw.pixel(p)
 
@@ -59,7 +59,7 @@ loop y in (r.y-r.h, r.y+r.h) {
         pico.set.pencil [ color='white' ]
         pico.output.draw.rect(r)
 
-        pin r2 = ['!', x=x, y=y, w=4, h=4, anchor='NW']
+        val r2 = ['!', x=x, y=y, w=4, h=4, anchor='NW']
         pico.set.pencil [ color='red' ]
         pico.output.draw.rect(r2)
 

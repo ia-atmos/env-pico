@@ -11,7 +11,7 @@ func fails (msg, f) {
 }
 
 val MSG  = "cannot resize a layer with live sub-layers"
-pin CROP = ['!', x=0, y=0, w=4, h=4, anchor='NW']
+val CROP = ['!', x=0, y=0, w=4, h=4, anchor='NW']
 val world = pico.layer.world
 
 print("1. pico.set.scene [dim=]")
@@ -41,16 +41,13 @@ do {
 print("2. two sub-layers: both must go")
 do {
     pin src = pico.layer.empty [ dim=['!',w=8,h=8] ]
-    ;; fields of a pinned table, which may be dropped
-    pin st = [
-        s1 = pico.layer.sub [ sup=src, crop=CROP ],
-        s2 = pico.layer.sub [ sup=src, crop=CROP ],
-    ]
+    var s1 = pico.layer.sub [ sup=src, crop=CROP ]
+    var s2 = pico.layer.sub [ sup=src, crop=CROP ]
     pico.set.layer(src)
     fails(MSG, \{ pico.set.scene [ dim=['!',w=4,h=4] ] })
-    set st.s1 = nil
+    set s1 = nil
     fails(MSG, \{ pico.set.scene [ dim=['!',w=4,h=4] ] })
-    set st.s2 = nil
+    set s2 = nil
     pico.set.scene [ dim=['!',w=4,h=4] ]
     assert(pico.get.scene().dim.w == 4)
     pico.set.layer(world)
@@ -74,7 +71,8 @@ do {
 
 print("4. sprite sheet: the image has sub-layers")
 do {
-    pin imgs = pico.layer.images [ path="../c/res/open.png", sheet=['#', w=2, h=2] ]
+    var imgs = pico.layer.images [ path="../c/res/open.png", sheet=['#', w=2, h=2] ]
+    set imgs = nil
 }
 
 print("ok")

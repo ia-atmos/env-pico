@@ -4,15 +4,15 @@ pico.open()
 
 ;; pico.get.text
 do {
-    pin dim = pico.get.text(['!', w=nil, h=10], "ABC")
+    val dim = pico.get.text(['!', w=nil, h=10], "ABC")
     assert(dim.w>0 && dim.h==11)
 
-    pin pct = ['%', w=nil, h=0.1]
+    val pct = ['%', w=nil, h=0.1]
     val ret = pico.get.text(pct, "ABC")
     assert(ret == pct)
     assert(math.floor(pct.w*100+0.5)==17 && math.floor(pct.h*100+0.5)==11)
 
-    pin p = ['%', h=0.2]
+    val p = ['%', h=0.2]
     pico.get.text(p, "ABC")
     assert(math.floor(p.w*100)==36 && math.floor(p.h*100)==20)
 }
@@ -23,11 +23,11 @@ pico.output.clear()
 
 ;; pico.output.draw.text
 do {
-    pin r1 = ['!', x=10, y=10, w=0, h=10, anchor='NW']
+    val r1 = ['!', x=10, y=10, w=0, h=10, anchor='NW']
     pico.output.draw.text("hg - gh", r1)
     pico.check("font-01")
 
-    pin r2 = ['%', x=0.5, y=0.5, h=0.2]
+    val r2 = ['%', x=0.5, y=0.5, h=0.2]
     pico.output.draw.text("hg - gh", r2)
     pico.check("font-02")
 }
@@ -38,11 +38,11 @@ pico.output.clear()
 do {
     pico.set.pencil [ font=FONT ]
 
-    pin r1 = ['!', x=10, y=10, w=0, h=10, anchor='NW']
+    val r1 = ['!', x=10, y=10, w=0, h=10, anchor='NW']
     pico.output.draw.text("hg - gh", r1)
     pico.check("font-03")
 
-    pin r2 = ['%', x=0.5, y=0.5, h=0.2]
+    val r2 = ['%', x=0.5, y=0.5, h=0.2]
     pico.output.draw.text("hg - gh", r2)
     pico.check("font-04")
 }

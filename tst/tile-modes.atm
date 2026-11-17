@@ -8,7 +8,7 @@ pico.set.dim ['!', w=100, h=100]
 
 func check (key, layer, dw, dh, tw, th) {
     val old = pico.set.layer(layer)
-    pin v = pico.get.scene()
+    val v = pico.get.scene()
     print(string.format("%s: dim=%dx%d tile=%dx%d", key, v.dim.w, v.dim.h, v.tile.w, v.tile.h))
     assert(v.dim.w == dw && v.dim.h == dh, "dim mismatch")
     assert(v.tile.w == tw && v.tile.h == th, "tile mismatch")

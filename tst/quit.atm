@@ -3,7 +3,7 @@ pico.set.expert(true)
 
 pico.quit()
 
-pin e = pico.input.event('quit', 100)
+val e = pico.input.event('quit', 100)
 assert(e)
 assert(e.tag == 'quit')
 assert(e ?? :quit)

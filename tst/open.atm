@@ -14,7 +14,7 @@ do {
     fails("pico is not open", \{ pico.set.window [ title="X" ] })
     assert(pico.layer.world==nil && pico.layer.window==nil)
     pico.open()
-    pin w = pico.get.window()
+    val w = pico.get.window()
     assert(w.title=="pico-SDL" && w.show==true && w.fullscreen==false)
     assert(pico.get.layer() == pico.layer.world)
     assert(pico.get.scene().dim.w == 100)
@@ -30,7 +30,7 @@ do {
     assert(pico.layer.world==nil && pico.layer.window==nil)
     fails("pico is not open", \{ pico.get.window() })
     pico.open [ title="Hidden", show=false ]
-    pin w = pico.get.window()
+    val w = pico.get.window()
     assert(w.title=="Hidden" && w.show==false)
     fails("pico is already open", \{ pico.open() })
 }

@@ -1,6 +1,6 @@
 pico.open()
-pin phy = ['!', w=200, h=200]
-pin log = ['!', w=10, h=10]
+val phy = ['!', w=200, h=200]
+val log = ['!', w=10, h=10]
 pico.set.window [ title="Anchoring..." ]
 pico.set.layer(pico.layer.window)
 pico.set.scene [ dim=phy ]
@@ -10,7 +10,7 @@ pico.set.scene [ dim=log ]
 ;; PIXELS
 do {
     print("centered pixel - 1dir/1baixo")
-    pin p = ['%', x=0.5, y=0.50, anchor='C']
+    val p = ['%', x=0.5, y=0.50, anchor='C']
     pico.output.clear()
     pico.output.draw.pixel(p)
     pico.check("anchor-01")
@@ -18,7 +18,7 @@ do {
 
 do {
     print("centered pixel - 1dir/1baixo")
-    pin p = ['%', x=0.5, y=0.5, anchor='NW']
+    val p = ['%', x=0.5, y=0.5, anchor='NW']
     pico.output.clear()
     pico.output.draw.pixel(p)
     pico.check("anchor-02")
@@ -26,7 +26,7 @@ do {
 
 do {
     print("centered pixel - 1esq/1cima")
-    pin p = ['%', x=0.5, y=0.5, anchor='SE']
+    val p = ['%', x=0.5, y=0.5, anchor='SE']
     pico.output.clear()
     pico.output.draw.pixel(p)
     pico.check("anchor-03")
@@ -35,7 +35,7 @@ do {
 ;; RECTS
 do {
     print("centered rect - exact")
-    pin r = ['%', x=0.5, y=0.5, w=0.4, h=0.4, anchor='C']
+    val r = ['%', x=0.5, y=0.5, w=0.4, h=0.4, anchor='C']
     pico.output.clear()
     pico.output.draw.rect(r)
     pico.check("anchor-04")
@@ -43,7 +43,7 @@ do {
 
 do {
     print("topleft centered - 1lin/1col")
-    pin r = ['%', x=0.5, y=0.5, w=0.4, h=0.4, anchor='NW']
+    val r = ['%', x=0.5, y=0.5, w=0.4, h=0.4, anchor='NW']
     pico.output.clear()
     pico.output.draw.rect(r)
     pico.check("anchor-05")
@@ -51,7 +51,7 @@ do {
 
 do {
     print("bottomright centered - 1lin/1col")
-    pin r = ['%', x=0.5, y=0.5, w=0.4, h=0.4, anchor='SE']
+    val r = ['%', x=0.5, y=0.5, w=0.4, h=0.4, anchor='SE']
     pico.output.clear()
     pico.output.draw.rect(r)
     pico.check("anchor-06")
@@ -59,7 +59,7 @@ do {
 
 do {
     print("rightmiddle centered - 1col")
-    pin r = ['%', x=0.5, y=0.5, w=0.4, h=0.4, anchor='E']
+    val r = ['%', x=0.5, y=0.5, w=0.4, h=0.4, anchor='E']
     pico.output.clear()
     pico.output.draw.rect(r)
     pico.check("anchor-07")
@@ -67,7 +67,7 @@ do {
 
 do {
     print("anchor 25%25% 20%20% - 1lin/1col")
-    pin r = ['%', x=0.2, y=0.2, w=0.4, h=0.4, anchor=[x=0.2,y=0.2]]
+    val r = ['%', x=0.2, y=0.2, w=0.4, h=0.4, anchor=[x=0.2,y=0.2]]
     pico.output.clear()
     pico.output.draw.rect(r)
     pico.check("anchor-08")
@@ -76,7 +76,7 @@ do {
 ;; RECTS out of [0,100]
 do {
     print("anchor -25%-25% centered - touching border")
-    pin r = ['%', x=0.5, y=0.5, w=0.4, h=0.4, anchor=[x=-0.25,y=-0.25]]
+    val r = ['%', x=0.5, y=0.5, w=0.4, h=0.4, anchor=[x=-0.25,y=-0.25]]
     pico.output.clear()
     pico.output.draw.rect(r)
     pico.check("anchor-09")
@@ -84,7 +84,7 @@ do {
 
 do {
     print("anchor 125%125% centered - touching border")
-    pin r = ['%', x=0.5, y=0.5, w=0.4, h=0.4, anchor=[x=1.25,y=1.25]]
+    val r = ['%', x=0.5, y=0.5, w=0.4, h=0.4, anchor=[x=1.25,y=1.25]]
     pico.output.clear()
     pico.output.draw.rect(r)
     pico.check("anchor-10")

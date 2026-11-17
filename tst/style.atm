@@ -5,12 +5,12 @@ pico.set.scene [ dim=['!', w=640, h=480] ]
 pico.set.layer(pico.layer.world)
 pico.set.scene [ dim=['!', w=64, h=48] ]
 
-pin rect = ['!', x=5, y=5, w=25, h=18, anchor='NW']
-pin oval = ['!', x=34, y=5, w=25, h=18, anchor='NW']
-pin t1   = ['!', x=5,  y=26, anchor='NW']
-pin t2   = ['!', x=5,  y=43, anchor='NW']
-pin t3   = ['!', x=30, y=43, anchor='NW']
-pin poly = [
+val rect = ['!', x=5, y=5, w=25, h=18, anchor='NW']
+val oval = ['!', x=34, y=5, w=25, h=18, anchor='NW']
+val t1   = ['!', x=5,  y=26, anchor='NW']
+val t2   = ['!', x=5,  y=43, anchor='NW']
+val t3   = ['!', x=30, y=43, anchor='NW']
+val poly = [
     ['!', x=34, y=26, anchor='NW'],
     ['!', x=59, y=30, anchor='NW'],
     ['!', x=50, y=43, anchor='NW'],

@@ -95,7 +95,7 @@ pin expl = pico.layer.images [
     ],
 ]
 do {
-    pin names = []
+    val names = []
     loop k,_ in expl {
         set names@+ = k
     }

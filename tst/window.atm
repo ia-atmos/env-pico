@@ -20,10 +20,10 @@ do {
 do {
     print("dims: window vs world")
     pico.set.layer(pico.layer.window)
-    pin w = pico.get.scene().dim
+    val w = pico.get.scene().dim
     assert(w.w == 500 && w.h == 500)
     pico.set.layer(pico.layer.world)
-    pin l = pico.get.scene().dim
+    val l = pico.get.scene().dim
     assert(l.w == 100 && l.h == 100)
 }
 

@@ -37,8 +37,8 @@ func fill (l, clr) {
     pico.set.layer(old)
 }
 
-pin RED  = ['!', x=0, y=0, w=10, h=10, anchor='NW']
-pin HALF = ['%', x=0.5, y=0.5, w=0.5, h=0.5]
+val RED  = ['!', x=0, y=0, w=10, h=10, anchor='NW']
+val HALF = ['%', x=0.5, y=0.5, w=0.5, h=0.5]
 
 ;; errors before pico.open
 fails("pico is not open", \{ pico.output.clear() })
@@ -73,16 +73,13 @@ val empty = shot("empty")
 
 print("1. parent dropped before its child")
 do {
-    ;; a field of a pinned table may be dropped
-    pin t = [
-        parent = pico.layer.empty [ up=world, dim=['!',w=20,h=20], target=HALF ],
-    ]
-    pin child = pico.layer.empty [ up=t.parent, dim=['!',w=4,h=4], target=HALF ]
-    fill(t.parent, 'blue')
+    var parent = pico.layer.empty [ up=world, dim=['!',w=20,h=20], target=HALF ]
+    pin child  = pico.layer.empty [ up=parent, dim=['!',w=4,h=4], target=HALF ]
+    fill(parent, 'blue')
     fill(child, 'red')
     val both = redraw("1-both")
     assert(both != empty)
-    set t.parent = nil              ;; still alive: the child depends on it
+    set parent = nil                ;; still alive: the child depends on it
     assert(redraw("1-drop") == both)
     fill(child, 'red')              ;; the child is still usable
     assert(redraw("1-fill") == both)

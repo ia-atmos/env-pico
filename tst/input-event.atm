@@ -30,22 +30,22 @@ do {
 print("events")
 do {
     pico.quit()
-    pin e1 = pico.input.event()
+    val e1 = pico.input.event()
     assert(e1.tag == 'quit')
     pico.quit()
-    pin e2 = pico.input.event('quit')
+    val e2 = pico.input.event('quit')
     assert(e2.tag == 'quit')
     pico.quit()
-    pin e3 = pico.input.event('quit', 100)
+    val e3 = pico.input.event('quit', 100)
     assert(e3.tag == 'quit')
     pico.quit()
-    pin e4 = pico.input.event(nil, nil)
+    val e4 = pico.input.event(nil, nil)
     assert(e4.tag == 'quit')
     pico.quit()
-    pin e5 = pico.input.event(100)
+    val e5 = pico.input.event(100)
     assert(e5.tag == 'quit')
     pico.quit()
-    pin e6 = pico.input.event('quit', -1)       ;; -1: no timeout
+    val e6 = pico.input.event('quit', -1)       ;; -1: no timeout
     assert(e6.tag == 'quit')
     ;; the filter discards the other events
     pico.quit()
@@ -55,7 +55,7 @@ do {
     assert(e8 == nil)
     ;; arguments after the second are ignored
     pico.quit()
-    pin e9 = pico.input.event('quit', 100, 'x')
+    val e9 = pico.input.event('quit', 100, 'x')
     assert(e9.tag == 'quit')
     val e10 = pico.input.event(nil, 0, [], true)
     assert(e10 == nil)
@@ -78,7 +78,7 @@ do {
     fails("invalid timeout",                                  \{ pico.input.event(-2) })
     fails("invalid event \"xxx\"",                            \{ pico.input.event('xxx') })
     fails("invalid event \"xxx\"",                            \{ pico.input.event('xxx', 0) })
-    pin e = pico.input.event(0)
+    val e = pico.input.event(0)
     assert(e.tag == 'quit')
 }
 

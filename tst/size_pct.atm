@@ -1,14 +1,14 @@
 pico.open()
 pico.set.window [ title="Size - Fullscreen" ]
 
-pin r = ['%', x=0.5, y=0.5, w=0.5, h=0.5]
+val r = ['%', x=0.5, y=0.5, w=0.5, h=0.5]
 
 ;; phy: normal -> double -> half -> normal
 print("WINDOW")
 do {
     print("normal")
     pico.set.layer(pico.layer.window)
-    pin win = pico.get.scene().dim
+    val win = pico.get.scene().dim
     pico.set.scene [ dim=['!', w=win.w*1, h=win.h*1] ]
     pico.set.layer(pico.layer.world)
     pico.output.clear()
@@ -19,7 +19,7 @@ do {
 do {
     print("double")
     pico.set.layer(pico.layer.window)
-    pin win = pico.get.scene().dim
+    val win = pico.get.scene().dim
     pico.set.scene [ dim=['!', w=win.w*2, h=win.h*2] ]
     pico.set.layer(pico.layer.world)
     pico.output.clear()
@@ -30,7 +30,7 @@ do {
 do {
     print("half")
     pico.set.layer(pico.layer.window)
-    pin win = pico.get.scene().dim
+    val win = pico.get.scene().dim
     pico.set.scene [ dim=['!', w=win.w*0.25, h=win.h*0.25] ]
     pico.set.layer(pico.layer.world)
     pico.output.clear()
@@ -41,7 +41,7 @@ do {
 do {
     print("normal")
     pico.set.layer(pico.layer.window)
-    pin win = pico.get.scene().dim
+    val win = pico.get.scene().dim
     pico.set.scene [ dim=['!', w=win.w*2, h=win.h*2] ]
     pico.set.layer(pico.layer.world)
     pico.output.clear()
@@ -70,7 +70,7 @@ do {
 print("WORLD")
 do {
     print("normal")
-    pin view = pico.get.scene()
+    val view = pico.get.scene()
     pico.set.scene [ dim=['!', w=view.dim.w*1, h=view.dim.h*1] ]
     pico.output.clear()
     pico.output.draw.rect(r)
@@ -79,7 +79,7 @@ do {
 
 do {
     print("double")
-    pin view = pico.get.scene()
+    val view = pico.get.scene()
     pico.set.scene [ dim=['!', w=view.dim.w*2, h=view.dim.h*2] ]
     pico.output.clear()
     pico.output.draw.rect(r)
@@ -88,7 +88,7 @@ do {
 
 do {
     print("half")
-    pin view = pico.get.scene()
+    val view = pico.get.scene()
     pico.set.scene [ dim=['!', w=view.dim.w*0.25, h=view.dim.h*0.25] ]
     pico.output.clear()
     pico.output.draw.rect(r)
@@ -97,7 +97,7 @@ do {
 
 do {
     print("normal")
-    pin view = pico.get.scene()
+    val view = pico.get.scene()
     pico.set.scene [ dim=['!', w=view.dim.w*2, h=view.dim.h*2] ]
     pico.output.clear()
     pico.output.draw.rect(r)

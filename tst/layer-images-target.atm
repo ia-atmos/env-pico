@@ -33,7 +33,7 @@ func same (t, mode, x, y, w, h) {
         && pico.equal(t.anchor.x,0) && pico.equal(t.anchor.y,0)
 }
 
-pin R = ['%', x=0.25, y=0.5, w=0.25, h=0.25, anchor='NW']
+val R = ['%', x=0.25, y=0.5, w=0.25, h=0.25, anchor='NW']
 
 print("grid: every sub-layer has the target")
 pin grid = pico.layer.images [
@@ -61,8 +61,8 @@ pin sub = pico.layer.sub [
     crop = ['%', x=0, y=0, w=0.5, h=0.5, anchor='NW'],
 ]
 do {
-    pin t1 = target(plain@0)
-    pin t2 = target(sub)
+    val t1 = target(plain@0)
+    val t2 = target(sub)
     assert(!same(t1, '%', 0.25, 0.5, 0.25, 0.25), "plain target")
     assert((t1@0 == t2@0) && pico.equal(t1.x,t2.x) && pico.equal(t1.y,t2.y)
         && pico.equal(t1.w,t2.w) && pico.equal(t1.h,t2.h), "plain vs sub")

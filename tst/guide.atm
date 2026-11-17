@@ -96,7 +96,7 @@ pico.set.window [ title="guide-03-03-03" ]
 val _ = 'black'
 val o = 'blue'
 val x = 'silver'
-pin PI = [
+val PI = [
     [_,_,_,o,o,o,o,_,_,_],
     [_,o,o,o,o,o,o,o,o,_],
     [_,o,x,x,x,x,x,x,o,_],
@@ -336,7 +336,7 @@ pico.check("guide-08-00-02")
 
 ;; §9.1.a: cv.pos -- percentage to raw (default 100x100 world)
 pico.close(); pico.open()
-pin pos = pico.cv.pos('!', ['%', x=0.5, y=0.5])
+val pos = pico.cv.pos('!', ['%', x=0.5, y=0.5])
 assert(pos.x == 50 && pos.y == 50)
 
 ;; §9.1.b: cv.rect -- cross-frame projection (window ! -> world %)
@@ -360,14 +360,14 @@ assert(pico.vs.rect.rect(
 ) == true)
 
 ;; §9.3.a: in.pos -- nest child point at parent's SW corner into world
-pin p = pico.in.pos(
+val p = pico.in.pos(
     ['%', x=0.5, y=0.5, w=0.5, h=0.5],
     ['%', x=0, y=1]
 )
 assert(p.x*100//1 == 25 && p.y*100//1 == 75)
 
 ;; §9.3.b: in.rect -- centered 50% child of centered 50% parent -> 25% of world
-pin rr = pico.in.rect(
+val rr = pico.in.rect(
     ['%', x=0.5, y=0.5, w=0.5, h=0.5],
     ['%', x=0.5, y=0.5, w=0.5, h=0.5]
 )
@@ -375,7 +375,7 @@ assert(rr.x*100//1 == 50 && rr.y*100//1 == 50
    && rr.w*100//1 == 25 && rr.h*100//1 == 25)
 
 ;; §9.3.c: in.dim -- 50% child of 50% parent -> 25% of world
-pin dd = pico.in.dim(
+val dd = pico.in.dim(
     ['%', x=0.5, y=0.5, w=0.5, h=0.5],
     ['%', w=0.5, h=0.5]
 )

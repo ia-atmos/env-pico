@@ -12,7 +12,7 @@ do {
     val old = pico.set.layer(img)
     pico.set.effect [ rotate=[angle=0, anchor='C'] ]
     pico.set.layer(old)
-    pin r = ['!', x=50, y=50, w=48, h=48, anchor='C']
+    val r = ['!', x=50, y=50, w=48, h=48, anchor='C']
     pico.output.draw.layer(img, r)
     pico.check("rot-flip-01")
 }
@@ -22,7 +22,7 @@ do {
     val old = pico.set.layer(img)
     pico.set.effect [ rotate=[angle=45, anchor='C'] ]
     pico.set.layer(old)
-    pin r = ['!', x=50, y=50, w=48, h=48, anchor='C']
+    val r = ['!', x=50, y=50, w=48, h=48, anchor='C']
     pico.output.draw.layer(img, r)
     pico.check("rot-flip-02")
 }
@@ -32,7 +32,7 @@ do {
     val old = pico.set.layer(img)
     pico.set.effect [ rotate=[angle=90, anchor='C'] ]
     pico.set.layer(old)
-    pin r = ['!', x=50, y=50, w=48, h=48, anchor='C']
+    val r = ['!', x=50, y=50, w=48, h=48, anchor='C']
     pico.output.draw.layer(img, r)
     pico.check("rot-flip-03")
 }
@@ -42,7 +42,7 @@ do {
     val old = pico.set.layer(img)
     pico.set.effect [ rotate=[angle=180, anchor='C'] ]
     pico.set.layer(old)
-    pin r = ['!', x=50, y=50, w=48, h=48, anchor='C']
+    val r = ['!', x=50, y=50, w=48, h=48, anchor='C']
     pico.output.draw.layer(img, r)
     pico.check("rot-flip-04")
 }
@@ -54,7 +54,7 @@ do {
     val old = pico.set.layer(img)
     pico.set.effect [ rotate=[angle=45, anchor='NW'] ]
     pico.set.layer(old)
-    pin r = ['!', x=50, y=50, w=48, h=48, anchor='C']
+    val r = ['!', x=50, y=50, w=48, h=48, anchor='C']
     pico.output.draw.layer(img, r)
     pico.check("rot-flip-05")
 }
@@ -73,7 +73,7 @@ do {
     val old = pico.set.layer(img)
     pico.set.effect [ flip="horizontal" ]
     pico.set.layer(old)
-    pin r = ['!', x=50, y=50, w=48, h=48, anchor='C']
+    val r = ['!', x=50, y=50, w=48, h=48, anchor='C']
     pico.output.draw.layer(img, r)
     pico.check("rot-flip-06")
 }
@@ -83,7 +83,7 @@ do {
     val old = pico.set.layer(img)
     pico.set.effect [ flip="vertical" ]
     pico.set.layer(old)
-    pin r = ['!', x=50, y=50, w=48, h=48, anchor='C']
+    val r = ['!', x=50, y=50, w=48, h=48, anchor='C']
     pico.output.draw.layer(img, r)
     pico.check("rot-flip-07")
 }
@@ -93,7 +93,7 @@ do {
     val old = pico.set.layer(img)
     pico.set.effect [ flip="both" ]
     pico.set.layer(old)
-    pin r = ['!', x=50, y=50, w=48, h=48, anchor='C']
+    val r = ['!', x=50, y=50, w=48, h=48, anchor='C']
     pico.output.draw.layer(img, r)
     pico.check("rot-flip-08")
 }
@@ -105,7 +105,7 @@ do {
     val old = pico.set.layer(img)
     pico.set.effect [ rotate=[angle=45, anchor='C'], flip="horizontal" ]
     pico.set.layer(old)
-    pin r = ['!', x=50, y=50, w=48, h=48, anchor='C']
+    val r = ['!', x=50, y=50, w=48, h=48, anchor='C']
     pico.output.draw.layer(img, r)
     pico.check("rot-flip-09")
 }
@@ -113,7 +113,7 @@ do {
 ;; ANIMATED ROTATION - center anchor (default)
 do {
     print("animated rotate - center anchor")
-    pin r = ['!', x=50, y=50, w=48, h=48, anchor='C']
+    val r = ['!', x=50, y=50, w=48, h=48, anchor='C']
     loop i in 72 {      ;; angle = 0, 5, ..., 355
         val angle = i * 5
         pico.output.clear()
@@ -131,7 +131,7 @@ do {
 ;; ANIMATED ROTATION - anchor outside (1.1, 1.1)
 do {
     print("animated rotate - anchor outside (1.1, 1.1)")
-    pin r = ['!', x=50, y=50, w=48, h=48, anchor='C']
+    val r = ['!', x=50, y=50, w=48, h=48, anchor='C']
     loop i in 72 {      ;; angle = 0, 5, ..., 355
         val angle = i * 5
         pico.output.clear()
@@ -149,7 +149,7 @@ do {
 ;; ANIMATED ROTATION - anchor negative (-0.1, -0.1)
 do {
     print("animated rotate - anchor negative (-0.1, -0.1)")
-    pin r = ['!', x=50, y=50, w=48, h=48, anchor='C']
+    val r = ['!', x=50, y=50, w=48, h=48, anchor='C']
     loop i in 72 {      ;; angle = 0, 5, ..., 355
         val angle = i * 5
         pico.output.clear()

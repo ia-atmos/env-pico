@@ -12,8 +12,8 @@ pico.open()
 pico.set.window [ title="Window Clip" ]
 pico.set.pencil [ style='fill' ]
 
-pin full = ['%', x=0.5, y=0.5, w=1.0, h=1.0, anchor='C']
-pin box  = ['%', x=0.5, y=0.5, w=0.5, h=0.5, anchor='C']
+val full = ['%', x=0.5, y=0.5, w=1.0, h=1.0, anchor='C']
+val box  = ['%', x=0.5, y=0.5, w=0.5, h=0.5, anchor='C']
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; PLAIN: green backdrop via the window effect (clear) colour
