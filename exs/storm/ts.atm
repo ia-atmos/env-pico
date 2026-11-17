@@ -61,8 +61,8 @@ func Boom_Vel (boom, other, G) {
     val radius    = 80
     val magnitude = 20
 
-    pin c1 = [ x=boom.x.pst,  y=boom.y.pst  ]
-    pin c2 = [ x=other.x.pst, y=other.y.pst ]
+    val c1 = [ x=boom.x.pst,  y=boom.y.pst  ]
+    val c2 = [ x=other.x.pst, y=other.y.pst ]
 
     val dist = math.sqrt(
         math.pow(c2.x - c1.x, 2) + math.pow(c2.y - c1.y, 2)
@@ -186,19 +186,16 @@ task Wheel (car_phy, offset, G) {
 ;; Player-controlled car with 2 wheels.
 ;; Exposes physics via pub.phy.
 task Car (G) {
-    ;; the task owns what it publishes
-    set pub = [
-        phy = [
-            x = [
-                pst=350, len=60, vel=0, acc=0, drag=0.95
-            ],
-            y = [
-                pst=445, len=30, vel=0, acc=0, drag=0.95
-            ],
-            clr = [ r=0x3B, g=0xBC, b=0x48 ],
+    val phy = [
+        x = [
+            pst=350, len=60, vel=0, acc=0, drag=0.95
         ],
+        y = [
+            pst=445, len=30, vel=0, acc=0, drag=0.95
+        ],
+        clr = [ r=0x3B, g=0xBC, b=0x48 ],
     ]
-    val phy = pub.phy
+    set pub = [ phy=phy ]
 
     spawn Physics(phy)
     ;; a wheel turns around each bottom corner of the car,
@@ -239,27 +236,27 @@ task Drop (cloud_phy, G) {
     val y0 = cloud_phy.y.pst + (cloud_phy.y.len / 2)
               + (DROPS_LEN0 / 2)
 
-    set pub = [
-        phy          = [
-            x = [
-                pst  = x0,
-                len  = DROPS_LEN,
-                vel  = cloud_phy.x.vel,
-                acc  = 0,
-                drag = 0.98,
-            ],
-            y = [
-                pst  = y0,
-                len  = DROPS_LEN0,
-                vel  = 0,
-                acc  = 500,
-                drag = 0.98,
-            ],
-            clr = [ r=0x98, g=0xC1, b=0xE4 ],
+    val phy = [
+        x = [
+            pst  = x0,
+            len  = DROPS_LEN,
+            vel  = cloud_phy.x.vel,
+            acc  = 0,
+            drag = 0.98,
         ],
+        y = [
+            pst  = y0,
+            len  = DROPS_LEN0,
+            vel  = 0,
+            acc  = 500,
+            drag = 0.98,
+        ],
+        clr = [ r=0x98, g=0xC1, b=0xE4 ],
+    ]
+    set pub = [
+        phy          = phy,
         has_collided = false,
     ]
-    val phy = pub.phy
 
     spawn Physics(phy)
 
@@ -334,30 +331,27 @@ task Cloud (dps_, G) {
     val xl = 100 + math.random(0, 99)
     val xv =  10 + math.random(0, 49)
     val yl =  20 + math.random(0, 49)
-    set pub = [
-        phy = [
-            x = [
-                pst  = -(w) + (xl / 2),
-                len  = xl,
-                vel  = xv,
-                acc  = 0,
-                drag = 0,
-            ],
-            y = [
-                pst  = ty + (yl / 2),
-                len  = yl,
-                vel  = 0,
-                acc  = 0,
-                drag = 0,
-            ],
-            clr = do {
-                val v = 200 - ((200 * ty) / maxy)
-                [ r=v, g=(v * 0.95) // 1, b=v ]
-            },
+    val phy = [
+        x = [
+            pst  = -(w) + (xl / 2),
+            len  = xl,
+            vel  = xv,
+            acc  = 0,
+            drag = 0,
         ],
-        dps = dps,
+        y = [
+            pst  = ty + (yl / 2),
+            len  = yl,
+            vel  = 0,
+            acc  = 0,
+            drag = 0,
+        ],
+        clr = do {
+            val v = 200 - ((200 * ty) / maxy)
+            [ r=v, g=(v * 0.95) // 1, b=v ]
+        },
     ]
-    val phy = pub.phy
+    set pub = [ phy=phy, dps=dps ]
 
     spawn Physics(phy)
 
@@ -378,7 +372,7 @@ task Cloud (dps_, G) {
         ;; blink white on :go_blink
         loop {
             await :go_blink
-            pin old = [
+            val old = [
                 r = phy.clr.r,
                 g = phy.clr.g,
                 b = phy.clr.b,
@@ -387,7 +381,7 @@ task Cloud (dps_, G) {
                 r=0xFF, g=0xFF, b=0xFF
             ]
             await 100ms
-            set phy.clr = [ r=old.r, g=old.g, b=old.b ]
+            set phy.clr = old
         }
     } with {
         ;; adjust frequency when dps changes
@@ -483,26 +477,24 @@ task Clouds (G) {
 ;; Ground explosion: invisible physics body, lasts 100ms.
 task Boom (x, G) {
     val radius = 80
-    set pub = [
-        phy = [
-            x = [
-                pst  = x,
-                len  = radius * 2,
-                vel  = 0,
-                acc  = 0,
-                drag = 0,
-            ],
-            y = [
-                pst  = (G.H + (radius * 0.2)) // 1,
-                len  = radius * 2,
-                vel  = 0,
-                acc  = 0,
-                drag = 0,
-            ],
-            clr = nil,
+    val phy = [
+        x = [
+            pst  = x,
+            len  = radius * 2,
+            vel  = 0,
+            acc  = 0,
+            drag = 0,
         ],
+        y = [
+            pst  = (G.H + (radius * 0.2)) // 1,
+            len  = radius * 2,
+            vel  = 0,
+            acc  = 0,
+            drag = 0,
+        ],
+        clr = nil,
     ]
-    val phy = pub.phy
+    set pub = [ phy=phy ]
 
     spawn Physics(phy)
     await 100ms
@@ -523,7 +515,7 @@ task Light (G, pos_ini, direction, magnitude, is_fork) {
     val d = G.PI
             * (dir - chaos + math.random(0, chaos * 2))
             / 180.0
-    pin pos_end = [
+    val pos_end = [
         x = pos_ini.x + (math.cos(d) * mag),
         y = pos_ini.y - (math.sin(d) * mag),
     ]
@@ -545,11 +537,8 @@ task Light (G, pos_ini, direction, magnitude, is_fork) {
                     val m = if fork
                         => (mag * 0.75) // 1
                         => mag
-                    ;; a copy: the next segment outlives
-                    ;; this one
                     spawn @(G.lights) Light(
-                        G, [ x=pos_end.x, y=pos_end.y ],
-                        dir, m, fork
+                        G, pos_end, dir, m, fork
                     )
 
                     ;; possible fork
@@ -620,16 +609,16 @@ task Collisions (G) {
                         ;; the two bottoms
                         val p1 = c1.pub.phy
                         val p2 = c2.pub.phy
-                        val x = ((p1.x.pst - (p1.x.len / 2))
+                        val pos = [
+                            x = ((p1.x.pst - (p1.x.len / 2))
                                  + (p2.x.pst + (p2.x.len / 2)))
-                                / 2
-                        val y = ((p1.y.pst + (p1.y.len / 2))
+                                / 2,
+                            y = ((p1.y.pst + (p1.y.len / 2))
                                  + (p2.y.pst + (p2.y.len / 2)))
-                                / 2
-                        ;; the position is built in the spawn:
-                        ;; the light outlives this block
+                                / 2,
+                        ]
                         spawn @(G.lights) Light(
-                            G, [ x=x, y=y ], 270, 50, false
+                            G, pos, 270, 50, false
                         )
                     }
                 }
@@ -644,7 +633,7 @@ task Collisions (G) {
                 if pico.vs.rect.rect(
                        phy_rect(boom.pub.phy),
                        phy_rect(car)) {
-                    pin vel = Boom_Vel(
+                    val vel = Boom_Vel(
                         boom.pub.phy, car, G
                     )
                     set car.x.vel =
@@ -663,11 +652,11 @@ task Collisions (G) {
                 ;; and half lengths, with the slack), and
                 ;; the grid with the indexes in each cell
                 pin ds = []
-                pin xs = []
-                pin ys = []
-                pin ws = []
-                pin hs = []
-                pin grid = []
+                val xs = []
+                val ys = []
+                val ws = []
+                val hs = []
+                val grid = []
                 loop _,d in G.drops {
                     val p = d.pub.phy
                     val i = #ds
@@ -769,7 +758,7 @@ task Collisions (G) {
                        && pico.vs.rect.rect(
                            phy_rect(d1.pub.phy),
                            phy_rect(boom.pub.phy)) {
-                        pin vel = Boom_Vel(
+                        val vel = Boom_Vel(
                             boom.pub.phy,
                             d1.pub.phy, G
                         )
