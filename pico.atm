@@ -165,6 +165,12 @@
 ;;      :mouse.button.dn [...]
 ;;      :mouse.button.up [...]
 ;;      :window.resize [w=, h=]
+;;      :frame [n=, us=]        for the logic of the frame: its number, from
+;;                              1, and the time since the previous frame, in
+;;                              microseconds (0 if no time passed); unlike
+;;                              `:clock`, which awakes at each piece of time
+;;                              (several times in a frame in which timers
+;;                              expire), `:frame` comes exactly once
 ;;      :draw                   to redraw the screen, between a clear and a
 ;;                              present
 ;;
@@ -175,7 +181,7 @@
 ;;
 ;; At most one real input event is emitted per frame (the others wait for the
 ;; next frames). The scripted events of PICO_ATM_KEYS and PICO_ATM_MOUSE
-;; (below) are emitted in addition, after the real one and before `:draw`: all
+;; (below) are emitted in addition, after the real one and before `:frame`: all
 ;; the entries of a frame, the keys first, each list in its order. The loop
 ;; terminates with `:quit`, with the program, or with `pico.close()`.
 ;;
@@ -2498,6 +2504,18 @@ static AStatus _pico_atmos_loop (void) {
         }
         if (st == A_OK) {
             st = _pico_atmos_script("PICO_ATM_MOUSE", frame);
+        }
+
+        // logic: `:frame [n=, us=]`, once per frame, before `:draw`
+        if (st==A_OK && _PICO_ATMOS.open) {
+            AVal evt = a_tab();
+            AVal tag = a_strz("frame");
+            a_tag(evt, tag);
+            a_dec(tag);
+            _pico_atmos_set(evt, "n",  a_int(frame));
+            _pico_atmos_set(evt, "us", a_int((int64_t)ms * 1000));
+            st = atm_emit(evt);
+            a_dec(evt);
         }
 
         // screen

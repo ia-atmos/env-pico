@@ -1,0 +1,44 @@
+;; `:frame [n=, us=]`: once per frame, before `:draw`, with the number of
+;; the frame (from 1) and the time since the previous one; `:clock` may
+;; awake several times in a frame (once per piece of time), `:frame` once.
+`setenv("PICO_ATM_FRAMES", "10:20", 0);`
+
+pico.open()
+
+var frames = 0      ;; number of :frame
+var draws  = 0      ;; number of :draw
+var clocks = 0      ;; awakes of :clock
+var us     = 0      ;; sum of `us` of :frame
+var last   = 0      ;; last `n`
+
+par :any {
+    loop f on :frame {
+        set frames = frames + 1
+        assert(f.n == last + 1, "frames count from 1, one by one")
+        assert(frames == draws + 1, ":frame comes before :draw")
+        set last = f.n
+        set us = us + f.us
+    }
+} with {
+    loop on :draw {
+        set draws = draws + 1
+        assert(draws == frames, ":draw follows its :frame")
+    }
+} with {
+    loop on :clock {
+        set clocks = clocks + 1
+    }
+} with {
+    ;; timers that expire inside frames split the time in pieces
+    loop {
+        await 7ms
+    }
+} with {
+    await :quit
+}
+
+print("frames", frames, "draws", draws, "us", us)
+assert(frames == 10)
+assert(draws  == 10)
+assert(us == 10 * 20 * 1000)
+assert(clocks > frames, "the clock awakes more often than the frames")
