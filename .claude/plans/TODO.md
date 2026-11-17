@@ -59,6 +59,18 @@ Last update: 2026-11-16 (after the migration to the pin rules of Atmos, the expl
     crops (sub-layers reading through their source) was discussed and
     not taken.
 
+17. **Back to `val`/`var` where `pin` was forced** (pin rules of
+    2026-11-17, allowed, not required): read-once results
+    (`pin e = pico.input.event()`), `var pos` + `set pos = pico.get.mouse()`
+    (about 80 lines in the tests), the rects built by 12 tasks, the save and
+    restore of a field in storm. Ask the author; keep tests identical.
+18. **Screen size**: pico cannot report the size of the display or of a
+    fullscreen window (`pico.get.window()` has fs/show/title only; the
+    fullscreen resize is ignored on purpose). Asked by `pico-frescogo`,
+    which uses a native `SDL_GetCurrentDisplayMode` meanwhile.
+19. **Flaky C timing tests in CI**: `expert_fps` aborted in run 6
+    (timing window under valgrind on GitHub), with no related change.
+
 ## B. Work that is known and not done
 
 1. **Window close in imperative programs.** With aids on and expert off,
@@ -127,8 +139,8 @@ Last update: 2026-11-16 (after the migration to the pin rules of Atmos, the expl
     keeps its own reference, the release is postponed when the block
     ends first, and `pico.get.layer()` / `pico.get.pencil().font` are
     `nil` meanwhile. A layer that was never pinned and is only the
-    current one comes back fresh from `pico.set.layer` (a `val` refuses
-    it). Open: an error at the end of the block, or a scoped
+    current one comes back fresh from `pico.set.layer` (a `val` holds it
+    since the pin rules of 2026-11-17). Open: an error at the end of the block, or a scoped
     `with pico.layer = l { ... }` if the language gets one.
 12. **`.claude/plans/`** still describes realms, keys and push/pop
     (historical; nothing was updated).
