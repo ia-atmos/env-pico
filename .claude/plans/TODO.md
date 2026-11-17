@@ -23,11 +23,13 @@ Last update: 2026-11-16 (after the migration to the pin rules of Atmos, the expl
    fields in `doc/rects.atm`). Options: operations that fill a table
    given by the program (as `pico.cv.*` already do), or results as
    plain numbers. Not decided.
-4. **Event vocabulary across bindings.** Decided: unprefixed tags
-   (signalled to the compiler session). Open: field names of key events
-   (`key='A'` + `ctrl/shift/alt` here; `name=` in sdl; `key=262,
-   name='RIGHT'` in ray) and the per-frame events (`:draw` only here;
-   `:frame` and `:draw` in ray).
+4. **Event vocabulary across bindings.** Decided: unprefixed tags, and
+   `:frame [n=, us=]` once per frame before `:draw` in every environment
+   with frames (author, 2026-11-17, "Mantém frame"; done in pico, aligned
+   with env-sdl). Open: the fields of key and mouse events (item 46 of
+   the compiler's TODO); pico's are the recommended ones. Also open, not
+   asked yet: moving `pico.atm` to `atmos.env [step, quit, mode]` (lang
+   81986e7).
 5. **Children of image / pixmap / screenshot layers.** Rejected today
    (C asserts at attach; Atmos raises an error). See
    `260710-image-pixmap-target-bug.md`.

@@ -1360,7 +1360,8 @@ On each frame, the loop emits, in this order:
 1. the time elapsed since the previous frame, which awakes timers such as
    `await 1s` and `loop on 100ms`;
 2. an input event, if any, such as `:key.dn`, `:mouse.motion`, or `:quit`;
-3. the event `:draw`, between a clear and a present, for the program to redraw
+3. the event `:frame [n=, us=]`, exactly once, for the logic of the frame;
+4. the event `:draw`, between a clear and a present, for the program to redraw
    the screen.
 
 The clear always applies to the world layer, even if the program awaits with

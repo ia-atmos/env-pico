@@ -722,6 +722,7 @@ order:
 | `:mouse.button.dn [...]` | a mouse button was pressed |
 | `:mouse.button.up [...]` | a mouse button was released |
 | `:window.resize [w=, h=]` | the window was resized |
+| `:frame [n=, us=]` | once per frame, for the logic: the number of the frame (from 1) and the time since the previous one, in microseconds |
 | `:draw` | to redraw the screen, between a clear and a present |
 
 - The input events are the same [`Event`](#types) values of
@@ -731,10 +732,13 @@ order:
   next frames.
   The scripted events of `PICO_ATM_KEYS` and `PICO_ATM_MOUSE` (see
   [Tests](#tests)) are emitted in addition, after the real event and before
-  `:draw`: all the entries of the frame, the keys first, each list in its
+  `:frame`: all the entries of the frame, the keys first, each list in its
   order.
 - The time is only emitted if it is greater than zero: a frame in which `0ms`
   passed emits no time.
+- `:frame` comes exactly once per frame, even with `0` in `us`; `:clock`
+  (the time) awakes at each piece of time, several times in a frame in which
+  timers expire. Per-frame logic goes on `:frame`.
 - The event `:draw` is a plain tag, not a table.
   The clear before it always applies to the world layer, whatever the
   current layer is when the program awaits, and the current layer remains
