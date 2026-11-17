@@ -114,7 +114,7 @@ pin s = pico.sound.load("x.wav")
 - `pin` is the explicit owner, recommended for resources; a resource may also
   be stored in a pinned table, which then owns it
   (`pin ls = [] ; set ls.bg = pico.layer.image [...]`).
-  A `val` or `var` may also hold a unpinned resource: it is released with the
+  A `val` or `var` may also hold an unpinned resource: it is released with the
   name, at the latest at the end of its block.
 - A resource is released at the end of the block that owns it.
   There is no explicit `free`: to release a resource earlier, declare it in a
@@ -198,7 +198,7 @@ In alphabetical order:
         - **table**: filled in-place (mode/anchor read from input);
           returns the same table.
         - **mode string** (`'!'`, `'%'`, `'#'`): builds and returns
-          a unpinned value; anchor defaults to `'C'` (center; Pos/Rect only).
+          an unpinned value; anchor defaults to `'C'` (center; Pos/Rect only).
     - Args are matched left-to-right against the 4-slot template
       `(L_to, to_or_mode, L_fr, fr)`. Both explicit `nil`s and
       trailing/leading omissions are accepted; a mismatched type

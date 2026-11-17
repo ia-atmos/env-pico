@@ -983,10 +983,10 @@ of two ways:
 2. When it is stored in a table that is already pinned, which then owns it
    (`set layers.bg = pico.layer.image [...]`).
 
-A `val` or `var` may also hold a unpinned resource, which is released with the
+A `val` or `var` may also hold an unpinned resource, which is released with the
 name, at the latest at the end of its block; `pin` is recommended, since it
 says who owns the resource.
-A unpinned resource that is not held by any name or table is released at once.
+An unpinned resource that is not held by any name or table is released at once.
 
 There is no explicit `free`: to release a resource earlier, we declare it in a
 block that terminates, drop the variable that holds it (`set l = nil`), or
