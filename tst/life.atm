@@ -131,8 +131,10 @@ do {
     pico.output.clear()
     pico.output.draw.rect(RED)
     assert(pico.get.scene().dim.w == 8)
-    ;; the previous layer comes back fresh: a `val` cannot hold it
-    fails("expected pinned value", \{ val old = pico.set.layer(world) })
+    ;; the previous layer comes back fresh: a `val` holds it (pin rules of
+    ;; 2026-11-17), and it is released with the name
+    val old = pico.set.layer(world)
+    assert(old != nil)
     assert(pico.get.layer() == world)
 }
 
