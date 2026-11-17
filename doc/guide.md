@@ -983,10 +983,10 @@ of two ways:
 2. When it is stored in a table that is already pinned, which then owns it
    (`set layers.bg = pico.layer.image [...]`).
 
-A `val` only refers to a resource that has an owner:
-`val l = pico.layer.empty [...]` raises
-`invalid assignment : expected pinned value`.
-A fresh resource that is neither pinned nor stored is released at once.
+A `val` or `var` may also hold a fresh resource, which is released with the
+name, at the latest at the end of its block; `pin` is recommended, since it
+says who owns the resource.
+A fresh resource that is not held by any name or table is released at once.
 
 There is no explicit `free`: to release a resource earlier, we declare it in a
 block that terminates, or remove it from the table that owns it

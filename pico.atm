@@ -61,11 +61,11 @@
 ;;      pin f = pico.font.load("x.ttf")
 ;;      pin s = pico.sound.load("x.wav")
 ;;
-;; A `val` does not own a value (`val l = pico.layer.empty [...]` raises
-;; `invalid assignment : expected pinned value`): the first declaration is a
-;; `pin`, or the resource is stored in a pinned table, which then owns it
-;; (`pin ls = [] ; set ls.bg = pico.layer.image [...]`). From then on, a
-;; `val` may refer to it.
+;; `pin` is the explicit owner, recommended for resources; a resource may
+;; also be stored in a pinned table, which then owns it
+;; (`pin ls = [] ; set ls.bg = pico.layer.image [...]`). A `val` or `var`
+;; may also hold a fresh resource (pin rules of 2026-11-17): it is released
+;; with the name, at the latest at the end of its block.
 ;;
 ;; A resource is released at the end of the block that owns it. There is no
 ;; explicit `free`: to release a resource earlier, declare it in a block that
