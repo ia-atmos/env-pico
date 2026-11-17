@@ -22,7 +22,7 @@ func shot (name, f) {
 ;; the target of a layer
 func target (l) {
     val old = pico.set.layer(l)
-    pin t = pico.get.scene().target
+    val t = pico.get.scene().target
     pico.set.layer(old)
     t
 }
