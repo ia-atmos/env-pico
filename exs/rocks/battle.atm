@@ -2,7 +2,7 @@ include "ts.atm" ;; task prototypes for Ship, Shot, Meteor
 
 ;; Left/Right ship constant parameters
 
-pin V = [
+val V = [
     l = [                           ;; left ship
         tag = :L,
         pos = 0.1,                  ;; x,y initial position
