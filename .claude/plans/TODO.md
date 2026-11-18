@@ -6,6 +6,19 @@ when it is settled, add one whenever something is left open.
 
 Last update: 2026-11-16 (after the migration to the pin rules of Atmos, the explicit `pico.open` again, and the roots as values).
 
+## Index of items (`#N`)
+
+Standing rule of the author (2026-11-18): everything put to him has a
+number `#N`, unique in this session, in order, never reused or changed;
+from another session it is `env-pico#N`. Older entries below keep their
+section numbers for what was already written.
+
+| # | Item | State |
+|---|------|-------|
+| #1 | `dim` in `pico.get.window()`: the real window size (the screen in fullscreen), for `pico-frescogo` | waiting for the author |
+| #2 | Flaky timing checks of `c/tst/expert_fps.c` under valgrind on CI: widen the bounds | waiting for the author |
+| #3 | Scripted Ctrl/Shift/Alt in `PICO_ATM_KEYS` (and Caps Lock), for `pico-frescogo` | waiting for the author |
+
 ## A. Decisions waiting for an answer
 
 1. **Packaged binary.** `atmos -o` already gives a native executable with
