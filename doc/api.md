@@ -714,7 +714,6 @@ order:
 
 | Event | Description |
 |-------|-------------|
-| `<number>` | the time passed since the previous frame, in microseconds, so that `await 1s`, `loop on 100ms`, and `loop dt on :clock` work |
 | `:quit []` | the window was closed: the loop terminates |
 | `:key.dn [key='A', ctrl=, shift=, alt=]` | a key was pressed |
 | `:key.up [...]` | a key was released |
@@ -723,6 +722,7 @@ order:
 | `:mouse.button.up [...]` | a mouse button was released |
 | `:window.resize [w=, h=]` | the window was resized |
 | `:frame [n=, us=]` | once per frame, for the logic: the number of the frame (from 1) and the time since the previous one, in microseconds |
+| `<number>` | the time passed since the previous frame, in microseconds, so that `await 1s`, `loop on 100ms`, and `loop dt on :clock` work |
 | `:draw` | to redraw the screen, between a clear and a present |
 
 - The input events are the same [`Event`](#types) values of

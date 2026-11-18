@@ -19,7 +19,8 @@ Layout:
     - reactive programs run inside the loop of pico, which emits the
       time, `:draw`, and input events (`:key.dn`, `:mouse.button.dn`, ...)
     - the clear of each frame applies to the world
-    - `:frame [n=, us=]` once per frame, for the logic, before `:draw`
+    - `:frame [n=, us=]` once per frame, for the logic, before `:draw`;
+      a frame is: input, `:frame`, the time, `:draw`
     - `pico.set.pencil [font=true]`: built-in font (was `false`)
     - `pico.in.*` (was `pico.xin.*`)
     - headless runs: `PICO_ATM_FRAMES`, `PICO_ATM_KEYS`,

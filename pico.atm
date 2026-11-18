@@ -155,9 +155,6 @@
 ;;
 ;; The loop emits, once per frame and in this order:
 ;;
-;;      <number>                the time passed, in microseconds, so that
-;;                              `await 1s` and `loop dt on :clock` work;
-;;                              not emitted in a frame in which 0ms passed
 ;;      :quit []                the window was closed: the loop terminates
 ;;      :key.dn [key='A', ctrl=, shift=, alt=]
 ;;      :key.up [...]
@@ -171,6 +168,11 @@
 ;;                              `:clock`, which awakes at each piece of time
 ;;                              (several times in a frame in which timers
 ;;                              expire), `:frame` comes exactly once
+;;      <number>                the time passed, in microseconds, so that
+;;                              `await 1s` and `loop dt on :clock` work;
+;;                              not emitted in a frame in which 0ms passed
+;;                              (after `:frame`, so that what the logic sets
+;;                              there holds for the time of the same frame)
 ;;      :draw                   to redraw the screen, between a clear and a
 ;;                              present
 ;;
@@ -2477,13 +2479,10 @@ static AStatus _pico_atmos_loop (void) {
             pico_input_event(&e, PICO_EVENT_ANY);
         }
 
-        // time
+        // time of the frame (emitted after `:frame`, below)
         Uint32 now = pico_get_now();
         int ms = (fixed > 0) ? fixed : (int)(now - prv);
         prv = now;
-        if (ms > 0) {
-            st = atm_emit(a_int((int64_t)ms * 1000));
-        }
 
         // event
         if (st==A_OK && e.type!=PICO_EVENT_NONE) {
@@ -2516,6 +2515,12 @@ static AStatus _pico_atmos_loop (void) {
             _pico_atmos_set(evt, "us", a_int((int64_t)ms * 1000));
             st = atm_emit(evt);
             a_dec(evt);
+        }
+
+        // time: after `:frame`, so that what the logic sets in `:frame`
+        // (e.g. a clock factor) holds for the time of the same frame
+        if (st==A_OK && _PICO_ATMOS.open && ms>0) {
+            st = atm_emit(a_int((int64_t)ms * 1000));
         }
 
         // screen

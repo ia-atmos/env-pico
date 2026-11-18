@@ -26,7 +26,9 @@ Last update: 2026-11-16 (after the migration to the pin rules of Atmos, the expl
 4. **Event vocabulary across bindings.** Decided: unprefixed tags, and
    `:frame [n=, us=]` once per frame before `:draw` in every environment
    with frames (author, 2026-11-17, "Mantém frame"; done in pico, aligned
-   with env-sdl). Open: the fields of key and mouse events (item 46 of
+   with env-sdl). Order inside a frame, for every environment (author,
+   2026-11-18, "sim", in `atmos-envs`): input events, `:frame`, the time,
+   `:draw`; done in pico. Open: the fields of key and mouse events (item 46 of
    the compiler's TODO); pico's are the recommended ones. Also open, not
    asked yet: moving `pico.atm` to `atmos.env [step, quit, mode]` (lang
    81986e7).
