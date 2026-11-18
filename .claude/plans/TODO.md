@@ -73,6 +73,16 @@ Last update: 2026-11-16 (after the migration to the pin rules of Atmos, the expl
 19. **Flaky C timing tests in CI**: `expert_fps` aborted in run 6
     (timing window under valgrind on GitHub), with no related change.
 
+20. **Scripted modifiers** (asked by `pico-frescogo`, which is driven by
+    CTRL+key): `PICO_ATM_KEYS` always emits `ctrl/shift/alt=false`.
+    Proposal: the scripted loop keeps the modifier state from scripted
+    `dn`/`up` of the Ctrl/Shift/Alt keys and fills the following scripted
+    events with it (same format, no new syntax). Also: no Caps Lock in
+    `pico.get.keyboard()` and the key events (minor).
+21. **Layer helper dropped**: no `pico.with.layer`; pico waits for the
+    language's `context` (session `atmos-context`, which got pico's case:
+    `leave` receiving what `enter` returned, enter/leave per resume).
+
 ## B. Work that is known and not done
 
 1. **Window close in imperative programs.** With aids on and expert off,
