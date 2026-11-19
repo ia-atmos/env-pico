@@ -15,9 +15,9 @@ section numbers for what was already written.
 
 | # | Item | State |
 |---|------|-------|
-| #1 | `dim` in `pico.get.window()`: the real window size (the screen in fullscreen), for `pico-frescogo` | waiting for the author |
-| #2 | Flaky timing checks of `c/tst/expert_fps.c` under valgrind on CI: widen the bounds | waiting for the author |
-| #3 | Scripted Ctrl/Shift/Alt in `PICO_ATM_KEYS` (and Caps Lock), for `pico-frescogo` | waiting for the author |
+| #1 | `dim` in `pico.get.window()`: the real window size (the screen in fullscreen), for `pico-frescogo` | waiting for the author: also in `pico.set.window`? |
+| #2 | Flaky timing checks of `c/tst/expert_fps.c` under valgrind on CI: widen the bounds | done: 100ms checks up to 150ms, 25ms up to 40ms, immediate up to 15ms (C and Atmos tests) |
+| #3 | Scripted Ctrl/Shift/Alt in `PICO_ATM_KEYS` (and Caps Lock), for `pico-frescogo` | done: modifiers held by scripted dn/up of their keys, CapsLock toggles, `caps` in key events and `pico.get.keyboard()` (also in C) |
 
 ## A. Decisions waiting for an answer
 
