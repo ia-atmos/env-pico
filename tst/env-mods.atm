@@ -1,0 +1,39 @@
+;; Scripted modifiers: a scripted dn/up of a Ctrl/Shift/Alt key holds or
+;; releases it, a scripted dn of CapsLock toggles it, and the following
+;; scripted keys (and pico.get.keyboard()) carry them.
+`setenv("PICO_ATM_FRAMES", "12:20", 0);`
+`setenv("PICO_ATM_KEYS", "2:dn:Left Ctrl,3:dn:R,3:up:R,4:up:Left Ctrl,5:dn:Right Shift,5:dn:A,6:up:Right Shift,6:dn:B,7:dn:CapsLock,8:dn:C,9:dn:CapsLock,10:dn:D,10:dn:Left Alt,10:dn:E", 0);`
+
+pico.open()
+
+pin got = []
+par :any {
+    loop k on :key.dn {
+        val key = k.key
+        set got@key = k
+    }
+} with {
+    loop on :frame {
+        if got.R && (got.kb_ctrl == nil) {
+            set got.kb_ctrl = pico.get.keyboard().ctrl
+        }
+    }
+} with {
+    await :quit
+}
+
+;; ctrl held from frame 2 to 4
+assert(got.R.ctrl && !got.R.shift && !got.R.alt && !got.R.caps)
+assert(got.kb_ctrl, "pico.get.keyboard() sees the scripted ctrl")
+;; the modifier key itself carries its own state
+val lctrl = got@('Left Ctrl')
+assert(lctrl.ctrl)
+;; shift held at frame 5 only
+assert(got.A.shift && !got.A.ctrl)
+assert(!got.B.shift)
+;; caps toggled on at 7, off at 9
+assert(got.C.caps && !got.C.shift)
+assert(!got.D.caps)
+;; alt pressed before E in the same frame
+assert(got.E.alt && !got.D.alt)
+print("ok")

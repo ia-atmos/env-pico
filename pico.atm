@@ -161,7 +161,7 @@
 ;; The loop emits, once per frame and in this order:
 ;;
 ;;      :quit []                the window was closed: the loop terminates
-;;      :key.dn [key='A', ctrl=, shift=, alt=]
+;;      :key.dn [key='A', ctrl=, shift=, alt=, caps=]
 ;;      :key.up [...]
 ;;      :mouse.motion    ['!', x=, y=, anchor=, left=, right=, middle=]
 ;;      :mouse.button.dn [...]
@@ -200,6 +200,11 @@
 ;;                                  (with `ms` 0, the frames are the real
 ;;                                  ones: see `pico.set.expert(true)` above)
 ;;      PICO_ATM_KEYS=f:dn:A,...    presses (dn) or releases (up) keys at frames
+;;                                  (a dn/up of 'Left Ctrl', 'Right Shift',
+;;                                  'Left Alt', ... holds or releases that
+;;                                  modifier, and a dn of 'CapsLock' toggles
+;;                                  it: the following scripted keys carry
+;;                                  them, as `pico.get.keyboard()` does)
 ;;      PICO_ATM_MOUSE=f:dn:x:y,... presses (dn) or releases (up) the left
 ;;                                  button, or only moves the mouse (mv), at
 ;;                                  the pixel (x,y) of the window, at frames
@@ -865,6 +870,42 @@ static void _pico_atmos_fill_keyboard (AVal t, Pico_Keyboard k) {
     _pico_atmos_set(t, "ctrl",  a_bool(k.ctrl));
     _pico_atmos_set(t, "shift", a_bool(k.shift));
     _pico_atmos_set(t, "alt",   a_bool(k.alt));
+    _pico_atmos_set(t, "caps",  a_bool(k.caps));
+}
+
+// Modifiers of the scripted keys (PICO_ATM_KEYS): a scripted `dn`/`up` of
+// a Ctrl/Shift/Alt key holds or releases it, and a scripted `dn` of Caps
+// Lock toggles it. They fill the scripted key events, and are added to
+// `pico.get.keyboard()`.
+static struct {
+    int lctrl, rctrl, lshift, rshift, lalt, ralt, caps;
+} _PICO_ATMOS_MODS = { 0, 0, 0, 0, 0, 0, 0 };
+
+static void _pico_atmos_mods (int dn, const char* key) {
+    struct { const char* name; int* flag; } MODS[] = {
+        { "Left Ctrl",   &_PICO_ATMOS_MODS.lctrl  },
+        { "Right Ctrl",  &_PICO_ATMOS_MODS.rctrl  },
+        { "Left Shift",  &_PICO_ATMOS_MODS.lshift },
+        { "Right Shift", &_PICO_ATMOS_MODS.rshift },
+        { "Left Alt",    &_PICO_ATMOS_MODS.lalt   },
+        { "Right Alt",   &_PICO_ATMOS_MODS.ralt   },
+    };
+    for (int i=0; i<(int)(sizeof(MODS)/sizeof(MODS[0])); i++) {
+        if (!strcmp(key, MODS[i].name)) {
+            *MODS[i].flag = dn;
+        }
+    }
+    if (dn && !strcmp(key, "CapsLock")) {
+        _PICO_ATMOS_MODS.caps = !_PICO_ATMOS_MODS.caps;
+    }
+}
+
+static Pico_Keyboard _pico_atmos_mods_add (Pico_Keyboard k) {
+    k.ctrl  = k.ctrl  || _PICO_ATMOS_MODS.lctrl  || _PICO_ATMOS_MODS.rctrl;
+    k.shift = k.shift || _PICO_ATMOS_MODS.lshift || _PICO_ATMOS_MODS.rshift;
+    k.alt   = k.alt   || _PICO_ATMOS_MODS.lalt   || _PICO_ATMOS_MODS.ralt;
+    k.caps  = k.caps  || _PICO_ATMOS_MODS.caps;
+    return k;
 }
 
 static void _pico_atmos_fill_mouse (AVal t, Pico_Mouse m) {
@@ -1355,7 +1396,7 @@ static AStatus _pico_atmos_l_get_image (AFunc* self, int argc, AVal* argv) {
 static AStatus _pico_atmos_l_get_keyboard (AFunc* self, int argc, AVal* argv) {
     _PICO_ATMOS_IN("get.keyboard")
     AVal t = a_tab();
-    _pico_atmos_fill_keyboard(t, pico_get_keyboard());
+    _pico_atmos_fill_keyboard(t, _pico_atmos_mods_add(pico_get_keyboard()));
     a_push(t);
     return A_OK;
 }
@@ -2475,10 +2516,13 @@ static AStatus _pico_atmos_script (const char* var, int frame) {
             AVal tag = a_strz((arg[0] == 'd') ? "key.dn" : "key.up");
             a_tag(e, tag);
             a_dec(tag);
+            _pico_atmos_mods(arg[0]=='d', arg+3);
+            Pico_Keyboard k = _pico_atmos_mods_add((Pico_Keyboard){0});
             _pico_atmos_set(e, "key",   a_strz(arg+3));
-            _pico_atmos_set(e, "ctrl",  a_bool(0));
-            _pico_atmos_set(e, "shift", a_bool(0));
-            _pico_atmos_set(e, "alt",   a_bool(0));
+            _pico_atmos_set(e, "ctrl",  a_bool(k.ctrl));
+            _pico_atmos_set(e, "shift", a_bool(k.shift));
+            _pico_atmos_set(e, "alt",   a_bool(k.alt));
+            _pico_atmos_set(e, "caps",  a_bool(k.caps));
             st = atm_emit(e);
             a_dec(e);
         }
@@ -2664,7 +2708,7 @@ pin pico = [
         effect   = `:value a_func(_pico_atmos_l_get_effect,   0)`,  ;; () -> [alpha=, color=, flip=, grid=, rotate=]
         expert   = `:value a_func(_pico_atmos_l_get_expert,   0)`,  ;; () -> boolean, fps
         image    = `:value a_func(_pico_atmos_l_get_image,    0)`,  ;; ([dim|mode,] path) -> Dim
-        keyboard = `:value a_func(_pico_atmos_l_get_keyboard, 0)`,  ;; () -> [key='', ctrl=, shift=, alt=]
+        keyboard = `:value a_func(_pico_atmos_l_get_keyboard, 0)`,  ;; () -> [key='', ctrl=, shift=, alt=, caps=]
         layer    = `:value a_func(_pico_atmos_l_get_layer,    0)`,  ;; () -> layer
         mouse    = `:value a_func(_pico_atmos_l_get_mouse,    0)`,  ;; ([layer,] mode|pos) -> Mouse
         now      = `:value a_func(_pico_atmos_l_get_now,      0)`,  ;; () -> ms
