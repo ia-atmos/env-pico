@@ -226,12 +226,10 @@
 // STATE
 ///////////////////////////////////////////////////////////////////////////////
 
-// A font or a sound. The struct is shared by the box and by what
-// depends on it (a pencil), so it outlives a box that is pinned.
+// A font or a sound, released with its box.
 typedef struct _PICO_ATMOS_Res {
     void* ptr;
     int   gen;          // generation of the `pico.open` that created it
-    int   rc;
     int   font;         // font or sound
 } _PICO_ATMOS_Res;
 
@@ -240,7 +238,7 @@ enum {
 };
 
 // A layer. The struct is shared by the box and by what depends on it:
-// children, sub-layers, and the binding itself for the current layer.
+// children and sub-layers.
 typedef struct _PICO_ATMOS_Lay {
     Pico_Layer*    lay;
     int            gen;
@@ -250,15 +248,17 @@ typedef struct _PICO_ATMOS_Lay {
     struct _PICO_ATMOS_Lay* up;      // parent it is attached to
     struct _PICO_ATMOS_Lay* sup;     // source of a sub-layer
     AVal           font;    // font of its pencil, as set: box, path, or nil
-    _PICO_ATMOS_Res*        fres;    // the struct of that box
+    struct _PICO_ATMOS_Lay* nxt;     // list of the structs alive (_PICO_ATMOS.lays)
+    struct _PICO_ATMOS_Lay* prv;
 } _PICO_ATMOS_Lay;
 
 static struct {
     int     open;
     int     gen;            // incremented at every `pico.open`
     int     closing;        // the program terminates: no more calls to pico
-    _PICO_ATMOS_Lay* cur;
+    _PICO_ATMOS_Lay* cur;   // the current layer: its box is open
     AVal    cur_box;
+    _PICO_ATMOS_Lay* lays;  // the structs alive, for the pencils of a font
     AVal    layer;          // the table `pico.layer`, for its two roots
     AVal    world;
     AVal    window;
@@ -294,11 +294,23 @@ static int _pico_atmos_live (int gen) {
 // RESOURCES
 ///////////////////////////////////////////////////////////////////////////////
 
-static void _pico_atmos_res_unref (_PICO_ATMOS_Res* r) {
-    if (r==NULL || --r->rc>0) {
-        return;
+// The finalizer of a font or a sound. The pencils that use a font go back
+// to the built-in font before it is released: their field `font` keeps the
+// box, which is closed, and `pico.get.pencil().font` evaluates to `nil`.
+static void _pico_atmos_res_fin (void* p) {
+    _PICO_ATMOS_Res* r = p;
+    int live = _pico_atmos_live(r->gen);
+    if (r->font) {
+        for (_PICO_ATMOS_Lay* s=_PICO_ATMOS.lays; s!=NULL; s=s->nxt) {
+            // the box is being closed: its pointer is still set
+            if (live && s->font.type==A_NAT && A_NAT_OF(s->font)->ptr==r) {
+                Pico_Layer* old = pico_set_layer(s->lay);
+                pico_set_pencil_font(NULL);
+                pico_set_layer(old);
+            }
+        }
     }
-    if (_pico_atmos_live(r->gen)) {
+    if (live) {
         if (r->font) {
             pico_font_free(r->ptr);
         } else {
@@ -308,13 +320,9 @@ static void _pico_atmos_res_unref (_PICO_ATMOS_Res* r) {
     free(r);
 }
 
-static void _pico_atmos_res_fin (void* p) {
-    _pico_atmos_res_unref(p);
-}
-
 static AVal _pico_atmos_res_new (void* ptr, int font) {
     _PICO_ATMOS_Res* r = malloc(sizeof(_PICO_ATMOS_Res));
-    *r = (_PICO_ATMOS_Res) { ptr, _PICO_ATMOS.gen, 1, font };
+    *r = (_PICO_ATMOS_Res) { ptr, _PICO_ATMOS.gen, font };
     return a_nat(r, _pico_atmos_res_fin, font ? _PICO_ATMOS_KIND_FNT : _PICO_ATMOS_KIND_SND);
 }
 
@@ -328,7 +336,15 @@ static void _pico_atmos_lay_unref (_PICO_ATMOS_Lay* s) {
         if (sup != NULL) {
             sup->subs--;
         }
-        _pico_atmos_res_unref(s->fres);
+        // out of the list before its font, which may go with it
+        if (s->prv == NULL) {
+            _PICO_ATMOS.lays = s->nxt;
+        } else {
+            s->prv->nxt = s->nxt;
+        }
+        if (s->nxt != NULL) {
+            s->nxt->prv = s->prv;
+        }
         a_dec(s->font);
         free(s);
         _pico_atmos_lay_unref(sup);
@@ -336,8 +352,25 @@ static void _pico_atmos_lay_unref (_PICO_ATMOS_Lay* s) {
     }
 }
 
+// The finalizer of a layer. If it is the current layer, the world becomes
+// the current one, in the binding and in pico, before the layer is
+// released. A root is only finalized when the program terminates, and
+// then there is no current layer.
 static void _pico_atmos_lay_fin (void* p) {
-    _pico_atmos_lay_unref(p);
+    _PICO_ATMOS_Lay* s = p;
+    if (s == _PICO_ATMOS.cur) {
+        if (s->kind == _PICO_ATMOS_ROOT) {
+            _PICO_ATMOS.cur = NULL;
+            a_clr(&_PICO_ATMOS.cur_box);
+        } else {
+            _PICO_ATMOS.cur = a_nat_ptr(_PICO_ATMOS.world);
+            if (_pico_atmos_live(s->gen)) {
+                pico_set_layer(_PICO_ATMOS.cur->lay);
+            }
+            a_cpy(&_PICO_ATMOS.cur_box, _PICO_ATMOS.world);
+        }
+    }
+    _pico_atmos_lay_unref(s);
 }
 
 // A new layer, with the boxes of its parent and of its source (or nil).
@@ -352,7 +385,11 @@ static AVal _pico_atmos_lay_new (Pico_Layer* lay, int kind, AVal vup, AVal vsup)
     _PICO_ATMOS_Lay* up  = (vup.type  == A_NIL) ? NULL : a_nat_ptr(vup);
     _PICO_ATMOS_Lay* sup = (vsup.type == A_NIL) ? NULL : a_nat_ptr(vsup);
     _PICO_ATMOS_Lay* s = malloc(sizeof(_PICO_ATMOS_Lay));
-    *s = (_PICO_ATMOS_Lay) { lay, _PICO_ATMOS.gen, 1, kind, 0, up, sup, a_nil(), NULL };
+    *s = (_PICO_ATMOS_Lay) { lay, _PICO_ATMOS.gen, 1, kind, 0, up, sup, a_nil(), _PICO_ATMOS.lays, NULL };
+    if (_PICO_ATMOS.lays != NULL) {
+        _PICO_ATMOS.lays->prv = s;
+    }
+    _PICO_ATMOS.lays = s;
     AVal box = a_nat(s, _pico_atmos_lay_fin, _PICO_ATMOS_KIND_LAY);
     if (up != NULL) {
         up->rc++;
@@ -366,13 +403,12 @@ static AVal _pico_atmos_lay_new (Pico_Layer* lay, int kind, AVal vup, AVal vsup)
     return box;
 }
 
-// Sets the box of the current layer.
+// Sets the box of the current layer. The binding refers to the box, as
+// a name: it does not make it last longer than its block, and the
+// finalizer of the layer gives the place back to the world.
 static void _pico_atmos_cur (AVal box) {
-    _PICO_ATMOS_Lay* old = _PICO_ATMOS.cur;
     _PICO_ATMOS.cur = a_nat_ptr(box);
-    _PICO_ATMOS.cur->rc++;
     a_cpy(&_PICO_ATMOS.cur_box, box);
-    _pico_atmos_lay_unref(old);
 }
 
 // The table `pico.layer`, when the binding is loaded.
@@ -395,7 +431,6 @@ static void _pico_atmos_root (const char* k, AVal v) {
 
 // Releases what the binding holds. The layers themselves go with pico.
 static void _pico_atmos_release (void) {
-    _PICO_ATMOS_Lay* cur = _PICO_ATMOS.cur;
     _PICO_ATMOS.cur = NULL;
     a_clr(&_PICO_ATMOS.cur_box);
     if (_PICO_ATMOS.closing) {
@@ -406,7 +441,6 @@ static void _pico_atmos_release (void) {
     }
     a_clr(&_PICO_ATMOS.world);
     a_clr(&_PICO_ATMOS.window);
-    _pico_atmos_lay_unref(cur);
 }
 
 static void _pico_atmos_close (void) {
@@ -1321,13 +1355,10 @@ static AStatus _pico_atmos_l_get_keyboard (AFunc* self, int argc, AVal* argv) {
     return A_OK;
 }
 
-// The box of the current layer (owned), or nil if it is gone.
+// The box of the current layer (owned).
 static AVal _pico_atmos_cur_box (void) {
-    if (_pico_atmos_is_lay(_PICO_ATMOS.cur_box) && a_nat_ptr(_PICO_ATMOS.cur_box)!=NULL) {
-        a_inc(_PICO_ATMOS.cur_box);
-        return _PICO_ATMOS.cur_box;
-    }
-    return a_nil();
+    a_inc(_PICO_ATMOS.cur_box);
+    return _PICO_ATMOS.cur_box;
 }
 
 // pico.get.layer()
@@ -1370,7 +1401,7 @@ static AStatus _pico_atmos_l_get_pencil (AFunc* self, int argc, AVal* argv) {
     _PICO_ATMOS_IN("get.pencil")
     AVal t = a_tab();
     _pico_atmos_set(t, "color", _pico_atmos_mk_color(pico_get_pencil_color()));
-    AVal font = _PICO_ATMOS.cur->font;       // nil if it is a font that is gone
+    AVal font = _PICO_ATMOS.cur->font;       // nil if it is a font that was released
     if (font.type!=A_NAT || a_nat_ptr(font)!=NULL) {
         a_inc(font);
         _pico_atmos_set(t, "font", font);
@@ -1630,11 +1661,7 @@ static AStatus _pico_atmos_l_set_pencil (AFunc* self, int argc, AVal* argv) {
         } else {
             pico_set_pencil_font((xfont == NULL) ? NULL : xfont->ptr);
         }
-        if (xfont != NULL) {
-            xfont->rc++;
-        }
-        _pico_atmos_res_unref(_PICO_ATMOS.cur->fres);
-        _PICO_ATMOS.cur->fres = xfont;
+        // the old value is released after the new one is set
         a_cpy(&_PICO_ATMOS.cur->font, dfont ? a_nil() : font);
     }
     if (style.type != A_NIL) {
