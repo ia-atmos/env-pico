@@ -56,6 +56,7 @@ typedef struct {
     unsigned ctrl  : 1;
     unsigned shift : 1;
     unsigned alt   : 1;
+    unsigned caps  : 1;     // Caps Lock is on
 } Pico_Keyboard;
 
 typedef struct {

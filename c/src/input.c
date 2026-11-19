@@ -16,6 +16,7 @@ static Pico_Keyboard _keyboard (int key, SDL_Keymod mod) {
         .ctrl  = !!(mod & KMOD_CTRL),
         .shift = !!(mod & KMOD_SHIFT),
         .alt   = !!(mod & KMOD_ALT),
+        .caps  = !!(mod & KMOD_CAPS),
     };
 }
 
