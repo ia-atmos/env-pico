@@ -176,7 +176,7 @@ void pico_open (const Pico_Window* cfg) {
                         .clip = {'%', {.5,.5,1,1}, PICO_ANCHOR_C},
                     },
                 },
-                .ing = { 0, 0 },
+                .ing = { 0 },
                 .pub = { .fs = 0 },
             },
         };

@@ -157,10 +157,10 @@ typedef struct PicoState {
         SDL_Renderer* ren;
         Pico_Layer    layer;
         struct {
-            int fs;
             int out;
         } ing;
         struct { int fs; } pub;
+        Pico_Abs_Dim old;           // dim before fullscreen, to restore
     } window;
 } PicoState;
 
@@ -172,6 +172,7 @@ extern PicoState G;
 
 void         _pico_guard      (void);
 SDL_Texture* _pico_tex_create (Pico_Abs_Dim dim);
+void _pico_window_follow (Pico_Abs_Dim di);
 
 ///////////////////////////////////////////////////////////////////////////////
 // output

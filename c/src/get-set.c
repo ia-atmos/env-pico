@@ -333,21 +333,36 @@ void pico_set_scene_clip (Pico_Rel_Rect clip) {
     _pico_output_present(0);
 }
 
-// apply an already-resolved abs dim: swap the texture and refresh
-static void _apply_scene_dim (Pico_Layer* L, Pico_Abs_Dim di) {
+// swap the window layer's texture to follow the real window, which
+// already has this size (user resize, entering/leaving fullscreen)
+void _pico_window_follow (Pico_Abs_Dim di) {
+    Pico_Layer* L = &G.window.layer;
+    if (L->scene.dim.w==di.w && L->scene.dim.h==di.h) {
+        return;
+    }
     assert(L->subs==0 && "cannot resize a layer with live sub-layers");
     L->scene.dim = di;
     assert(L->tex != NULL);
     SDL_DestroyTexture(L->tex);
     L->tex = _pico_tex_create(di);
+    _pico_output_present(0);
+}
 
+// apply an already-resolved abs dim: swap the texture and refresh
+static void _apply_scene_dim (Pico_Layer* L, Pico_Abs_Dim di) {
     if (L == &G.window.layer) {
-        assert(!G.window.pub.fs);
+        assert(!G.window.pub.fs && "cannot resize the window in fullscreen");
         SDL_SetWindowSize(G.window.win, di.w, di.h);
+        _pico_window_follow(di);
         _pico_output_present(0);
-    } else {
-        pico_output_clear();
+        return;
     }
+    assert(L->subs==0 && "cannot resize a layer with live sub-layers");
+    L->scene.dim = di;
+    assert(L->tex != NULL);
+    SDL_DestroyTexture(L->tex);
+    L->tex = _pico_tex_create(di);
+    pico_output_clear();
 }
 
 void pico_set_scene_dim (Pico_Rel_Dim dim) {
@@ -420,20 +435,28 @@ void pico_set_window (Pico_Window win) {
     pico_set_window_title(win.title);
 }
 
+// In fullscreen, the window layer follows the display: its dim is the
+// display size, and the previous dim is restored on leave.
 void pico_set_window_fs (int fs) {
     _pico_guard();
     if (fs == G.window.pub.fs) {
         return;
     }
-    G.window.ing.fs = 1;
+    Pico_Abs_Dim di;
     if (fs) {
+        G.window.old = G.window.layer.scene.dim;
         int ret = SDL_SetWindowFullscreen(G.window.win, SDL_WINDOW_FULLSCREEN_DESKTOP);
         pico_assert(ret == 0);
+        G.window.pub.fs = 1;
         pico_input_delay(50);    // TODO: required for some reason
+        SDL_GetWindowSize(G.window.win, &di.w, &di.h);
     } else {
         pico_assert(0 == SDL_SetWindowFullscreen(G.window.win, 0));
+        G.window.pub.fs = 0;
+        di = G.window.old;
+        SDL_SetWindowSize(G.window.win, di.w, di.h);
     }
-    G.window.pub.fs = fs;
+    _pico_window_follow(di);
     _pico_output_present(0);
 }
 

@@ -72,14 +72,8 @@ static int _event_handler (Pico_Event* pico, int do_exit) {
         }
 
         case PICO_EVENT_WINDOW_RESIZE: {
-            if (G.window.ing.fs) {
-                G.window.ing.fs = 0;
-            } else {
-                Pico_Rel_Dim phy = { '!', {pico->window.w, pico->window.h} };
-                Pico_Layer* old = _pico_set_layer(&G.window.layer);
-                pico_set_scene_dim(phy);
-                _pico_set_layer(old);
-            }
+            // the window already has this size: the layer follows it
+            _pico_window_follow((Pico_Abs_Dim){pico->window.w, pico->window.h});
             break;
         }
 
