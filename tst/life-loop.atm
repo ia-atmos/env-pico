@@ -1,0 +1,65 @@
+;; A layer and a font released while they are the current layer and the
+;; font of its pencil, in the loop: in a `:frame` and in a `:draw` handler.
+;; The world is the current layer again, and the loop goes on with it.
+`setenv("PICO_ATM_FRAMES", "4:20", 0);`
+
+pico.open [ title="Life loop" ]
+
+val OUT   = "../c/tst/out/"
+val FONT  = "../c/res/DejaVuSans.ttf"
+val world = pico.layer.world
+
+func bytes (path) {
+    pin f = io.open(path, "rb")
+    assert(f, "cannot open " ++ path)
+    val c = io.read(f, :all)
+    io.close(f)
+    c
+}
+
+;; a mark for the frame `n` in the current layer
+func mark (n) {
+    pico.output.draw.rect(['!', x=n*10, y=2, w=5, h=5, anchor='NW'])
+}
+
+var frames = 0
+par :any {
+    loop on :draw {
+        set frames = frames + 1
+        assert(pico.get.layer() == world, "current layer not the world")
+        do {
+            pin l = pico.layer.empty [ dim=['!',w=40,h=20] ]
+            pin f = pico.font.load(FONT)
+            pico.set.layer(l)
+            pico.set.pencil [ font=f ]
+            pico.output.draw.text("abc", ['!', x=0, y=0, h=10, anchor='NW'])
+        }
+        assert(pico.get.layer() == world)
+        do {
+            pin f = pico.font.load(FONT)
+            pico.set.pencil [ font=f ]
+            assert(pico.get.pencil().font == f)
+        }
+        assert(pico.get.pencil().font == nil)
+        mark(frames)
+    }
+} with {
+    ;; current from the start, released in the first `:frame`
+    do {
+        pin l = pico.layer.empty [ dim=['!',w=8,h=8] ]
+        pico.set.layer(l)
+        await :frame
+    }
+    assert(pico.get.layer() == world)
+    await :quit
+}
+assert(frames == 4)
+assert(pico.get.layer() == world)
+
+;; the world of the last frame: its mark only
+val got = bytes(pico.output.screenshot(pico.layer.window, OUT ++ "life-loop-01.png"))
+pico.output.clear()
+mark(4)
+pico.output.present()
+assert(got == bytes(pico.output.screenshot(pico.layer.window, OUT ++ "life-loop-02.png")))
+print("ok")

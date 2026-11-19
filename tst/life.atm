@@ -142,13 +142,58 @@ do {
         val old = pico.set.layer(l)
         assert(old == world)
         assert(pico.get.layer() == l)
-    }                               ;; postponed: it is the current layer
-    assert(pico.get.layer() == nil) ;; but its value is gone
-    pico.output.clear()
-    pico.output.draw.rect(RED)
-    assert(pico.get.scene().dim.w == 8)
-    assert(pico.set.layer(world) == nil)
+        assert(pico.get.scene().dim.w == 8)
+    }                               ;; released: the world is current again
+    assert(pico.get.layer() == world)
     assert(pico.get.scene().dim.w == 100)
+    pico.output.clear()
+    pico.output.draw.rect(RED)      ;; on the world
+    val red = shot("4-world")
+    assert(red != empty)
+    assert(pico.set.layer(world) == world)
+    assert(redraw("4-clear") == empty)
+
+    ;; the current layer is a child, in the block of its parent: the
+    ;; child goes first, then the parent
+    do {
+        pin parent = pico.layer.empty [ up=world, dim=['!',w=20,h=20], target=HALF ]
+        pin child  = pico.layer.empty [ up=parent, dim=['!',w=4,h=4], target=HALF ]
+        pico.set.layer(child)
+    }
+    assert(pico.get.layer() == world)
+    assert(redraw("4-child") == empty)
+
+    ;; the current layer is a parent, finalized while its child is alive
+    ;; (the table is pinned before it): it waits for the child
+    do {
+        pin ts = []
+        pin parent = pico.layer.empty [ up=world, dim=['!',w=20,h=20], target=HALF ]
+        set ts.child = pico.layer.empty [ up=parent, dim=['!',w=4,h=4], target=HALF ]
+        pico.set.layer(parent)
+    }
+    assert(pico.get.layer() == world)
+    assert(redraw("4-parent") == empty)
+
+    ;; the current layer leaves its table: the binding still refers to it,
+    ;; as a name, until the end of the block of the table
+    do {
+        pin ts = [ l = pico.layer.empty [ dim=['!',w=8,h=8] ] ]
+        pico.set.layer(ts.l)
+        set ts.l = nil
+        assert(pico.get.layer() != world)
+        assert(pico.get.scene().dim.w == 8)
+    }
+    assert(pico.get.layer() == world)
+    assert(pico.get.scene().dim.w == 100)
+
+    ;; the previous layer that `pico.set.layer` gives back is the world
+    do {
+        pin l = pico.layer.empty [ dim=['!',w=8,h=8] ]
+        pico.set.layer(l)
+    }
+    pin l2 = pico.layer.empty [ dim=['!',w=8,h=8] ]
+    assert(pico.set.layer(l2) == world)
+    assert(pico.set.layer(world) == l2)
 }
 
 print("5. source of a sub-layer dropped")
@@ -209,15 +254,76 @@ do {
 
 print("7. fonts and sounds")
 do {
+    val TXT = ['!', x=10, y=10, h=10, anchor='NW']
+    pico.output.draw.text("abc", TXT)
+    val builtin = shot("7-builtin")
+    assert(builtin != empty)
+    pico.output.clear()
+    pin dv = pico.font.load("../c/res/DejaVuSans.ttf")
+    pico.set.pencil [ font=dv ]
+    pico.output.draw.text("abc", TXT)
+    val dejavu = shot("7-dejavu")
+    assert(dejavu!=empty && dejavu!=builtin)
+    pico.set.pencil [ font=true ]
+    pico.output.clear()
+
     do {
         pin f = pico.font.load("../c/res/DejaVuSans.ttf")
         pico.set.pencil [ font=f ]          ;; a pinned value in a table, with no pin
-    }                               ;; postponed: the pencil uses it
-    assert(pico.get.pencil().font == nil)   ;; but its value is gone
-    pico.output.draw.text("abc", ['!', x=10, y=10, h=10, anchor='NW'])
-    assert(shot("7-text") != empty)
-    pico.set.pencil [ font=true ]
+        assert(pico.get.pencil().font == f)
+    }                               ;; released: the pencil goes back to the built-in font
+    assert(pico.get.pencil().font == nil)
+    pico.output.draw.text("abc", TXT)
+    assert(shot("7-text") == builtin)
     pico.output.clear()
+
+    ;; the font of the pencils of two layers, the current one and another
+    do {
+        pin l = pico.layer.empty [ up=world, dim=['!',w=40,h=20], target=HALF ]
+        do {
+            pin f = pico.font.load("../c/res/DejaVuSans.ttf")
+            pico.set.pencil [ font=f ]
+            val old = pico.set.layer(l)
+            pico.set.pencil [ font=f ]
+            pico.set.layer(old)
+        }
+        assert(pico.get.pencil().font == nil)
+        pico.output.draw.text("abc", TXT)
+        pico.set.layer(l)
+        assert(pico.get.pencil().font == nil)
+        pico.output.draw.text("abc", ['!', x=0, y=0, h=10, anchor='NW'])
+        pico.set.layer(world)
+        val two = shot("7-two")
+        pico.output.clear()
+        pico.set.layer(l)
+        pico.output.clear()
+        pico.set.pencil [ font=true ]
+        pico.output.draw.text("abc", ['!', x=0, y=0, h=10, anchor='NW'])
+        pico.set.layer(world)
+        pico.set.pencil [ font=true ]
+        pico.output.draw.text("abc", TXT)
+        assert(shot("7-two-true") == two)
+        pico.output.clear()
+    }
+
+    ;; a current layer and the font of its pencil, in the same block, in
+    ;; both orders: the font goes first, or the layer
+    do {
+        pin l = pico.layer.empty [ dim=['!',w=40,h=20] ]
+        pin f = pico.font.load("../c/res/DejaVuSans.ttf")
+        pico.set.layer(l)
+        pico.set.pencil [ font=f ]
+    }
+    assert(pico.get.layer() == world)
+    assert(pico.get.pencil().font == nil)
+    do {
+        pin f = pico.font.load("../c/res/DejaVuSans.ttf")
+        pin l = pico.layer.empty [ dim=['!',w=40,h=20] ]
+        pico.set.layer(l)
+        pico.set.pencil [ font=f ]
+    }
+    assert(pico.get.layer() == world)
+    assert(pico.get.pencil().font == nil)
 
     ;; the font of a layer that is dropped goes with it
     do {
