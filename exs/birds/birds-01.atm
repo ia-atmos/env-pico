@@ -1,5 +1,5 @@
 pico.open()
-pico.set.window [ title="Birds - 01 (task)" ]
+pico.set.app [ title="Birds - 01 (task)" ]
 pico.set.dim ['!', w=640, h=480]
 
 

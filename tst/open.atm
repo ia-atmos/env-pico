@@ -10,27 +10,29 @@ func fails (msg, f) {
 
 print("1. nothing is open before the program opens it")
 do {
-    fails("pico is not open", \{ pico.get.window() })
-    fails("pico is not open", \{ pico.set.window [ title="X" ] })
+    fails("pico is not open", \{ pico.get.app() })
+    fails("pico is not open", \{ pico.set.app [ title="X" ] })
     assert(pico.layer.world==nil && pico.layer.window==nil)
     pico.open()
-    val w = pico.get.window()
+    val w = pico.get.app()
     assert(w.title=="pico-SDL" && w.show==true && w.fullscreen==false)
     assert(pico.get.layer() == pico.layer.world)
     assert(pico.get.scene().dim.w == 100)
     fails("pico is already open", \{ pico.open() })
     fails("pico is already open", \{ pico.open [ title="X" ] })
-    pico.set.window [ title="Open" ]
-    assert(pico.get.window().title == "Open")
+    ;; the screen is larger than the window, fullscreen or not
+    assert(w.screen.w>=500 && w.screen.h>=500)
+    pico.set.app [ title="Open" ]
+    assert(pico.get.app().title == "Open")
 }
 
 print("2. a hidden window from its creation")
 do {
     pico.close()
     assert(pico.layer.world==nil && pico.layer.window==nil)
-    fails("pico is not open", \{ pico.get.window() })
+    fails("pico is not open", \{ pico.get.app() })
     pico.open [ title="Hidden", show=false ]
-    val w = pico.get.window()
+    val w = pico.get.app()
     assert(w.title=="Hidden" && w.show==false)
     fails("pico is already open", \{ pico.open() })
 }

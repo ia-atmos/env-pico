@@ -1,5 +1,5 @@
 pico.open()
-pico.set.window [ title="guide-hier-01" ]
+pico.set.app [ title="guide-hier-01" ]
 pico.output.clear()
 
 pico.set.pencil [ color='white', style='stroke' ]

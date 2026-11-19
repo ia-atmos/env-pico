@@ -1,5 +1,5 @@
 pico.open()
-pico.set.window [ title="Size - Fullscreen" ]
+pico.set.app [ title="Size - Fullscreen" ]
 
 pico.set.layer(pico.layer.window)
 val phy = pico.get.scene().dim
@@ -58,13 +58,13 @@ do {
 ;; phy: normal -> full -> normal
 do {
     print("full")
-    pico.set.window [ fullscreen=true ]
+    pico.set.app [ fullscreen=true ]
     ;; the window layer follows the display
     pico.set.layer(pico.layer.window)
     val d = pico.get.scene().dim
     pico.set.layer(pico.layer.world)
-    print(d.w, d.h)
-    assert(d.w>phy.w && d.h>phy.h)
+    val scr = pico.get.app().screen
+    assert(d.w==scr.w && d.h==scr.h)
     pico.output.clear()
     pico.output.draw.rect(r)
     ;; pico.check("size_raw-05")
@@ -72,12 +72,14 @@ do {
 
 do {
     print("normal")
-    pico.set.window [ fullscreen=false ]
+    pico.set.app [ fullscreen=false ]
     ;; and gets its previous dim back
     pico.set.layer(pico.layer.window)
     val d = pico.get.scene().dim
     pico.set.layer(pico.layer.world)
     assert(d.w==phy.w && d.h==phy.h)
+    val scr = pico.get.app().screen
+    assert(scr.w>phy.w && scr.h>phy.h)     ;; the screen: same when windowed
     pico.output.clear()
     pico.output.draw.rect(r)
     pico.check("size_raw-06")

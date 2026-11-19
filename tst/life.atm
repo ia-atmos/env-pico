@@ -47,7 +47,7 @@ fails("pico is not open", \{ pico.close() })
 
 ;; the first open, with the defaults
 pico.open()
-assert(pico.get.window().title == "pico-SDL")
+assert(pico.get.app().title == "pico-SDL")
 fails("pico is already open", \{ pico.open() })
 val first = pico.layer.world
 assert(type(first)=='native' && type(pico.layer.window)=='native')
@@ -384,7 +384,7 @@ fails("pico is not open", \{ pico.get.layer() })
 
 print("10. open again: the values from before are invalid")
 pico.open [ title="Life", show=true ]
-assert(pico.get.window().title == "Life")
+assert(pico.get.app().title == "Life")
 fails("invalid layer", \{ pico.set.layer(kept) })
 fails("invalid layer", \{ pico.set.layer(world) })
 fails("invalid layer", \{ pico.output.draw.layer(ksub) })

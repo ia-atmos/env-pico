@@ -1,5 +1,5 @@
 pico.open()
-pico.set.window [ title="Rect-Circle" ]
+pico.set.app [ title="Rect-Circle" ]
 pico.set.dim ['!', w=200, h=100]
 
 do {

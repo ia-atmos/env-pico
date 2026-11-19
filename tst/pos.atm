@@ -1,5 +1,5 @@
 pico.open()
-pico.set.window [ title="Pct-To-Pos" ]
+pico.set.app [ title="Pct-To-Pos" ]
 
 do {
     print("white centered rect")

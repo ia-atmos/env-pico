@@ -9,7 +9,7 @@
 ;;                expert present does not clear the window.
 
 pico.open()
-pico.set.window [ title="Window Clip" ]
+pico.set.app [ title="Window Clip" ]
 pico.set.pencil [ style='fill' ]
 
 val full = ['%', x=0.5, y=0.5, w=1.0, h=1.0, anchor='C']

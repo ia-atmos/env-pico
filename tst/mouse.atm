@@ -17,7 +17,7 @@ func mouse_w (x, y) {
 
 print("phy (500,500) -> log (50,50)")
 do {
-    pico.set.window [ title="Mouse" ]
+    pico.set.app [ title="Mouse" ]
     pico.set.layer(window)
     pico.set.scene [ dim=['!', w=500, h=500] ]
     pico.set.layer(world)

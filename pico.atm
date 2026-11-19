@@ -12,7 +12,7 @@
 ;; A program opens pico itself, with `pico.open()` or with
 ;; `pico.open [title=, fs=, show=]` (this is how a program gets a window that
 ;; is hidden or in fullscreen from its creation; afterwards, see
-;; `pico.set.window`). `main` only closes pico when the program terminates.
+;; `pico.set.app`). `main` only closes pico when the program terminates.
 ;; `pico.close()` closes it earlier, and `pico.open` is then valid again: it
 ;; is an error to call it while pico is open. All operations, except
 ;; `pico.open`, `pico.color.*`, and `pico.equal`, raise the error
@@ -1001,7 +1001,7 @@ static int _pico_atmos_enum (AVal v, const char* what, const char** names, int n
 ///////////////////////////////////////////////////////////////////////////////
 
 // Opens pico and creates what the binding holds.
-static void _pico_atmos_open (Pico_Window* win) {
+static void _pico_atmos_open (Pico_App* win) {
     pico_open(win);
     _PICO_ATMOS.open = 1;
     _PICO_ATMOS.mouse.on = 0;
@@ -1021,7 +1021,7 @@ static AStatus _pico_atmos_l_open (AFunc* self, int argc, AVal* argv) {
     if (_PICO_ATMOS.open) {
         return a_error("%s : pico is already open", _PICO_ATMOS_FN);
     }
-    Pico_Window win = { .fs=0, .show=1, .title=NULL };
+    Pico_App win = { .fs=0, .show=1, .title=NULL };
     AVal t = _PICO_ATMOS_ARG(0);
     if (t.type != A_NIL) {
         _PICO_ATMOS_TRY(_pico_atmos_tab(t, "window"));
@@ -1531,14 +1531,15 @@ static AStatus _pico_atmos_l_get_video (AFunc* self, int argc, AVal* argv) {
     return A_OK;
 }
 
-// pico.get.window()
-static AStatus _pico_atmos_l_get_window (AFunc* self, int argc, AVal* argv) {
-    _PICO_ATMOS_IN("get.window")
-    Pico_Window win = pico_get_window();
+// pico.get.app(): `screen` is the size of the display (read-only)
+static AStatus _pico_atmos_l_get_app (AFunc* self, int argc, AVal* argv) {
+    _PICO_ATMOS_IN("get.app")
+    Pico_App win = pico_get_app();
     AVal t = a_tab();
     _pico_atmos_set(t, "fullscreen", a_bool(win.fs));
     _pico_atmos_set(t, "show",       a_bool(win.show));
     _pico_atmos_set(t, "title",      a_strn(win.title));
+    _pico_atmos_set(t, "screen",     _pico_atmos_mk_dim('!', win.screen.w, win.screen.h));
     a_push(t);
     return A_OK;
 }
@@ -1775,20 +1776,20 @@ static AStatus _pico_atmos_l_set_video (AFunc* self, int argc, AVal* argv) {
     return A_OK;
 }
 
-// pico.set.window [fullscreen=, show=, title=]
-static AStatus _pico_atmos_l_set_window (AFunc* self, int argc, AVal* argv) {
-    _PICO_ATMOS_IN("set.window")
+// pico.set.app [fullscreen=, show=, title=]
+static AStatus _pico_atmos_l_set_app (AFunc* self, int argc, AVal* argv) {
+    _PICO_ATMOS_IN("set.app")
     AVal t = _PICO_ATMOS_ARG(0);
-    _PICO_ATMOS_TRY(_pico_atmos_tab(t, "window"));
+    _PICO_ATMOS_TRY(_pico_atmos_tab(t, "app"));
     AVal fs    = _pico_atmos_get(t, "fullscreen");
     AVal show  = _pico_atmos_get(t, "show");
     AVal title = _pico_atmos_get(t, "title");
     if (title.type!=A_NIL && title.type!=A_STR) {
         return a_error("%s : expected string field 'title'", _PICO_ATMOS_FN);
     }
-    if (fs.type    != A_NIL) { pico_set_window_fs(a_truthy(fs));            }
-    if (show.type  != A_NIL) { pico_set_window_show(a_truthy(show));        }
-    if (title.type != A_NIL) { pico_set_window_title(A_STR_OF(title)->s);   }
+    if (fs.type    != A_NIL) { pico_set_app_fs(a_truthy(fs));            }
+    if (show.type  != A_NIL) { pico_set_app_show(a_truthy(show));        }
+    if (title.type != A_NIL) { pico_set_app_title(A_STR_OF(title)->s);   }
     return A_OK;
 }
 
@@ -2716,7 +2717,7 @@ pin pico = [
         scene    = `:value a_func(_pico_atmos_l_get_scene,    0)`,  ;; () -> [dim=, tile=, target=, source=, clip=, clear=]
         text     = `:value a_func(_pico_atmos_l_get_text,     0)`,  ;; (dim, text) -> Dim
         video    = `:value a_func(_pico_atmos_l_get_video,    0)`,  ;; ([rect|mode,] layer|path) -> [dim=, fps=, frame=, done=]
-        window   = `:value a_func(_pico_atmos_l_get_window,   0)`,  ;; () -> [fullscreen=, show=, title=]
+        app      = `:value a_func(_pico_atmos_l_get_app,      0)`,  ;; () -> [fullscreen=, show=, title=, screen=]
     ],
 
     ;; omitted fields keep their current values
@@ -2731,7 +2732,7 @@ pin pico = [
         pencil = `:value a_func(_pico_atmos_l_set_pencil, 0)`,  ;; [color=, font=, style='fill'|'stroke']
         scene  = `:value a_func(_pico_atmos_l_set_scene,  0)`,  ;; [dim=, tile=, target=, source=, clip=, clear=]
         video  = `:value a_func(_pico_atmos_l_set_video,  0)`,  ;; (layer, frame) -> boolean
-        window = `:value a_func(_pico_atmos_l_set_window, 0)`,  ;; [fullscreen=, show=, title=]
+        app    = `:value a_func(_pico_atmos_l_set_app,    0)`,  ;; [fullscreen=, show=, title=]
     ],
 
     ;; Each constructor evaluates to a new layer:

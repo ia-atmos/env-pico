@@ -1,7 +1,7 @@
 pico.open()
 
 val phy = ['!', w=480, h=480]
-pico.set.window [ title="Grid" ]
+pico.set.app [ title="Grid" ]
 pico.set.layer(pico.layer.window)
 pico.set.scene [ dim=phy ]
 pico.set.layer(pico.layer.world)

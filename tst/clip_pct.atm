@@ -1,5 +1,5 @@
 pico.open()
-pico.set.window [ title="Clip" ]
+pico.set.app [ title="Clip" ]
 
 val r1 = ['%', x=0.3, y=0.3, w=0.5, h=0.5]
 

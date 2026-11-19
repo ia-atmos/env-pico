@@ -1,5 +1,5 @@
 pico.open()
-pico.set.window [ title="Expert FPS" ]
+pico.set.app [ title="Expert FPS" ]
 
 ;; test 1: returns ms
 val ms = pico.set.expert(true, 40)

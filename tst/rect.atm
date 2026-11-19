@@ -1,5 +1,5 @@
 pico.open()
-pico.set.window [ title="Rect" ]
+pico.set.app [ title="Rect" ]
 
 do {
     print("centered rect")

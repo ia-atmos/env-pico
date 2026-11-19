@@ -1,5 +1,5 @@
 pico.open()
-pico.set.window [ title="Get-Set" ]
+pico.set.app [ title="Get-Set" ]
 pico.set.layer(pico.layer.window)
 pico.set.scene [ dim=['!', w=640, h=480] ]
 pico.set.layer(pico.layer.world)
@@ -86,9 +86,9 @@ do {
     pico.set.layer(pico.layer.window)
     pico.set.effect [ color=['!', r=0x12, g=0x34, b=0x56, a=0x78] ]
     pico.set.layer(pico.layer.world)
-    val w1 = pico.get.window()
-    pico.set.window(w1)
-    val w2 = pico.get.window()
+    val w1 = pico.get.app()
+    pico.set.app(w1)
+    val w2 = pico.get.app()
     assert(w2.fullscreen == w1.fullscreen)
     assert(w2.title == w1.title)
     pico.set.layer(pico.layer.window)

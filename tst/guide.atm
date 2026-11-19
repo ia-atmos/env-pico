@@ -13,11 +13,11 @@ pico.open()
 ;;;
 ;;;
 
-pico.set.window [ title="guide-02-01-01" ]
+pico.set.app [ title="guide-02-01-01" ]
 pico.check("guide-02-01-01")
 
 ;; §2.2: configure window and view
-pico.set.window [ title = "guide-02-02-01" ]
+pico.set.app [ title = "guide-02-02-01" ]
 pico.set.layer(pico.layer.window)
 pico.set.scene [ dim=[ '!', w=200, h=200 ] ]
 pico.set.layer(pico.layer.world)
@@ -28,13 +28,13 @@ pico.check("guide-02-02-01")
 
 ;; §2.2 (cont): pico.set.dim shortcut (same visual)
 pico.set.dim [ '!', w=200, h=200 ]
-pico.set.window [ title="guide-02-02-01 (dim)" ]
+pico.set.app [ title="guide-02-02-01 (dim)" ]
 pico.check("guide-02-02-01")
 
 ;; §2.3: close and reopen
 pico.close()
 pico.open()
-pico.set.window [ title="guide-02-03-01" ]
+pico.set.app [ title="guide-02-03-01" ]
 pico.check("guide-02-01-01")
 
 ;;-----------------------------------------------------------------------------
@@ -42,22 +42,22 @@ pico.check("guide-02-01-01")
 ;;-----------------------------------------------------------------------------
 
 ;; §3.1.a: pixel
-pico.set.window [ title="guide-03-01-01" ]
+pico.set.app [ title="guide-03-01-01" ]
 pico.output.draw.pixel [ '!', x=50, y=50 ]
 pico.check("guide-03-01-01")
 
 ;; §3.1.b: rect added on top of pixel (no clear)
-pico.set.window [ title="guide-03-01-02" ]
+pico.set.app [ title="guide-03-01-02" ]
 pico.output.draw.rect [ '!', x=20, y=20, w=30, h=30 ]
 pico.check("guide-03-01-02")
 
 ;; §3.2.a: clear erases previous shapes
-pico.set.window [ title="guide-03-02-01" ]
+pico.set.app [ title="guide-03-02-01" ]
 pico.output.clear()
 pico.check("guide-02-01-01")
 
 ;; §3.2.b: yellow background, red rect
-pico.set.window [ title="guide-03-02-02" ]
+pico.set.app [ title="guide-03-02-02" ]
 pico.set.effect [ color='yellow' ]
 pico.set.pencil [ color='red'    ]
 pico.output.clear()
@@ -65,7 +65,7 @@ pico.output.draw.rect [ '!', x=50, y=50, w=50, h=50 ]
 pico.check("guide-03-02-02")
 
 ;; §3.2.c: silver pixel (0xCCCCCC) + green pixel (percent mode with alpha)
-pico.set.window [ title="guide-03-02-03" ]
+pico.set.app [ title="guide-03-02-03" ]
 pico.set.pencil [ color = 0xCCCCCC ]
 pico.output.draw.pixel [ '!', x=26, y=26 ]
 pico.set.pencil [ color=[ '%', r=0, g=0.5, b=0, a=0.5 ] ]
@@ -75,24 +75,24 @@ pico.check("guide-03-02-03")
 ;; §3.2.d: restart resets state
 pico.close()
 pico.open()
-pico.set.window [ title="guide-03-02-04" ]
+pico.set.app [ title="guide-03-02-04" ]
 pico.check("guide-02-01-01")
 
 ;; §3.3.a: two texts, second uses DejaVu
-pico.set.window [ title="guide-03-03-01" ]
+pico.set.app [ title="guide-03-03-01" ]
 pico.output.draw.text("Hello", ['!', x=50, y=33, h=30])
 pico.set.pencil [ font='../c/res/DejaVuSans.ttf' ]
 pico.output.draw.text("Hello", ['!', x=50, y=66, h=30])
 pico.check("guide-03-03-01")
 
 ;; §3.3.b: image (clear + draw)
-pico.set.window [ title="guide-03-03-02" ]
+pico.set.app [ title="guide-03-03-02" ]
 pico.output.clear()
 pico.output.draw.image('../c/res/open.png', ['!', x=50, y=50])
 pico.check("guide-03-03-02")
 
 ;; §3.3.c: pixmap (PI = 10x10 blue circle with silver pi inside)
-pico.set.window [ title="guide-03-03-03" ]
+pico.set.app [ title="guide-03-03-03" ]
 val _ = 'black'
 val o = 'blue'
 val x = 'silver'
@@ -119,7 +119,7 @@ pico.check("guide-03-03-03")
 ;; §4: pixel + three rects with different anchors (50% alpha)
 pico.close()
 pico.open()
-pico.set.window [ title="guide-04-00-01" ]
+pico.set.app [ title="guide-04-00-01" ]
 pico.set.pencil [ color='white' ]
 pico.output.draw.pixel [ '%', x=0.5, y=0.5 ]
 pico.set.pencil [ color=pico.color.alpha('red',   0x80) ]
@@ -133,7 +133,7 @@ pico.check("guide-04-00-01")
 ;; §4.1: tile mode (5x5 tiles of 20x20 px)
 pico.close()
 pico.open()
-pico.set.window [ title="guide-04-01-01" ]
+pico.set.app [ title="guide-04-01-01" ]
 pico.set.scene [
     tile = [ '!', w=20, h=20 ],
     dim  = [ '#', w=5, h=5 ],
@@ -148,14 +148,14 @@ pico.check("guide-04-01-01")
 
 ;; §5: target moves world to a smaller bottom-right region
 pico.close(); pico.open()
-pico.set.window [ title="guide-05-00-01" ]
+pico.set.app [ title="guide-05-00-01" ]
 pico.output.draw.image('../c/res/open.png',
     ['%', x=0.5, y=0.5, w=0.5, h=0.5])
 pico.set.scene [ target = ['%', x=0.8, y=0.8, w=0.3, h=0.2] ]
 pico.check("guide-05-00-01")
 
 ;; §5: source crops a region of the world (continues from previous state)
-pico.set.window [ title="guide-05-00-02" ]
+pico.set.app [ title="guide-05-00-02" ]
 pico.set.scene [
     source = ['%', x=0.5, y=0.5, w=0.4, h=0.4],
 ]
@@ -163,7 +163,7 @@ pico.check("guide-05-00-02")
 
 ;; §5: clip restricts drawing to a small center region
 pico.close(); pico.open()
-pico.set.window [ title="guide-05-00-03" ]
+pico.set.app [ title="guide-05-00-03" ]
 pico.set.scene [ clip = ['%', x=0.5, y=0.5, w=0.25, h=0.25] ]
 pico.output.draw.image('../c/res/open.png',
     ['%', x=0.5, y=0.5, w=0.5, h=0.5])
@@ -171,7 +171,7 @@ pico.check("guide-05-00-03")
 
 ;; §5.1.a: restart with centered image and black window background
 pico.close(); pico.open()
-pico.set.window [ title="guide-05-01-01" ]
+pico.set.app [ title="guide-05-01-01" ]
 pico.set.layer(pico.layer.window)
 pico.set.effect [ color='black' ]
 pico.set.layer(pico.layer.world)
@@ -180,17 +180,17 @@ pico.output.draw.image('../c/res/open.png',
 pico.check("guide-05-01-01")
 
 ;; §5.1.b: source crop (w=h=0.5) -> 2x zoom in
-pico.set.window [ title="guide-05-01-02" ]
+pico.set.app [ title="guide-05-01-02" ]
 pico.set.scene [ source = ['%', x=0.5, y=0.5, w=0.5, h=0.5] ]
 pico.check("guide-05-01-02")
 
 ;; §5.1.c: source double (w=h=2) -> 1/2 zoom out
-pico.set.window [ title="guide-05-01-03" ]
+pico.set.app [ title="guide-05-01-03" ]
 pico.set.scene [ source = ['%', x=0.5, y=0.5, w=2, h=2] ]
 pico.check("guide-05-01-03")
 
 ;; §5.1.d: shift source offset -> scroll
-pico.set.window [ title="guide-05-01-04" ]
+pico.set.app [ title="guide-05-01-04" ]
 pico.set.scene [ source = ['%', x=0.8, y=0.2, w=2, h=2] ]
 pico.check("guide-05-01-04")
 
@@ -200,7 +200,7 @@ pico.check("guide-05-01-04")
 
 ;; §6.1.a: 3 pixels at distinct horizontal positions (delays omitted in tests)
 pico.close(); pico.open()
-pico.set.window [ title="guide-06-01-01" ]
+pico.set.app [ title="guide-06-01-01" ]
 pico.output.draw.pixel [ '%', x=0.25, y=0.5 ]
 pico.output.draw.pixel [ '%', x=0.50, y=0.5 ]
 pico.output.draw.pixel [ '%', x=0.75, y=0.5 ]
@@ -208,7 +208,7 @@ pico.check("guide-06-01-01")
 
 ;; §6.1.b: circle drawn pixel-by-pixel
 pico.output.clear()
-pico.set.window [ title="guide-06-01-02" ]
+pico.set.app [ title="guide-06-01-02" ]
 loop i in (1,400) {
     val rad = i * math.pi / 180
     pico.output.draw.pixel [ '%',
@@ -220,7 +220,7 @@ pico.check("guide-06-01-02")
 
 ;; §6.3: image (pico.input.loop omitted; would block tests)
 pico.output.clear()
-pico.set.window [ title="guide-06-03-01" ]
+pico.set.app [ title="guide-06-03-01" ]
 pico.output.draw.image('../c/res/open.png',
     ['%', x=0.5, y=0.5, w=0.5, h=0.5])
 pico.check("guide-06-03-01")
@@ -241,14 +241,14 @@ pico.set.pencil [ color=[ r=0xCE, g=0x11, b=0x26 ] ]
 pico.output.draw.rect [ '%', x=0.67, y=0.0, w=0.33, h=1.0, anchor='NW' ]
 
 ;; §7.2.a: composite flag twice on the world
-pico.set.window [ title="guide-07-02-01" ]
+pico.set.app [ title="guide-07-02-01" ]
 pico.set.layer(pico.layer.world)
 pico.output.draw.layer(flag, ['%', x=0.33, y=0.33, w=0.2])
 pico.output.draw.layer(flag, ['%', x=0.66, y=0.66, w=0.5])
 pico.check("guide-07-02-01")
 
 ;; §7.2.b: rotate + flip flag, draw at top-right
-pico.set.window [ title="guide-07-02-02" ]
+pico.set.app [ title="guide-07-02-02" ]
 pico.set.layer(flag)
 pico.set.effect [
     flip   = 'horizontal',
@@ -260,7 +260,7 @@ pico.output.draw.layer(flag, ['%', x=0.75, y=0.25, w=0.3])
 pico.check("guide-07-02-02")
 
 ;; §7.2.c: dim flag with alpha (reset transforms), draw enlarged-centered
-pico.set.window [ title="guide-07-02-03" ]
+pico.set.app [ title="guide-07-02-03" ]
 pico.set.layer(flag)
 pico.set.effect [
     rotate = [angle=0],
@@ -272,7 +272,7 @@ pico.output.draw.layer(flag, ['%', x=0.5, y=0.5, w=0.6])
 pico.check("guide-07-02-03")
 
 ;; §7.3: sub-layers cropping each stripe of the flag
-pico.set.window [ title="guide-07-03-01" ]
+pico.set.app [ title="guide-07-03-01" ]
 pin blue   = pico.layer.sub [ sup=flag, crop=['%', x=0.25, y=0.5, w=0.1, h=0.15] ]
 pin yellow = pico.layer.sub [ sup=flag, crop=['%', x=0.50, y=0.5, w=0.1, h=0.15] ]
 pin red    = pico.layer.sub [ sup=flag, crop=['%', x=0.75, y=0.5, w=0.1, h=0.15] ]
@@ -284,7 +284,7 @@ pico.check("guide-07-03-01")
 
 ;; §7.4: hierarchy -- root has image (top) and panel (bottom); panel has 2 texts
 pico.close(); pico.open()
-pico.set.window [ title="guide-07-04-01" ]
+pico.set.app [ title="guide-07-04-01" ]
 pin pic = pico.layer.image [
     up=pico.layer.world, path="../c/res/open.png", target=['%', x=0.3, y=0.3, w=0.4],
 ]
@@ -306,7 +306,7 @@ pico.check("guide-07-04-02")
 ;; §7.5: memory -- no push/pop: a layer lives while its value is referenced
 ;;                (delay omitted in tests)
 pico.close(); pico.open()
-pico.set.window [ title="guide-07-05-01" ]
+pico.set.app [ title="guide-07-05-01" ]
 loop i in (1,5) {
     pico.output.clear()
     pico.output.draw.text(i, ['%', x=0.5, y=0.5, h=0.7])
@@ -319,14 +319,14 @@ loop i in (1,5) {
 
 ;; §8.a: expert mode buffers draws (delays omitted in tests)
 pico.close(); pico.open()
-pico.set.window [ title="guide-08-00-01" ]
+pico.set.app [ title="guide-08-00-01" ]
 pico.set.expert(true)
 pico.output.draw.rect [ '%', x=0.33, y=0.33, w=0.4, h=0.4 ]
 pico.output.draw.rect [ '%', x=0.66, y=0.66, w=0.4, h=0.4 ]
 pico.check("guide-02-01-01")
 
 ;; §8.b: present flushes buffered draws
-pico.set.window [ title="guide-08-00-02" ]
+pico.set.app [ title="guide-08-00-02" ]
 pico.output.present()
 pico.check("guide-08-00-02")
 
@@ -387,7 +387,7 @@ assert(dd.w*100//1 == 25 && dd.h*100//1 == 25)
 
 ;; §10.1.a: screenshot to a file (returns the path)
 pico.close(); pico.open()
-pico.set.window [ title="guide-10-01-01" ]
+pico.set.app [ title="guide-10-01-01" ]
 pico.set.pencil [ color='red' ]
 pico.output.draw.rect [ '%', x=0.5, y=0.5, w=0.5, h=0.5 ]
 val path = pico.output.screenshot(pico.layer.window, "../c/tst/out/guide-10-01-01.png")
@@ -401,15 +401,15 @@ pico.output.screenshot(pico.layer.window, "../c/tst/out/guide-10-01-02.png",
 ;; is unchanged, so a follow-up window check would mismatch)
 
 ;; §10.1.c: screenshot a layer into a new layer, then redraw it
-pico.set.window [ title="guide-10-01-03" ]
+pico.set.app [ title="guide-10-01-03" ]
 pin snap = pico.layer.screenshot [ sup=pico.layer.window ]
 pico.output.draw.layer(snap, ['%', x=0.5, y=0.5, w=0.3])
 pico.check("guide-10-01-03")
 
 ;; §10.3: fullscreen toggle
-pico.set.window [ fullscreen=true ]
-assert(pico.get.window().fullscreen == true)
-pico.set.window [ fullscreen=false ]
-assert(pico.get.window().fullscreen == false)
+pico.set.app [ fullscreen=true ]
+assert(pico.get.app().fullscreen == true)
+pico.set.app [ fullscreen=false ]
+assert(pico.get.app().fullscreen == false)
 
 pico.close()

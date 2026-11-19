@@ -1,7 +1,7 @@
 val W, H = 640, 480
 
 pico.open()
-pico.set.window [ title="The Battle of Ships" ]
+pico.set.app [ title="The Battle of Ships" ]
 pico.set.dim ['!', w=640, h=480]
 
 math.randomseed(os.time())

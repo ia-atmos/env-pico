@@ -1,5 +1,5 @@
 pico.open()
-pico.set.window [ title="Birds - 09 (blink)" ]
+pico.set.app [ title="Birds - 09 (blink)" ]
 pico.set.dim ['!', w=640, h=480]
 
 

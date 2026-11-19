@@ -1,7 +1,7 @@
 pico.open()
 val phy = ['!', w=100, h=100]
 val log = ['!', w=10, h=10]
-pico.set.window [ title="Pixmap" ]
+pico.set.app [ title="Pixmap" ]
 pico.set.layer(pico.layer.window)
 pico.set.scene [ dim=phy ]
 pico.set.layer(pico.layer.world)

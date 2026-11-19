@@ -1,5 +1,5 @@
 pico.open()
-pico.set.window [ title="Birds - 07 (collision)" ]
+pico.set.app [ title="Birds - 07 (collision)" ]
 pico.set.dim ['!', w=640, h=480]
 
 

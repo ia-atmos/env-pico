@@ -1,5 +1,5 @@
 pico.open()
-pico.set.window [ title="Birds - 11 (pause)" ]
+pico.set.app [ title="Birds - 11 (pause)" ]
 pico.set.dim ['!', w=640, h=480]
 
 

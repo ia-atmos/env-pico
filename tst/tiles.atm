@@ -12,7 +12,7 @@ func mouse_w (x, y) {
 val phy  = ['!', w=160, h=160]
 val log  = ['#', w=4, h=4]
 val tile = ['!', w=4, h=4]
-pico.set.window [ title="Tiles" ]
+pico.set.app [ title="Tiles" ]
 pico.set.layer(pico.layer.window)
 pico.set.scene [ dim=phy ]
 pico.set.layer(pico.layer.world)

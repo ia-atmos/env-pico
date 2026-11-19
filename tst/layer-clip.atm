@@ -2,7 +2,7 @@
 ;; world.scene.src y-overflow (5), child layer src y-overflow (6).
 
 pico.open()
-pico.set.window [ title="Layer clip" ]
+pico.set.app [ title="Layer clip" ]
 pico.set.effect [ color='white' ]
 pico.output.clear()
 

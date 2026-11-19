@@ -1,5 +1,5 @@
 pico.open()
-pico.set.window [ title="Style" ]
+pico.set.app [ title="Style" ]
 pico.set.layer(pico.layer.window)
 pico.set.scene [ dim=['!', w=640, h=480] ]
 pico.set.layer(pico.layer.world)

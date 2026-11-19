@@ -1,7 +1,7 @@
 pico.open()
 val phy = ['!', w=200, h=200]
 val log = ['!', w=10, h=10]
-pico.set.window [ title="Anchoring..." ]
+pico.set.app [ title="Anchoring..." ]
 pico.set.layer(pico.layer.window)
 pico.set.scene [ dim=phy ]
 pico.set.layer(pico.layer.world)

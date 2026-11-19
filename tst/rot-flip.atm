@@ -1,5 +1,5 @@
 pico.open()
-pico.set.window [ title="Rotate / Flip" ]
+pico.set.app [ title="Rotate / Flip" ]
 pico.set.effect [ color='white' ]
 
 ;; Create a layer from image for rotate/flip tests

@@ -2,10 +2,10 @@ pico.open()
 
 ;; TITLE
 print("title: set and get")
-pico.set.window [ title="Test Title" ]
-val win = pico.get.window()
+pico.set.app [ title="Test Title" ]
+val win = pico.get.app()
 assert(win.title == "Test Title", "title mismatch: " ++ tostring(win.title))
-pico.set.window [ title="View Raw" ]
+pico.set.app [ title="View Raw" ]
 
 pico.set.layer(pico.layer.window)
 val window = pico.get.scene().dim

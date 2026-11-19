@@ -1,5 +1,5 @@
 pico.open()
-pico.set.window [ title="View Target" ]
+pico.set.app [ title="View Target" ]
 
 ;; 01: target = bottom-right quadrant, draw centered rect
 do {
