@@ -95,7 +95,7 @@ You may click the image to zoom in.
 
 The call also accepts a table with the initial window title, fullscreen
 state, and visibility, as in `pico.open [ title="Hello" ]`.
-Afterwards, we change them with `pico.set.window`.
+Afterwards, we change them with `pico.set.app`.
 
 ### 2.2. Configure
 
@@ -1625,32 +1625,36 @@ pico.output.sound(snd)
 To enter fullscreen mode:
 
 ```
-pico.set.window [ fullscreen=true ]
+pico.set.app [ fullscreen=true ]
 ```
 
 To leave fullscreen mode:
 
 ```
-pico.set.window [ fullscreen=false ]
+pico.set.app [ fullscreen=false ]
 ```
 
-The current fullscreen state can be queried with `pico.get.window()`:
+The current fullscreen state can be queried with `pico.get.app()`:
 
 ```
-val w = pico.get.window()
+val w = pico.get.app()
 print(w.fullscreen)     ;; --> false
 ```
 
-In fullscreen, the window layer follows the display: its `dim` is the
-display size, and the previous size comes back on leave.
-The world keeps its logical size and is stretched as usual:
+The field `screen` holds the size of the display, fullscreen or not:
 
 ```
-pico.set.window [ fullscreen=true ]
-pico.set.layer(pico.layer.window)
-val d = pico.get.scene().dim        ;; e.g., w=1920, h=1080
-pico.set.layer(pico.layer.world)
-pico.set.scene [ dim=['!', w=160, h=90] ]   ;; same proportions: no distortion
+val scr = pico.get.app().screen     ;; e.g., w=1920, h=1080
+```
+
+In fullscreen, the window layer follows the display: its `dim` is the
+size of the screen, and the previous size comes back on leave.
+The world keeps its logical size and is stretched as usual, so we may
+give it the proportions of the screen to avoid distortion:
+
+```
+pico.set.app [ fullscreen=true ]
+pico.set.scene [ dim=['!', w=160, h=90] ]   ;; world: same proportions
 ```
 
 The window cannot be resized (`dim` on the window layer) while in

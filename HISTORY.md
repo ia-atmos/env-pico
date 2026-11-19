@@ -28,6 +28,12 @@ Layout:
 - resizing a layer with live sub-layers is an error
 - fullscreen: the window layer follows the display (its `dim` is the
   display size); the previous `dim` is restored on leave
+- `pico.get.app`, `pico.set.app`: replace `pico.get.window`,
+  `pico.set.window` (in C, `Pico_App`, `pico_get_app*`, `pico_set_app*`
+  replace `Pico_Window`, `pico_get_window*`, `pico_set_window*`), not to
+  be confused with the window layer
+    - new read-only field `screen` (C: `pico_get_app_screen`): the size
+      of the display, fullscreen or not
 - games copied in: `exs/birds/`, `exs/rocks/`, `exs/storm/`
 
 Modifications (C API):

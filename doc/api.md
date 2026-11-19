@@ -309,8 +309,11 @@ In alphabetical order:
           built rect (string-form / nil / no-arg). Only
           `mode`/`w`/`h` are meaningful for dim use; `x`/`y`
           may be present (zero by default).
-    - **pico.get.window**: Gets window configuration.
-        - `pico.get.window () -> [ fullscreen: boolean, show: boolean, title: string ]`
+    - **pico.get.app**: Gets the state of the application (its window
+      on the desktop and the screen).
+        - `pico.get.app () -> [ fullscreen: boolean, show: boolean, title: string, screen: Dim ]`
+        - `screen` is the size of the display in pixels, fullscreen or
+          not. It is read-only: `pico.set.app` ignores it.
 - **pico.in**
     - Composes a child value (`in`) onto a parent rect (`out`) and
       returns a flat value (no parent reference) that resolves to
@@ -473,7 +476,7 @@ In alphabetical order:
     - It is an error to open pico twice with no `pico.close` in between.
     - The fields create the window hidden or in fullscreen from the start:
       `pico.open [show=false]`.
-      Afterwards, `pico.set.window` changes the window that is open.
+      Afterwards, `pico.set.app` changes the window that is open.
     - The current layer is the world.
 - **pico.output**
     - **pico.output.clear**: Clears screen.
@@ -629,9 +632,9 @@ In alphabetical order:
         - `pico.set.video (video: Layer, frame: integer) -> boolean`
         - `video` must be a layer created by `pico.layer.video`.
         - Returns `false` if the frame is past the end of the video.
-    - **pico.set.window**: Sets window configuration.
+    - **pico.set.app**: Sets the state of the application.
         ```
-        pico.set.window [
+        pico.set.app [
             fullscreen: boolean,    -- fullscreen mode
             show:       boolean,    -- window visibility
             title:      string,     -- window title
