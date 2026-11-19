@@ -1640,3 +1640,18 @@ The current fullscreen state can be queried with `pico.get.window()`:
 val w = pico.get.window()
 print(w.fullscreen)     ;; --> false
 ```
+
+In fullscreen, the window layer follows the display: its `dim` is the
+display size, and the previous size comes back on leave.
+The world keeps its logical size and is stretched as usual:
+
+```
+pico.set.window [ fullscreen=true ]
+pico.set.layer(pico.layer.window)
+val d = pico.get.scene().dim        ;; e.g., w=1920, h=1080
+pico.set.layer(pico.layer.world)
+pico.set.scene [ dim=['!', w=160, h=90] ]   ;; same proportions: no distortion
+```
+
+The window cannot be resized (`dim` on the window layer) while in
+fullscreen.

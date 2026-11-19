@@ -26,6 +26,8 @@ Layout:
     - headless runs: `PICO_ATM_FRAMES`, `PICO_ATM_KEYS`,
       `PICO_ATM_MOUSE`, `PICO_ATM_SHOT`
 - resizing a layer with live sub-layers is an error
+- fullscreen: the window layer follows the display (its `dim` is the
+  display size); the previous `dim` is restored on leave
 - games copied in: `exs/birds/`, `exs/rocks/`, `exs/storm/`
 
 Modifications (C API):

@@ -637,6 +637,10 @@ In alphabetical order:
             title:      string,     -- window title
         ]
         ```
+        - In fullscreen, the window layer follows the display: its scene
+          `dim` is the display size, and the previous `dim` is restored
+          on leave. The window layer cannot be resized while in
+          fullscreen.
 - **pico.sound**
     - **pico.sound.load**: Loads a sound from a file.
         - `pico.sound.load (path: string) -> Sound`
