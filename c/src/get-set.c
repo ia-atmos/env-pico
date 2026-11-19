@@ -1,5 +1,6 @@
 #include <assert.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <alloca.h>
 
@@ -445,6 +446,15 @@ void pico_set_window_fs (int fs) {
     Pico_Abs_Dim di;
     if (fs) {
         G.window.old = G.window.layer.scene.dim;
+        if (getenv("PICO_TESTS") != NULL) {
+            // a headless display has no window manager to make the
+            // window fullscreen: SDL reports the display size, but the
+            // real window keeps its size. Resize it by hand first.
+            SDL_DisplayMode dm;
+            pico_assert(0 == SDL_GetCurrentDisplayMode(0, &dm));
+            SDL_SetWindowPosition(G.window.win, 0, 0);
+            SDL_SetWindowSize(G.window.win, dm.w, dm.h);
+        }
         int ret = SDL_SetWindowFullscreen(G.window.win, SDL_WINDOW_FULLSCREEN_DESKTOP);
         pico_assert(ret == 0);
         G.window.pub.fs = 1;
