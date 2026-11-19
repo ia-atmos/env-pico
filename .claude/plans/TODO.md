@@ -18,6 +18,7 @@ section numbers for what was already written.
 | #1 | `dim` in `pico.get.window()`: the real window size (the screen in fullscreen), for `pico-frescogo` | done (#1c): no new field; in fullscreen the window layer follows the display (its `dim` is the display size), previous `dim` restored on leave |
 | #2 | Flaky timing checks of `c/tst/expert_fps.c` under valgrind on CI: widen the bounds | done: 100ms checks up to 150ms, 25ms up to 40ms, immediate up to 15ms (C and Atmos tests) |
 | #3 | Scripted Ctrl/Shift/Alt in `PICO_ATM_KEYS` (and Caps Lock), for `pico-frescogo` | done: modifiers held by scripted dn/up of their keys, CapsLock toggles, `caps` in key events and `pico.get.keyboard()` (also in C) |
+| #4 | Rename `pico.get/set.window` not to be confused with the window layer; screen size always available | done (#4d): `pico.get.app` / `pico.set.app` (C: `Pico_App`, `pico_*_app*`), read-only `screen` = display size |
 
 ## A. Decisions waiting for an answer
 
