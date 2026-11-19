@@ -136,19 +136,19 @@ pin s = pico.sound.load("x.wav")
   table or variable of an outer block) raises
   `invalid escape : native pinned at ...`.
   The same holds for the table of `pico.layer.images [ up=... ]`.
-- What a resource depends on outlives it:
-    the parent of a layer (`up`),
-    the source of a sub-layer (`sup`),
-    the current layer (`pico.set.layer`), and
-    the font of a pencil.
-  If such a value is released first (it is dropped, or its block ends while
-  it is still the current layer or the font of a pencil), its release is
-  postponed until nothing depends on it.
-  In this case, `pico.get.layer()` and `pico.get.pencil().font` evaluate to
-  `nil` if the value is gone.
+- What a layer depends on outlives it:
+    its parent (`up`) and
+    the source of a sub-layer (`sup`).
+  If such a value is dropped first, its release is postponed until the layer
+  that depends on it goes.
 - The current layer and the font of a pencil are state of pico, and not of a
   block: `pico.set.layer(l)` and `pico.set.pencil [ font=f ]` accept a value of
-  any block, and do not make it last longer as a value.
+  any block, and do not make it last longer than its block.
+  When the current layer is released, the world is the current layer again
+  (`pico.get.layer() == pico.layer.world`), also inside a `:draw` handler.
+  When the font of a pencil is released, the pencil goes back to the built-in
+  font (`pico.get.pencil().font` evaluates to `nil`), in every layer whose
+  pencil uses it.
   `pico.get.layer()` and `pico.set.layer(l)` (the previous layer) evaluate to
   the value that the program holds, to be kept in a `val`
   (`val old = pico.set.layer(l)`).
@@ -254,9 +254,9 @@ In alphabetical order:
           only, and the key itself only comes in the events `:key.dn` and
           `:key.up`.
     - **pico.get.layer**: Gets the current layer.
-        - `pico.get.layer () -> Layer?`
-        - Returns `nil` if the value of the current layer is gone (see
-          [Lifetimes](#lifetimes)).
+        - `pico.get.layer () -> Layer`
+        - When the current layer is released, the world is the current
+          layer again (see [Lifetimes](#lifetimes)).
     - **pico.get.mouse**: Gets mouse position and button state in
       `layer`'s frame. `layer` defaults to cur when omitted or `nil`.
         - `pico.get.mouse ([layer: Layer?,] mode: string) -> Mouse`
@@ -279,7 +279,8 @@ In alphabetical order:
     - **pico.get.pencil**: Gets pencil configuration.
         - `pico.get.pencil () -> [ color: Color, font: (Font|string)?, style: 'fill'|'stroke' ]`
         - `font` is as set: a `Font`, a path, or `nil` for the built-in font
-          (and for a `Font` whose value is gone).
+          (and after the `Font` is released, since the pencil then goes back
+          to the built-in font).
     - **pico.get.scene**: Gets scene configuration.
         - `pico.get.scene () -> [ dim: Dim, tile: Tile, target: Rect, source: Rect, clip: Rect, clear: boolean ]`
         - `dim` and `tile` are always in pixels (`'!'`).
@@ -573,9 +574,11 @@ In alphabetical order:
           fast as possible, `N>0` = fixed FPS.
         - Returns frame period in ms: `-1` = block forever, `0` = immediate, `N>0` = frame period
     - **pico.set.layer**: Switches the target layer.
-        - `pico.set.layer (layer: Layer) -> Layer?`
-        - Returns the previous layer (useful for save/restore), or `nil` if
-          its value is gone (see [Lifetimes](#lifetimes)).
+        - `pico.set.layer (layer: Layer) -> Layer`
+        - Returns the previous layer (useful for save/restore).
+        - The layer is current until another one is set or until it is
+          released: then the world is current again (see
+          [Lifetimes](#lifetimes)).
         - `layer` must be a layer; `nil` errors. The two predefined
           layers are `pico.layer.world` (default) and
           `pico.layer.window`.

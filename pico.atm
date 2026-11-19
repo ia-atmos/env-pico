@@ -85,17 +85,22 @@
 ;; `invalid escape : native pinned at ...`. The same holds for the table of
 ;; `pico.layer.images [up=...]`.
 ;;
-;; What a resource depends on outlives it: the parent of a layer (`up`), the
-;; source of a sub-layer (`sup`), the current layer (`pico.set.layer`), and
-;; the font of a pencil. If such a value is released first (it is dropped,
-;; or its block ends while it is still the current layer or the font of a
-;; pencil), its release is postponed until nothing depends on it (and
-;; `pico.get.layer()` or `pico.get.pencil().font` evaluate to `nil` if the
-;; value is gone).
+;; What a layer depends on outlives it: its parent (`up`) and the source of
+;; a sub-layer (`sup`). If such a value is dropped first, its release is
+;; postponed until the layer that depends on it goes.
 ;;
 ;; The current layer and the font of a pencil are state of pico, and not of
 ;; a block: `pico.set.layer(l)` and `pico.set.pencil [font=f]` accept a value
-;; of any block, and do not make it last longer as a value.
+;; of any block, and do not make it last longer than its block. When the
+;; current layer is released, the world is the current layer again; when the
+;; font of a pencil is released, the pencil goes back to the built-in font
+;; (`pico.get.pencil().font` evaluates to `nil`):
+;;
+;;      do {
+;;          pin l = pico.layer.empty [dim=['!',w=32,h=32]]
+;;          pico.set.layer(l)
+;;      }                           ;; pico.get.layer() == pico.layer.world
+;;
 ;; `pico.get.layer()` and `pico.set.layer(l)` (the previous layer) evaluate
 ;; to the value that the program holds, to be kept in a `val`:
 ;;

@@ -1006,14 +1006,26 @@ A layer holds its parent (`up`) and its source (`sup`): it belongs to their
 blocks, and an attempt to store it where it would outlive them (e.g., in a
 table of an outer block) raises `invalid escape : native pinned at ...`.
 
-What a resource depends on outlives it:
-    the parent of a layer (`up`),
-    the source of a sub-layer (`sup`),
-    the current layer (`pico.set.layer`), and
-    the font of a pencil.
+What a layer depends on outlives it: its parent (`up`) and its source
+(`sup`).
+If a parent or source is dropped first, its release is postponed until the
+layer that depends on it goes.
+
 The current layer and the font of a pencil are state of pico, and not of a
-block: if their block terminates first, or if a parent or source is dropped,
-the release is postponed until nothing depends on the resource.
+block: they do not make a resource last longer than its block.
+When the current layer is released, the world is the current layer again,
+and when the font of a pencil is released, the pencil goes back to the
+built-in font:
+
+```
+do {
+    pin l = pico.layer.empty [ dim=['!', w=32, h=32] ]
+    pin f = pico.font.load("x.ttf")
+    pico.set.layer(l)
+    pico.set.pencil [ font=f ]
+}   ;; `f` and `l` are released: the world is the current layer again
+print(pico.get.layer() == pico.layer.world)     ;; true
+```
 
 The tables that the operations return, such as the event of
 `pico.input.event` or the position of `pico.get.mouse`, are plain data: a
