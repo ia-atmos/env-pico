@@ -157,18 +157,24 @@ section numbers for what was already written.
     holds (`a_nat_holds`) and a held native is finalized after its
     holders, wherever each is pinned. The struct of a layer still keeps
     `rc`/`up`/`sup` to postpone the free; for a child and its parent,
-    and a sub-layer and its source, that is now redundant. The counters
-    must stay for the current layer and the font of a pencil (next
-    item). Not done: it touches the core of the lifetimes for little
-    visible gain; the suite passes as it is on `9e42d13`.
-18. **Current layer and font of a pencil** are global state that points
-    to a value of a block, which the pin rules do not cover: the binding
-    keeps its own reference, the release is postponed when the block
-    ends first, and `pico.get.layer()` / `pico.get.pencil().font` are
-    `nil` meanwhile. A layer that was never pinned and is only the
-    current one comes back fresh from `pico.set.layer` (a `val` holds it
-    since the pin rules of 2026-11-17). Open: an error at the end of the block, or a scoped
-    `with pico.layer = l { ... }` if the language gets one.
+    and a sub-layer and its source, that is now redundant. Partly
+    settled (2026-11-19, `atmos-pin#2`, see item 18): the counting for
+    the current layer and the font of a pencil is gone (and the counter
+    of a font or sound), so `rc` only counts the box, the children and
+    the sub-layers. Still open: dropping `rc`/`up`/`sup` themselves; not
+    done, it touches the core of the lifetimes for little visible gain.
+18. **Current layer and font of a pencil**: settled (2026-11-19,
+    approved by the author of the language, `atmos-pin#2`). The
+    finalizers reset the global state instead of postponing the release:
+    a layer released while it is current gives the place back to the
+    world (in the binding and in pico), and a font released while a
+    pencil uses it sends that pencil back to the built-in font.
+    `pico.get.layer()` is never `nil` while pico is open, and
+    `pico.get.pencil().font` is `nil` (built-in) after the release. A
+    layer that was never pinned and is only the current one still lives
+    while the binding refers to it, as a name does, and comes back fresh
+    from `pico.set.layer`. Tests: `tst/life.atm` (cases 4 and 7),
+    `tst/life-loop.atm` (`:frame` and `:draw`).
 12. **`.claude/plans/`** still describes realms, keys and push/pop
     (historical; nothing was updated).
 13. **Release**: `HISTORY.md` has the `v0.8` entry open; version strings
@@ -180,8 +186,10 @@ Changes made on judgement during the port, reported once, with no answer.
 
 1. **A layer lives as long as the block that owns its value** (Atmos,
    `pin`): an attached child that is not pinned is freed and disappears;
-   a parent, a sub-layer source, the current layer and a pencil's font
-   are kept alive by what depends on them.
+   a parent and a sub-layer source are kept alive by what depends on
+   them; the current layer and a pencil's font are not (since
+   2026-11-19: the world becomes current, the pencil goes back to the
+   built-in font, B.18).
 2. **`pico.set.scene [dim=..]` with live sub-layers is an error even
    when the size does not change** (the C code replaces the texture
    anyway).
