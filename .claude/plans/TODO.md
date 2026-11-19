@@ -15,7 +15,7 @@ section numbers for what was already written.
 
 | # | Item | State |
 |---|------|-------|
-| #1 | `dim` in `pico.get.window()`: the real window size (the screen in fullscreen), for `pico-frescogo` | waiting for the author: also in `pico.set.window`? |
+| #1 | `dim` in `pico.get.window()`: the real window size (the screen in fullscreen), for `pico-frescogo` | done (#1c): no new field; in fullscreen the window layer follows the display (its `dim` is the display size), previous `dim` restored on leave |
 | #2 | Flaky timing checks of `c/tst/expert_fps.c` under valgrind on CI: widen the bounds | done: 100ms checks up to 150ms, 25ms up to 40ms, immediate up to 15ms (C and Atmos tests) |
 | #3 | Scripted Ctrl/Shift/Alt in `PICO_ATM_KEYS` (and Caps Lock), for `pico-frescogo` | done: modifiers held by scripted dn/up of their keys, CapsLock toggles, `caps` in key events and `pico.get.keyboard()` (also in C) |
 
@@ -81,10 +81,9 @@ section numbers for what was already written.
     (`pin e = pico.input.event()`), `var pos` + `set pos = pico.get.mouse()`
     (about 80 lines in the tests), the rects built by 12 tasks, the save and
     restore of a field in storm. Ask the author; keep tests identical.
-18. **Screen size**: pico cannot report the size of the display or of a
-    fullscreen window (`pico.get.window()` has fs/show/title only; the
-    fullscreen resize is ignored on purpose). Asked by `pico-frescogo`,
-    which uses a native `SDL_GetCurrentDisplayMode` meanwhile.
+18. **Screen size**: done (#1c, 2026-11-19). In fullscreen the window
+    layer's `dim` is the display size (`pico.get.scene().dim` on
+    `pico.layer.window`); restored on leave.
 19. **Flaky C timing tests in CI**: `expert_fps` aborted in run 6
     (timing window under valgrind on GitHub), with no related change.
 
