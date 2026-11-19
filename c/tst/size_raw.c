@@ -56,6 +56,15 @@ int main (void) {
     {
         puts("full");
         pico_set_window_fs(1);
+        {   // the window layer follows the display
+            SDL_DisplayMode dm;
+            assert(SDL_GetCurrentDisplayMode(0, &dm) == 0);
+            pico_set_layer(pico_layer_window());
+            Pico_Abs_Dim d = pico_get_scene_dim();
+            pico_set_layer(pico_layer_world());
+            printf("display %dx%d, window %dx%d\n", dm.w, dm.h, d.w, d.h);
+            assert(d.w==dm.w && d.h==dm.h);
+        }
         pico_output_clear();
         pico_output_draw_rect(r);
         //_pico_check("size_raw-05");
@@ -63,6 +72,12 @@ int main (void) {
     {
         puts("normal");
         pico_set_window_fs(0);
+        {   // and gets its previous dim back
+            pico_set_layer(pico_layer_window());
+            Pico_Abs_Dim d = pico_get_scene_dim();
+            pico_set_layer(pico_layer_world());
+            assert(d.w==phy.w && d.h==phy.h);
+        }
         pico_output_clear();
         pico_output_draw_rect(r);
         _pico_check("size_raw-06");
