@@ -119,4 +119,11 @@ do {
     pico.check("text-sizes-09")
 }
 
+;; text is UTF-8: an accented letter is one glyph, not two
+do {
+    val a = pico.get.text(['!', h=20], "max")
+    val b = pico.get.text(['!', h=20], "máx")
+    assert(a.w == b.w)
+}
+
 pico.close()
