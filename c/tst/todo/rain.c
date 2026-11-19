@@ -21,7 +21,7 @@ void init_drop (Drop* drop) {
 int main(void) {
     srand(time(NULL));
     pico_open(NULL);
-    pico_set_window_title("Rain Simulation");
+    pico_set_app_title("Rain Simulation");
     pico_set_expert(1, 60);
 
     Drop drops[DROP_COUNT];

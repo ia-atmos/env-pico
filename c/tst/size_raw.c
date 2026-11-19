@@ -3,7 +3,7 @@
 
 int main (void) {
     pico_open(NULL);
-    pico_set_window_title("Size - Fullscreen");
+    pico_set_app_title("Size - Fullscreen");
 
     Pico_Abs_Dim phy = PICO_DIM_PHY;
     Pico_Abs_Dim log = PICO_DIM_LOG;
@@ -55,14 +55,12 @@ int main (void) {
     // phy: normal -> full -> normal
     {
         puts("full");
-        pico_set_window_fs(1);
+        pico_set_app_fs(1);
         {   // the window layer follows the display
-            SDL_DisplayMode dm;
-            assert(SDL_GetCurrentDisplayMode(0, &dm) == 0);
+            Pico_Abs_Dim dm = pico_get_app_screen();
             pico_set_layer(pico_layer_window());
             Pico_Abs_Dim d = pico_get_scene_dim();
             pico_set_layer(pico_layer_world());
-            printf("display %dx%d, window %dx%d\n", dm.w, dm.h, d.w, d.h);
             assert(d.w==dm.w && d.h==dm.h);
         }
         pico_output_clear();
@@ -71,12 +69,14 @@ int main (void) {
     }
     {
         puts("normal");
-        pico_set_window_fs(0);
+        pico_set_app_fs(0);
         {   // and gets its previous dim back
             pico_set_layer(pico_layer_window());
             Pico_Abs_Dim d = pico_get_scene_dim();
             pico_set_layer(pico_layer_world());
             assert(d.w==phy.w && d.h==phy.h);
+            Pico_Abs_Dim dm = pico_get_app_screen();
+            assert(dm.w>phy.w && dm.h>phy.h);   // same when windowed
         }
         pico_output_clear();
         pico_output_draw_rect(r);

@@ -14,7 +14,7 @@ int main (void) {
     // 4x4 grid of 4x4 pixel tiles = 16x16 logical world
     Pico_Rel_Dim log  = { '#', {4, 4} };
     Pico_Abs_Dim tile = { 4, 4 };
-    pico_set_window((Pico_Window){ .fs=0, .show=1, .title="Tile" });
+    pico_set_app((Pico_App){ .fs=0, .show=1, .title="Tile" });
 
     pico_set_layer(pico_layer_window());
     pico_set_scene_dim((Pico_Rel_Dim){ '!', {160, 160} });

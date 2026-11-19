@@ -71,11 +71,11 @@ SDL_Texture* _pico_tex_create (Pico_Abs_Dim dim) {
 // INIT
 ///////////////////////////////////////////////////////////////////////////////
 
-void pico_open (const Pico_Window* cfg) {
+void pico_open (const Pico_App* cfg) {
     {
         assert(G.flags.init == 0);
 
-        Pico_Window xcfg = { .fs=0, .show=1, .title=PICO_TITLE };
+        Pico_App xcfg = { .fs=0, .show=1, .title=PICO_TITLE };
         if (cfg != NULL) {
             xcfg = *cfg;
             if (xcfg.title == NULL) {
@@ -191,7 +191,7 @@ void pico_open (const Pico_Window* cfg) {
         SDL_SetWindowResizable(G.window.win, 1);
 
         if (xcfg.fs) {
-            pico_set_window_fs(1);
+            pico_set_app_fs(1);
         }
     }
 }

@@ -3,7 +3,7 @@
 
 int main (void) {
     pico_open(NULL);
-    pico_set_window_title("Pct-To-Pos");
+    pico_set_app_title("Pct-To-Pos");
 
     {
         puts("white centered rect");

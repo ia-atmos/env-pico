@@ -238,11 +238,15 @@ typedef struct {
     Pico_Rel_Rect clip;
 } Pico_Layer_Scene;
 
+/// @brief State of the application: its OS window and the screen.
+/// `screen` is read-only (the size of the display, fullscreen or not):
+/// pico_open and pico_set_app ignore it.
 typedef struct {
     int          fs;
     int          show;
     const char*  title;
-} Pico_Window;
+    Pico_Abs_Dim screen;
+} Pico_App;
 
 /// @}
 
@@ -256,7 +260,7 @@ typedef struct {
 ///            defaults (windowed, shown, PICO_TITLE). With `show=0` the
 ///            window is created hidden; a NULL title uses PICO_TITLE.
 /// @sa pico_close
-void pico_open (const Pico_Window* win);
+void pico_open (const Pico_App* win);
 
 /// @brief Closes pico: destroys the window and terminates the library.
 /// Releases every resource still alive: those loaded implicitly by
@@ -626,13 +630,14 @@ int           pico_get_scene_clear (void);
 Pico_Rel_Rect pico_get_scene_src   (void);
 Pico_Abs_Dim  pico_get_scene_tile  (void);
 
-/// @brief Gets the entire window state.
-/// @param win output struct populated with window state
-/// @sa pico_set_window
-Pico_Window  pico_get_window       (void);
-int          pico_get_window_fs    (void);
-int          pico_get_window_show  (void);
-const char*  pico_get_window_title (void);
+/// @brief Gets the entire application state.
+/// @sa pico_set_app
+Pico_App     pico_get_app        (void);
+int          pico_get_app_fs     (void);
+/// @brief Gets the size of the display, fullscreen or not.
+Pico_Abs_Dim pico_get_app_screen (void);
+int          pico_get_app_show   (void);
+const char*  pico_get_app_title  (void);
 
 // SET
 
@@ -640,7 +645,7 @@ const char*  pico_get_window_title (void);
 /// @param dim dimensions for both window and world
 /// @note Asserts if the window or the world has live sub-layers
 ///       (see @ref pico_layer_sub).
-/// @sa pico_set_window
+/// @sa pico_set_app
 /// @sa pico_set_scene_dim
 void pico_set_dim (Pico_Rel_Dim dim);
 
@@ -725,11 +730,11 @@ void pico_set_scene_dim_tile (const Pico_Rel_Dim* dim, const Pico_Rel_Dim* tile)
 
 /// @brief Sets the entire window state.
 /// @param win new window state
-/// @sa pico_get_window
-void pico_set_window       (Pico_Window win);
-void pico_set_window_fs    (int fs);
-void pico_set_window_show  (int on);
-void pico_set_window_title (const char* title);
+/// @sa pico_get_app
+void pico_set_app       (Pico_App win);
+void pico_set_app_fs    (int fs);
+void pico_set_app_show  (int on);
+void pico_set_app_title (const char* title);
 
 /// @}
 

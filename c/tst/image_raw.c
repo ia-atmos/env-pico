@@ -3,7 +3,7 @@
 
 int main (void) {
     pico_open(NULL);
-    pico_set_window_title("Image - Size - Crop");
+    pico_set_app_title("Image - Size - Crop");
     pico_set_effect_color((Pico_Color){0xFF,0xFF,0xFF, 0xFF});
 
     // pico_get_image

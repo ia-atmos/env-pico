@@ -3,7 +3,7 @@
 
 int main (void) {
     pico_open(NULL);
-    pico_set_window_title("Rect-Circle");
+    pico_set_app_title("Rect-Circle");
     pico_set_dim((Pico_Rel_Dim){ '!', {200, 100} });
 
     {

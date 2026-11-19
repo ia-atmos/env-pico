@@ -3,7 +3,7 @@
 
 int main (void) {
     pico_open(NULL);
-    pico_set_window_title("Expert");
+    pico_set_app_title("Expert");
 
     Pico_Rel_Rect r = { '%', {0.5,0.5, 0.5,0.5}, PICO_ANCHOR_C };
     pico_output_draw_rect(r);

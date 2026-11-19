@@ -3,7 +3,7 @@
 
 int main (void) {
     pico_open(NULL);
-    pico_set_window_title("Size - Fullscreen");
+    pico_set_app_title("Size - Fullscreen");
 
     Pico_Rel_Rect r = { '%', {0.5, 0.5, 0.5, 0.5}, PICO_ANCHOR_C };
 
@@ -61,14 +61,14 @@ int main (void) {
     // phy: normal -> full -> normal
     {
         puts("full");
-        pico_set_window_fs(1);
+        pico_set_app_fs(1);
         pico_output_clear();
         pico_output_draw_rect(r);
         //_pico_check("size_pct-05");
     }
     {
         puts("normal");
-        pico_set_window_fs(0);
+        pico_set_app_fs(0);
         pico_output_clear();
         pico_output_draw_rect(r);
         _pico_check("size_pct-06");

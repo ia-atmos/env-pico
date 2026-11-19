@@ -156,26 +156,36 @@ Pico_Abs_Dim pico_get_scene_tile (void) {
     return G.layer->scene.tile;
 }
 
-Pico_Window pico_get_window (void) {
+Pico_App pico_get_app (void) {
     _pico_guard();
-    return (Pico_Window) {
+    return (Pico_App) {
         .fs    = G.window.pub.fs,
         .show  = SDL_GetWindowFlags(G.window.win) & SDL_WINDOW_SHOWN,
         .title = SDL_GetWindowTitle(G.window.win),
+        .screen = pico_get_app_screen(),
     };
 }
 
-int pico_get_window_fs (void) {
+int pico_get_app_fs (void) {
     _pico_guard();
     return G.window.pub.fs;
 }
 
-int pico_get_window_show (void) {
+Pico_Abs_Dim pico_get_app_screen (void) {
+    _pico_guard();
+    SDL_DisplayMode dm;
+    int i = SDL_GetWindowDisplayIndex(G.window.win);
+    pico_assert(i >= 0);
+    pico_assert(0 == SDL_GetCurrentDisplayMode(i, &dm));
+    return (Pico_Abs_Dim) { dm.w, dm.h };
+}
+
+int pico_get_app_show (void) {
     _pico_guard();
     return SDL_GetWindowFlags(G.window.win) & SDL_WINDOW_SHOWN;
 }
 
-const char* pico_get_window_title (void) {
+const char* pico_get_app_title (void) {
     _pico_guard();
     return SDL_GetWindowTitle(G.window.win);
 }
@@ -429,16 +439,16 @@ void pico_set_scene_tile (Pico_Abs_Dim tile) {
     _pico_output_present(0);
 }
 
-void pico_set_window (Pico_Window win) {
+void pico_set_app (Pico_App win) {
     _pico_guard();
-    pico_set_window_fs(win.fs);
-    pico_set_window_show(win.show);
-    pico_set_window_title(win.title);
+    pico_set_app_fs(win.fs);
+    pico_set_app_show(win.show);
+    pico_set_app_title(win.title);
 }
 
 // In fullscreen, the window layer follows the display: its dim is the
 // display size, and the previous dim is restored on leave.
-void pico_set_window_fs (int fs) {
+void pico_set_app_fs (int fs) {
     _pico_guard();
     if (fs == G.window.pub.fs) {
         return;
@@ -470,7 +480,7 @@ void pico_set_window_fs (int fs) {
     _pico_output_present(0);
 }
 
-void pico_set_window_show (int on) {
+void pico_set_app_show (int on) {
     _pico_guard();
     if (on) {
         SDL_ShowWindow(G.window.win);
@@ -480,7 +490,7 @@ void pico_set_window_show (int on) {
     }
 }
 
-void pico_set_window_title (const char* title) {
+void pico_set_app_title (const char* title) {
     _pico_guard();
     SDL_SetWindowTitle(G.window.win, title);
     _pico_output_present(0);

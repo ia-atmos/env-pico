@@ -3,7 +3,7 @@
 
 int main (void) {
     pico_open(NULL);
-    pico_set_window_title("Colors Test");
+    pico_set_app_title("Colors Test");
     pico_set_layer(pico_layer_window());
     pico_set_scene_dim((Pico_Rel_Dim){ '!', {640,480} });
     pico_set_layer(pico_layer_world());

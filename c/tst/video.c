@@ -5,7 +5,7 @@
 
 int main (void) {
     pico_open(NULL);
-    pico_set_window_title("Video");
+    pico_set_app_title("Video");
     pico_set_effect_color((Pico_Color){0x00, 0x00, 0x00, 0xFF});
 
     /* pico_get_video: check Y4M header parsing */

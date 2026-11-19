@@ -20,7 +20,7 @@ int main (void) {
     Pico_Color red   = { 0xFF,0x00,0x00,0xFF };
 
     pico_open(NULL);
-    pico_set_window_title("Window Clip");
+    pico_set_app_title("Window Clip");
     pico_set_pencil_style(PICO_STYLE_FILL);
 
     ///////////////////////////////////////////////////////////////////////////

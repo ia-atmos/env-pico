@@ -4,7 +4,7 @@
 int main (void) {
     pico_open(NULL);
 
-    pico_set_window((Pico_Window){ .fs=0, .show=1, .title="Grid" });
+    pico_set_app((Pico_App){ .fs=0, .show=1, .title="Grid" });
 
 
     pico_set_layer(pico_layer_window());

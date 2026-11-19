@@ -27,7 +27,7 @@ int main (void) {
 
     puts("changes window title to \"Testing...\"");
     {
-        pico_set_window_title("Testing...");
+        pico_set_app_title("Testing...");
         pico_input_delay(2000);
     }
 

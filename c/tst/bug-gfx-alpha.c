@@ -7,7 +7,7 @@
 // Expected: both halves show a translucent white overlay over red.
 int main (void) {
     pico_open(NULL);
-    pico_set_window((Pico_Window){ .fs=0, .show=1, .title="gfx-alpha" });
+    pico_set_app((Pico_App){ .fs=0, .show=1, .title="gfx-alpha" });
     pico_set_layer(pico_layer_window());
     pico_set_scene_dim((Pico_Rel_Dim){ '!', {640, 360} });
     pico_set_layer(pico_layer_world());

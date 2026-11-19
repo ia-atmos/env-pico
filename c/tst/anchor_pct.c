@@ -4,7 +4,7 @@
 int main (void) {
     pico_open(NULL);
     Pico_Rel_Dim log = { '!', { 10, 10} };
-    pico_set_window((Pico_Window){ .fs=0, .show=1, .title="Anchoring Pct..." });
+    pico_set_app((Pico_App){ .fs=0, .show=1, .title="Anchoring Pct..." });
 
     pico_set_layer(pico_layer_window());
     pico_set_scene_dim((Pico_Rel_Dim){ '!', {200, 200} });

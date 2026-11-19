@@ -11,7 +11,7 @@ int main (void) {
     Pico_Rel_Rect box  = { '%', {0.5,0.5, 0.5,0.5}, PICO_ANCHOR_C };
 
     pico_open(NULL);
-    pico_set_window_title("Clip x Expert");
+    pico_set_app_title("Clip x Expert");
     pico_set_pencil_style(PICO_STYLE_FILL);
 
     // PLAIN: red full, then blue full clipped to a centered half-box

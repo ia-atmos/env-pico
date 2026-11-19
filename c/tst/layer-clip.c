@@ -10,7 +10,7 @@
  */
 int main (void) {
     pico_open(NULL);
-    pico_set_window_title("Layer clip");
+    pico_set_app_title("Layer clip");
     pico_set_effect_color(PICO_COLOR_WHITE);
     pico_output_clear();
 

@@ -3,7 +3,7 @@
 
 int main (void) {
     pico_open(NULL);
-    pico_set_window_title("Hello World!");
+    pico_set_app_title("Hello World!");
     for (int i=0; i<100; i++) {
         pico_output_draw_pixel (
             (Pico_Rel_Pos) { '!', {i, i}, PICO_ANCHOR_C }

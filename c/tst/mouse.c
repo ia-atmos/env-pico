@@ -15,7 +15,7 @@ int main(void) {
 
     puts("phy (500,500) -> log (50,50)");
     {
-        pico_set_window((Pico_Window){ .fs=0, .show=1, .title="Mouse" });
+        pico_set_app((Pico_App){ .fs=0, .show=1, .title="Mouse" });
 
         pico_set_layer(pico_layer_window());
         pico_set_scene_dim((Pico_Rel_Dim){ '!', {500, 500} });

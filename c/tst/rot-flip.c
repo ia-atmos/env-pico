@@ -3,7 +3,7 @@
 
 int main (void) {
     pico_open(NULL);
-    pico_set_window_title("Rotate / Flip");
+    pico_set_app_title("Rotate / Flip");
     pico_set_effect_color((Pico_Color){0xFF,0xFF,0xFF, 0xFF});
 
     // Create a layer from image for rotation/flip tests

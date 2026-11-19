@@ -3,7 +3,7 @@
 
 int main (void) {
     pico_open(NULL);
-    pico_set_window_title("Dim");
+    pico_set_app_title("Dim");
 
     Pico_Rel_Rect r = { '%', {0.5,0.5, 0,0}, PICO_ANCHOR_C };
     char fmt[64];

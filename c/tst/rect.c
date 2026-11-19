@@ -3,7 +3,7 @@
 
 int main (void) {
     pico_open(NULL);
-    pico_set_window_title("Rect");
+    pico_set_app_title("Rect");
 
     {
         puts("centered rect");

@@ -7,10 +7,10 @@ int main (void) {
 
     // TITLE
     puts("title: set and get");
-    pico_set_window_title("Test Title");
-    const char* title = pico_get_window_title();
+    pico_set_app_title("Test Title");
+    const char* title = pico_get_app_title();
     assert(strcmp(title, "Test Title") == 0);
-    pico_set_window_title("View Raw");
+    pico_set_app_title("View Raw");
 
     Pico_Abs_Dim window, world;
     pico_set_layer(pico_layer_window());

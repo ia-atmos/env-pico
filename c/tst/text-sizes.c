@@ -3,7 +3,7 @@
 
 int main (void) {
     pico_open(NULL);
-    pico_set_window_title("Text Sizes");
+    pico_set_app_title("Text Sizes");
     pico_set_layer(pico_layer_window());
     pico_set_scene_dim((Pico_Rel_Dim){ '!', {500, 500} });
     pico_set_layer(pico_layer_world());

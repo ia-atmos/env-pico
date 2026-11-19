@@ -4,7 +4,7 @@
 
 int main (void) {
     pico_open(NULL);
-    pico_set_window((Pico_Window){ .fs=0, .show=1, .title="Get-Set" });
+    pico_set_app((Pico_App){ .fs=0, .show=1, .title="Get-Set" });
 
     pico_set_layer(pico_layer_window());
     pico_set_scene_dim((Pico_Rel_Dim){ '!', {640, 480} });
@@ -119,9 +119,9 @@ int main (void) {
         pico_set_layer(pico_layer_window());
         pico_set_effect_color((Pico_Color){0x12, 0x34, 0x56, 0x78});
         pico_set_layer(pico_layer_world());
-        Pico_Window w1 = pico_get_window();
-        pico_set_window(w1);
-        Pico_Window w2 = pico_get_window();
+        Pico_App w1 = pico_get_app();
+        pico_set_app(w1);
+        Pico_App w2 = pico_get_app();
         assert(w2.fs == w1.fs);
         Pico_Color c1;
         pico_set_layer(pico_layer_window());
