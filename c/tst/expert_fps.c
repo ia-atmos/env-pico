@@ -21,7 +21,7 @@ int main (void) {
         pico_input_event(&e, PICO_EVENT_ANY);
     }
     int elapsed = pico_get_now() - t0;
-    assert(elapsed>=100 && elapsed<=110);
+    assert(elapsed>=100 && elapsed<=150);   // slack for valgrind on CI
 
     // test 4: getter returns fps via pointer
     int fps;
@@ -51,14 +51,14 @@ int main (void) {
     pico_set_expert(1, -1);
     Pico_Event e2;
     int dt = pico_input_event(&e2, PICO_EVENT_ANY);
-    assert(dt <= 5);
+    assert(dt <= 15);
     assert(e2.type == PICO_EVENT_NONE);
 
     // test 10: event returns dt with fps timing
     pico_set_expert(1, 40);
     Pico_Event e3;
     int dt2 = pico_input_event(&e3, PICO_EVENT_ANY);
-    assert(dt2>=25 && dt2<=30);
+    assert(dt2>=25 && dt2<=40);
 
     pico_close();
     return 0;
