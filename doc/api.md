@@ -718,7 +718,7 @@ order:
 | Event | Description |
 |-------|-------------|
 | `:quit []` | the window was closed: the loop terminates |
-| `:key.dn [key='A', ctrl=, shift=, alt=]` | a key was pressed |
+| `:key.dn [key='A', ctrl=, shift=, alt=, caps=]` | a key was pressed (`caps`: Caps Lock is on) |
 | `:key.up [...]` | a key was released |
 | `:mouse.motion ['!', x=, y=, anchor=, left=, right=, middle=]` | the mouse moved |
 | `:mouse.button.dn [...]` | a mouse button was pressed |
@@ -761,7 +761,7 @@ interaction:
 | Variable | Description |
 |----------|-------------|
 | `PICO_ATM_FRAMES=n:ms` | runs `n` frames, then emits `:quit`; if `ms` is not `0`, each frame lasts exactly `ms` milliseconds and does not wait |
-| `PICO_ATM_KEYS=f:dn:A,...` | presses (`dn`) or releases (`up`) keys at the given frames, as `:key.dn` and `:key.up` events with the given key names |
+| `PICO_ATM_KEYS=f:dn:A,...` | presses (`dn`) or releases (`up`) keys at the given frames, as `:key.dn` and `:key.up` events with the given key names; a `dn`/`up` of a modifier (`Left Ctrl`, `Right Ctrl`, `Left Shift`, `Right Shift`, `Left Alt`, `Right Alt`) holds or releases it and a `dn` of `CapsLock` toggles it, so that the following scripted keys carry `ctrl`, `shift`, `alt`, `caps` (also in `pico.get.keyboard()`); e.g. `5:dn:Left Ctrl,6:dn:R,7:up:Left Ctrl` |
 | `PICO_ATM_MOUSE=f:dn:x:y,...` | presses (`dn`) or releases (`up`) the left button, or only moves the mouse (`mv`), at the pixel `(x,y)` of the window at the given frames, as `:mouse.button.dn`, `:mouse.button.up`, and `:mouse.motion` events |
 | `PICO_ATM_SHOT=f:x.png,...` | saves the window to the given files at the given frames, after the present |
 
