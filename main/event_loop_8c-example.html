@@ -79,7 +79,7 @@ $(function() {
 <div class="line"><span class="preprocessor">#include &lt;pico.h&gt;</span></div>
 <div class="line"> </div>
 <div class="line"><span class="keywordtype">int</span> main() {</div>
-<div class="line">    <a id="a0" name="a0"></a><a class="code hl_function" href="group__Init.html#ga4ee874670d6f4d1969043976267ffe19">pico_open</a>(NULL);</div>
+<div class="line">    <a id="a0" name="a0"></a><a class="code hl_function" href="group__Init.html#gab8de83a9a5e503cdc1389762d244f501">pico_open</a>(NULL);</div>
 <div class="line"> </div>
 <div class="line">    <span class="keywordflow">while</span> (1) {</div>
 <div class="line">        <span class="keywordtype">int</span> timeout = 16, accum = 0; <span class="comment">// timeout is 1000 / FRAMERATE</span></div>
@@ -106,8 +106,8 @@ $(function() {
 <div class="line">    <a id="a7" name="a7"></a><a class="code hl_function" href="group__Init.html#ga643e80ba430bd9f4ccf57a4041edd396">pico_close</a>();</div>
 <div class="line">    <span class="keywordflow">return</span> 0;</div>
 <div class="line">}</div>
-<div class="ttc" id="agroup__Init_html_ga4ee874670d6f4d1969043976267ffe19"><div class="ttname"><a href="group__Init.html#ga4ee874670d6f4d1969043976267ffe19">pico_open</a></div><div class="ttdeci">void pico_open(const Pico_Window *win)</div><div class="ttdoc">Opens pico: initializes the library and creates the window.</div></div>
 <div class="ttc" id="agroup__Init_html_ga643e80ba430bd9f4ccf57a4041edd396"><div class="ttname"><a href="group__Init.html#ga643e80ba430bd9f4ccf57a4041edd396">pico_close</a></div><div class="ttdeci">void pico_close(void)</div><div class="ttdoc">Closes pico: destroys the window and terminates the library. Releases every resource still alive: tho...</div></div>
+<div class="ttc" id="agroup__Init_html_gab8de83a9a5e503cdc1389762d244f501"><div class="ttname"><a href="group__Init.html#gab8de83a9a5e503cdc1389762d244f501">pico_open</a></div><div class="ttdeci">void pico_open(const Pico_App *win)</div><div class="ttdoc">Opens pico: initializes the library and creates the window.</div></div>
 <div class="ttc" id="agroup__Input_html_gad5d55e2e4aed69260a035694a0d3e271"><div class="ttname"><a href="group__Input.html#gad5d55e2e4aed69260a035694a0d3e271">pico_input_event_timeout</a></div><div class="ttdeci">int pico_input_event_timeout(Pico_Event *evt, int type, int timeout)</div><div class="ttdoc">Stops the program until a matching event occurs or a timeout is reached. All input functions delegate...</div></div>
 <div class="ttc" id="agroup__Output_html_ga03bc7bb9c76b7168ae4e1ec1a409f129"><div class="ttname"><a href="group__Output.html#ga03bc7bb9c76b7168ae4e1ec1a409f129">pico_output_clear</a></div><div class="ttdeci">void pico_output_clear(void)</div><div class="ttdoc">Clears the current layer with the color set by pico_set_effect_color, then cascades the clear down to...</div></div>
 <div class="ttc" id="agroup__Output_html_ga79ddb7f830b35883b3dcfe62dad5478f"><div class="ttname"><a href="group__Output.html#ga79ddb7f830b35883b3dcfe62dad5478f">pico_output_present</a></div><div class="ttdeci">void pico_output_present(int layers)</div><div class="ttdoc">Shows what has been drawn onto the screen. Only does anything on expert mode.</div></div>
