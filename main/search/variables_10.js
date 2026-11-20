@@ -7,8 +7,9 @@ var searchData=
   ['show_4',['show',['../structPico__App.html#aa4cce07f43859353d54001a986f374ec',1,'Pico_App']]],
   ['size_5',['size',['../structPico__Layer__Video.html#a53f116df305cb7a0d5f187ce2c3a07ea',1,'Pico_Layer_Video']]],
   ['sizes_6',['sizes',['../structPico__Font.html#a66a81784dbc299f5f446b1a695e0a1f1',1,'Pico_Font']]],
-  ['src_7',['src',['../structPico__Layer__Sub.html#acf0a9917ef78ce2db1bfcc331a247dce',1,'Pico_Layer_Sub::src'],['../structPico__Layer__Scene.html#a80f5a06503c30d64eeabbbdd76dd8a45',1,'Pico_Layer_Scene::src']]],
-  ['style_8',['style',['../structPico__Layer__Pencil.html#a6cf7a4fe13637787d04484928efd7fe4',1,'Pico_Layer_Pencil']]],
-  ['subs_9',['subs',['../structPico__Layer.html#a3f91017f133833ed15e104079181c379',1,'Pico_Layer']]],
-  ['sup_10',['sup',['../structPico__Layer__Sub.html#a51ef2977714e749137713c8eff147a5d',1,'Pico_Layer_Sub']]]
+  ['smooth_7',['smooth',['../structPico__Layer__Pencil.html#a2932de6d190f8b47372c6270c2938cd6',1,'Pico_Layer_Pencil']]],
+  ['src_8',['src',['../structPico__Layer__Sub.html#acf0a9917ef78ce2db1bfcc331a247dce',1,'Pico_Layer_Sub::src'],['../structPico__Layer__Scene.html#a80f5a06503c30d64eeabbbdd76dd8a45',1,'Pico_Layer_Scene::src']]],
+  ['style_9',['style',['../structPico__Layer__Pencil.html#a6cf7a4fe13637787d04484928efd7fe4',1,'Pico_Layer_Pencil']]],
+  ['subs_10',['subs',['../structPico__Layer.html#a3f91017f133833ed15e104079181c379',1,'Pico_Layer']]],
+  ['sup_11',['sup',['../structPico__Layer__Sub.html#a51ef2977714e749137713c8eff147a5d',1,'Pico_Layer_Sub']]]
 ];
