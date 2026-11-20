@@ -182,7 +182,7 @@ task Ship (V, shots) {
             }
         } with {
             loop on :draw {
-                pico.set.pencil [ color="red" ]
+                pico.set.pencil [ color=:red ]
                 pico.output.draw.oval [ '%', x=rect.x, y=rect.y, w=d, h=d ]
             }
         }

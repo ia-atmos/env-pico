@@ -32,7 +32,7 @@ spawn {    ;; POINTS
     val l = [ '%', x=0.1, y=0.9, h=0.075 ]
     val r = [ '%', x=0.9, y=0.9, h=0.075 ]
     loop on :draw {
-        pico.set.pencil [ color="white" ]
+        pico.set.pencil [ color=:white ]
         pico.output.draw.text(tostring(points.L), l)
         pico.output.draw.text(tostring(points.R), r)
     }
@@ -56,7 +56,7 @@ loop {
             watching 500ms {
                 val p = [ '%', x=0.5, y=0.5, h=0.075 ]
                 loop on :draw {
-                    pico.set.pencil [ color="white" ]
+                    pico.set.pencil [ color=:white ]
                     pico.output.draw.text("= PRESS ENTER TO START =", p)
                 }
             }
