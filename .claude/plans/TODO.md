@@ -25,6 +25,7 @@ section numbers for what was already written.
 | #8 | CI flake again: `c/tst/expert.c` `dt<=150` failed under valgrind (run 21) | done (#8b): under valgrind (`PICO_VALGRIND`, set by `c/pico-sdl`) the C timing tests keep only their lower bounds |
 | #9 | By the session, to be confirmed ("work with no input", author in `atmos-lang`, 2026-11-20): under `atmos-pico -t` pico is headless by itself (dummy video and audio, software renderer) and `pico.test` is `true` (atmos-envs#3) | done on `main`, inert without `-t`; `tst/t-test.atm` |
 | #10 | By the session: the loop emits the time in the unit of the build (`ATMOS_TIME=ms`); the field `us` of `:frame` stays in microseconds | done; `us` under `ms` reported to `atmos-float` (#14), his to decide |
+| #11 | By the session: small validations in the binding (a mode of more than one character, a negative `pico.input.delay`, the message of a non-string `title=`) | done, `tst/open.atm` |
 
 ## A. Decisions waiting for an answer
 
@@ -119,15 +120,13 @@ section numbers for what was already written.
    the C suite under valgrind.
 3. **Binding: smaller defects noticed and not fixed**:
    - `PICO_ATM_KEYS`: malformed entries and unknown key names are
-     ignored or emitted as they are; modifiers cannot be scripted; the
-     `PICO_ATM_SHOT` path is not checked;
+     ignored or emitted as they are; the `PICO_ATM_SHOT` path is not
+     checked;
    - `PICO_ATM_MOUSE`: left button only; a `dn`/`up` emits no motion;
-   - `pico.open`: `fs=`/`show=` accept any value by truthiness; a
-     non-string `title=` reports `bad argument #1` although it is a field;
-   - a multi-character mode string is accepted by its first character;
+   - `pico.open`: `fs=`/`show=` accept any value by truthiness;
    - `pico.output.screenshot(layer, rect, x)` ignores the third argument;
    - `pico.layer.images` grid: fractional `w`/`h` truncated, `n<1` ignored;
-   - `pico.input.delay` truncates fractional ms and accepts negatives;
+   - `pico.input.delay` truncates fractional ms;
    - `pico.check` creates only the last directory level (`out`).
 4. **C library: real mouse events read position and buttons from
    `SDL_GetMouseState` at conversion time**, not from the event: a
