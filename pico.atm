@@ -208,6 +208,8 @@
 ;;      PICO_ATM_MOUSE=f:dn:x:y,... presses (dn) or releases (up) the left
 ;;                                  button, or only moves the mouse (mv), at
 ;;                                  the pixel (x,y) of the window, at frames
+;;      PICO_ATM_RESIZE=f:w:h,...   resizes the window at frames, as by the
+;;                                  user, with one `:window.resize`
 ;;      PICO_ATM_SHOT=f:x.png,...   saves the window at frames
 ;;
 ;; An entry of PICO_ATM_MOUSE emits one `:mouse.button.dn`, `:mouse.button.up`,
@@ -2517,6 +2519,29 @@ static AStatus _pico_atmos_script_mouse (const char* arg) {
     return st;
 }
 
+// Test script: an entry `w:h` of PICO_ATM_RESIZE. The window is resized as
+// by the user: the window layer follows, and `:window.resize` is emitted.
+static AStatus _pico_atmos_script_resize (const char* arg) {
+    int w, h;
+    char end;
+    if (sscanf(arg, "%d:%d%c", &w, &h, &end)!=2 || w<=0 || h<=0) {
+        return a_error("PICO_ATM_RESIZE : invalid entry \"%s\"", arg);
+    }
+    Pico_Layer* old = pico_set_layer(pico_layer_window());
+    pico_set_scene_dim((Pico_Rel_Dim){ '!', {w, h} });
+    pico_set_layer(old);
+    // the real event of the resize above, if any, is not emitted twice
+    SDL_PumpEvents();
+    SDL_FlushEvent(SDL_WINDOWEVENT);
+    Pico_Event e = { .type=PICO_EVENT_WINDOW_RESIZE };
+    e.window.w = w;
+    e.window.h = h;
+    AVal evt = _pico_atmos_mk_event(&e);
+    AStatus st = atm_emit(evt);
+    a_dec(evt);
+    return st;
+}
+
 // Test script: the entries `frame:...` of a variable that are due.
 static AStatus _pico_atmos_script (const char* var, int frame) {
     AStatus st = A_OK;
@@ -2529,6 +2554,10 @@ static AStatus _pico_atmos_script (const char* var, int frame) {
         char* arg = strchr(item, ':');
         if (!strcmp(var,"PICO_ATM_MOUSE") && arg!=NULL && atoi(item)==frame) {
             st = _pico_atmos_script_mouse(arg+1);
+            continue;
+        }
+        if (!strcmp(var,"PICO_ATM_RESIZE") && arg!=NULL && atoi(item)==frame) {
+            st = _pico_atmos_script_resize(arg+1);
             continue;
         }
         if (arg==NULL || atoi(item)!=frame) {
@@ -2605,6 +2634,9 @@ static AStatus _pico_atmos_loop (void) {
         }
         if (st == A_OK) {
             st = _pico_atmos_script("PICO_ATM_MOUSE", frame);
+        }
+        if (st == A_OK) {
+            st = _pico_atmos_script("PICO_ATM_RESIZE", frame);
         }
 
         // logic: `:frame [n=, us=]`, once per frame, before `:draw`

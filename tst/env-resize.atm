@@ -1,0 +1,40 @@
+;; The loop of pico, in test mode unless the variables are already set:
+;;  - 8 frames of 20ms each, then :quit
+;;  - the window is resized at frames 3 and 6, as by the user
+`setenv("PICO_ATM_FRAMES", "8:20", 0);`
+`setenv("PICO_ATM_RESIZE", "3:400:200,6:300:300", 0);`
+
+pico.open [ title="Env Resize" ]
+val window = pico.layer.window
+
+func wdim () {
+    pico.set.layer(window)
+    val d = pico.get.scene().dim
+    pico.set.layer(pico.layer.world)
+    d
+}
+
+var frame = 0
+val got = []
+par :any {
+    loop on :frame {
+        set frame = frame + 1
+    }
+} with {
+    loop e on :window.resize {
+        ;; the window layer already follows the new size
+        val d = wdim()
+        assert(d.w==e.w && d.h==e.h)
+        set got@+ = [frame, e.w, e.h]
+    }
+} with {
+    await :quit
+}
+
+;; exactly one event per entry, at its frame
+assert(#got == 2)
+assert(got@0@0==2 && got@0@1==400 && got@0@2==200)
+assert(got@1@0==5 && got@1@1==300 && got@1@2==300)
+val d = wdim()
+assert(d.w==300 && d.h==300)
+pico.close()
