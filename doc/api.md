@@ -277,7 +277,7 @@ In alphabetical order:
     - **pico.get.now**: Gets milliseconds since initialization.
         - `pico.get.now () -> integer`
     - **pico.get.pencil**: Gets pencil configuration.
-        - `pico.get.pencil () -> [ color: Color, font: (Font|string)?, style: :fill|:stroke ]`
+        - `pico.get.pencil () -> [ color: Color, font: (Font|string)?, style: :fill|:stroke, smooth: boolean ]`
         - `font` is as set: a `Font`, a path, or `nil` for the built-in font
           (and after the `Font` is released, since the pencil then goes back
           to the built-in font).
@@ -599,9 +599,12 @@ In alphabetical order:
         pico.set.pencil [
             color:  Color,              -- drawing color
             font:   Font|string|true,   -- font, TTF path, or true (built-in)
-            style:  :fill|:stroke,    -- shape drawing style
+            style:  :fill|:stroke,      -- shape drawing style
+            smooth: boolean,            -- text with smooth edges (default: false)
         ]
         ```
+        - `smooth=true` draws text with smooth (anti-aliased) edges. By
+          default, glyphs have hard edges, as in pixel art.
         - The pencil belongs to the current layer.
         - `font=true` selects the built-in font. Any other type, such as
           `false`, is an error.

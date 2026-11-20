@@ -34,6 +34,11 @@ Layout:
   be confused with the window layer
     - new read-only field `screen` (C: `pico_get_app_screen`): the size
       of the display, fullscreen or not
+- text is UTF-8 (was Latin-1)
+- pencil `smooth` (C: `pico_get/set_pencil_smooth`): text with smooth
+  (anti-aliased) edges, off by default
+- enums are tags in Atmos: `:red`, `:NW`, `:fill`, `:horizontal`,
+  `:key.dn` (a tag is a string, so the old spelling still works)
 - games copied in: `exs/birds/`, `exs/rocks/`, `exs/storm/`
 
 Modifications (C API):

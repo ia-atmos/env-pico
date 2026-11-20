@@ -19,7 +19,7 @@ section numbers for what was already written.
 | #2 | Flaky timing checks of `c/tst/expert_fps.c` under valgrind on CI: widen the bounds | done: 100ms checks up to 150ms, 25ms up to 40ms, immediate up to 15ms (C and Atmos tests) |
 | #3 | Scripted Ctrl/Shift/Alt in `PICO_ATM_KEYS` (and Caps Lock), for `pico-frescogo` | done: modifiers held by scripted dn/up of their keys, CapsLock toggles, `caps` in key events and `pico.get.keyboard()` (also in C) |
 | #4 | Rename `pico.get/set.window` not to be confused with the window layer; screen size always available | done (#4d): `pico.get.app` / `pico.set.app` (C: `Pico_App`, `pico_*_app*`), read-only `screen` = display size |
-| #5 | Text smoothing (anti-aliasing): text is drawn with hard edges (`_Solid`); `pico-frescogo` asks for smooth text (`_Blended`), maybe as a pencil option | waiting for the author |
+| #5 | Text smoothing (anti-aliasing): text is drawn with hard edges (`_Solid`); `pico-frescogo` asks for smooth text (`_Blended`), maybe as a pencil option | done (#5b): pencil `smooth`, off by default (C: `pico_set_pencil_smooth`) |
 | #6 | `fit`: keep the proportion of the world on the window with bars, instead of stretching (window resize and fullscreen). Proposed by `pico-slides` (2026-11-20), which computes the bars by hand meanwhile | waiting for the author: where the field lives, names |
 
 ## A. Decisions waiting for an answer
