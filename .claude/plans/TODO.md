@@ -22,6 +22,7 @@ section numbers for what was already written.
 | #5 | Text smoothing (anti-aliasing): text is drawn with hard edges (`_Solid`); `pico-frescogo` asks for smooth text (`_Blended`), maybe as a pencil option | done (#5b): pencil `smooth`, off by default (C: `pico_set_pencil_smooth`) |
 | #6 | `fit`: keep the proportion of the world on the window with bars, instead of stretching (window resize and fullscreen). Proposed by `pico-slides` (2026-11-20), which computes the bars by hand meanwhile | done (#6a): scene field of any layer, `pico.set.scene [fit=:bars]` / `:stretch` (C: `pico_set_scene_fit`); `:crop` may come later |
 | #7 | All enums are tags in Atmos (author, 2026-11-20) | done: colors, anchors, styles, flips, event names, fit written as tags in tests, games, docs (a tag is a string at runtime, old spelling still accepted); modes `'!'` `'%'` `'#'` and key names stay strings |
+| #8 | CI flake again: `c/tst/expert.c` `dt<=150` failed under valgrind (run 21) | done (#8b): under valgrind (`PICO_VALGRIND`, set by `c/pico-sdl`) the C timing tests keep only their lower bounds |
 
 ## A. Decisions waiting for an answer
 
