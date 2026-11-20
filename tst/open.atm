@@ -16,6 +16,7 @@ do {
     pico.open()
     val w = pico.get.app()
     assert(w.title=="pico-SDL" && w.show==true && w.fullscreen==false)
+    assert(pico.test == nil)        ;; only under `-t` (see t-test.atm)
     assert(pico.get.layer() == pico.layer.world)
     assert(pico.get.scene().dim.w == 100)
     fails("pico is already open", \{ pico.open() })

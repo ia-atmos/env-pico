@@ -29,8 +29,12 @@ fi
 mkdir -p ../c/tst/out
 fail=0
 for t in "$@"; do
-    if PICO_TESTS=1 PICO_CHECK_INT= PICO_CHECK_ASR=1 SDL_AUDIODRIVER=dummy \
-        xvfb-run -a ../atmos-pico "$t.atm" > "../c/tst/out/$t.log" 2>&1
+    # t-*.atm: under `-t`, pico is headless by itself (no display, no xvfb)
+    case "$t" in
+        t-*) run="env -u DISPLAY PICO_CHECK_INT= PICO_CHECK_ASR=1 ../atmos-pico -t" ;;
+        *)   run="env PICO_TESTS=1 PICO_CHECK_INT= PICO_CHECK_ASR=1 SDL_AUDIODRIVER=dummy xvfb-run -a ../atmos-pico" ;;
+    esac
+    if $run "$t.atm" > "../c/tst/out/$t.log" 2>&1
     then
         echo "OK   $t"
     else

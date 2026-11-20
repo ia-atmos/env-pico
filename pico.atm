@@ -2816,3 +2816,15 @@ pin pico = [
 ;; gives the table to the binding, which sets `pico.layer.world` and
 ;; `pico.layer.window` at each `pico.open`
 `_pico_atmos_init($pico);`
+
+;; Under `-t` (test blocks enabled), pico runs headless: no window on the
+;; screen and no sound, with the software renderer (as `PICO_TESTS=1`), so
+;; that the `test` blocks of a program run anywhere, with no display.
+;; `pico.test` tells a program that it is so. A variable that is already
+;; set in the environment prevails.
+test {
+    `setenv("SDL_VIDEODRIVER", "dummy", 0);`
+    `setenv("SDL_AUDIODRIVER", "dummy", 0);`
+    `setenv("PICO_TESTS",      "1",     0);`
+    set pico.test = true
+}

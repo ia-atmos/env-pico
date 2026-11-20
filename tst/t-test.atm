@@ -1,0 +1,30 @@
+;; Runs with `atmos-pico -t` and no display (see run.sh): under `-t`, pico
+;; is headless by itself, so that `test` blocks run anywhere.
+
+var n = 0
+test {
+    assert(pico.test == true)
+    set n = n + 1
+}
+
+pico.open()
+pico.set.app [ title="Fit" ]
+
+;; the same drawing of fit.atm, against the same images
+pico.set.layer(pico.layer.window)
+pico.set.scene  [ dim=['!', w=400, h=200] ]
+pico.set.effect [ color=:blue ]
+pico.set.layer(pico.layer.world)
+pico.set.effect [ color=:white ]
+pico.set.pencil [ color=:red ]
+pico.set.scene  [ fit=:bars ]
+pico.output.clear()
+pico.output.draw.oval(['%', x=0.5, y=0.5, w=0.5, h=0.5, anchor=:C])
+
+test {
+    pico.check("fit-02")
+    set n = n + 1
+}
+
+pico.close()
+assert(n == 2)
