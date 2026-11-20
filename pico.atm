@@ -2610,7 +2610,8 @@ static AStatus _pico_atmos_loop (void) {
         // time: after `:frame`, so that what the logic sets in `:frame`
         // (e.g. a clock factor) holds for the time of the same frame
         if (st==A_OK && _PICO_ATMOS.open && ms>0) {
-            st = atm_emit(a_int((int64_t)ms * 1000));
+            // in the unit of time of the build (us, or ms with ATMOS_TIME=ms)
+            st = atm_emit(a_int((int64_t)ms * 1000 / A_TIME_US));
         }
 
         // screen
