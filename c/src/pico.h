@@ -219,6 +219,7 @@ typedef struct {
     Pico_Color    color;
     Pico_Font*    font;         // NULL = built-in font
     PICO_STYLE    style;
+    int           smooth;       // text with smooth edges (default: 0)
 } Pico_Layer_Pencil;
 
 typedef struct {
@@ -439,6 +440,8 @@ void pico_output_sound_path (const char* path);
 Pico_Layer_Pencil pico_get_pencil       (void);
 Pico_Color  pico_get_pencil_color (void);
 Pico_Font*  pico_get_pencil_font  (void);
+/// @brief Gets whether text is drawn with smooth (anti-aliased) edges.
+int         pico_get_pencil_smooth (void);
 PICO_STYLE  pico_get_pencil_style (void);
 
 /// @brief Gets the state of auto aids.
@@ -659,6 +662,9 @@ void pico_set_pencil_font  (Pico_Font* font);
 /// The font is loaded once per path and kept until @ref pico_close.
 /// @param path path to the font file (NULL selects the built-in font)
 void pico_set_pencil_font_path (const char* path);
+/// @brief Sets whether text is drawn with smooth (anti-aliased) edges.
+/// Off by default: glyphs have hard edges, as in pixel art.
+void pico_set_pencil_smooth (int on);
 void pico_set_pencil_style (PICO_STYLE style);
 
 /// @brief Toggles auto aids (quit/exit, window resize, ctrl+keys).

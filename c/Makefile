@@ -87,6 +87,7 @@ tests: lib
 	$(EXE) tst/text-cache.c
 	$(EXE) tst/text_empty.c
 	$(EXE) tst/text-sizes.c
+	$(EXE) tst/text-smooth.c
 	$(EXE) tst/tile-grid.c
 	$(EXE) tst/tiles.c
 	$(EXE) tst/video.c
