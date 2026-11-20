@@ -52,6 +52,7 @@ tests: lib
 	$(EXE) tst/dim.c
 	$(EXE) tst/expert.c
 	$(EXE) tst/expert_fps.c
+	$(EXE) tst/fit.c
 	$(EXE) tst/bug-gfx-alpha.c
 	$(EXE) tst/font.c
 	$(EXE) tst/free.c

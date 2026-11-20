@@ -210,6 +210,15 @@ typedef enum {
     PICO_FLIP_BOTH       = SDL_FLIP_HORIZONTAL | SDL_FLIP_VERTICAL,
 } PICO_FLIP;
 
+/// @brief How a layer is placed in its target (`scene.dst`) when their
+/// proportions differ.
+typedef enum {
+    PICO_FIT_STRETCH,   ///< fills the target, deformed (default)
+    PICO_FIT_BARS       ///< largest rect with the proportion of the
+                        ///< layer (`scene.src`), centered; the rest
+                        ///< of the target shows the parent (bars)
+} PICO_FIT;
+
 typedef struct {
     int         angle;
     Pico_Anchor anchor;
@@ -237,6 +246,7 @@ typedef struct {
     Pico_Rel_Rect dst;
     Pico_Rel_Rect src;
     Pico_Rel_Rect clip;
+    PICO_FIT      fit;
 } Pico_Layer_Scene;
 
 /// @brief State of the application: its OS window and the screen.
@@ -629,6 +639,7 @@ void          pico_get_scene       (Pico_Layer_Scene* scene);
 Pico_Rel_Rect pico_get_scene_clip  (void);
 Pico_Abs_Dim  pico_get_scene_dim   (void);
 Pico_Rel_Rect pico_get_scene_dst   (void);
+PICO_FIT      pico_get_scene_fit   (void);
 int           pico_get_scene_clear (void);
 Pico_Rel_Rect pico_get_scene_src   (void);
 Pico_Abs_Dim  pico_get_scene_tile  (void);
@@ -724,6 +735,9 @@ void pico_set_scene       (Pico_Layer_Scene scene);
 void pico_set_scene_clip  (Pico_Rel_Rect clip);
 void pico_set_scene_dim   (Pico_Rel_Dim dim);
 void pico_set_scene_dst   (Pico_Rel_Rect dst);
+/// @brief Sets how the layer is placed in its target when their
+/// proportions differ (see @ref PICO_FIT).
+void pico_set_scene_fit (PICO_FIT fit);
 /// @brief Sets the cascade-clear flag of the current layer (cleared when
 /// an ancestor's @ref pico_output_clear cascades). Not allowed on
 /// world / window / sub-layers.

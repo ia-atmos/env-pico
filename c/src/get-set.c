@@ -146,6 +146,11 @@ Pico_Rel_Rect pico_get_scene_dst (void) {
     return G.layer->scene.dst;
 }
 
+PICO_FIT pico_get_scene_fit (void) {
+    _pico_guard();
+    return G.layer->scene.fit;
+}
+
 int pico_get_scene_clear (void) {
     _pico_guard();
     return G.layer->scene.clear;
@@ -423,6 +428,12 @@ void pico_set_scene_dst (Pico_Rel_Rect dst) {
     // stored raw; resolved lazily at each use (draw + cv/vs walks)
     // with the layer's dim as aspect ratio for w/h==0
     G.layer->scene.dst = dst;
+    _pico_output_present(0);
+}
+
+void pico_set_scene_fit (PICO_FIT fit) {
+    _pico_guard();
+    G.layer->scene.fit = fit;
     _pico_output_present(0);
 }
 

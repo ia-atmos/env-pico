@@ -14,6 +14,32 @@ static Pico_Abs_Dim  _rnd_dim  (SDL_FDim   f);
 static Pico_Abs_Pos  _rnd_pos  (SDL_FPoint f);
 static Pico_Abs_Rect _rnd_rect (SDL_FRect  f);
 
+// scene.fit: the largest rect with the proportion sw:sh that fits in
+// dst, centered (the rest of dst is left to the parent: the bars).
+SDL_FRect _pico_fit (PICO_FIT fit, SDL_FRect dst, float sw, float sh) {
+    if (fit==PICO_FIT_STRETCH || sw<=0 || sh<=0 || dst.w<=0 || dst.h<=0) {
+        return dst;
+    }
+    float kw = dst.w / sw;
+    float kh = dst.h / sh;
+    float k  = (kw < kh) ? kw : kh;
+    SDL_FRect ret = { 0, 0, sw*k, sh*k };
+    ret.x = dst.x + (dst.w - ret.w) / 2;
+    ret.y = dst.y + (dst.h - ret.h) / 2;
+    return ret;
+}
+
+// L's scene.dst resolved in the parent frame Pb, after scene.fit.
+static SDL_FRect _scene_dst (Pico_Layer* L, const Pico_Abs_Rect* Pb) {
+    SDL_FRect dst = _raw_rect(L->scene.dst, Pb, &L->scene.dim);
+    if (L->scene.fit == PICO_FIT_STRETCH) {
+        return dst;
+    }
+    Pico_Abs_Rect Lb = {0, 0, L->scene.dim.w, L->scene.dim.h};
+    SDL_FRect src = _raw_rect(L->scene.src, &Lb, NULL);
+    return _pico_fit(L->scene.fit, dst, src.w, src.h);
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 // CV: layer projection (cv_pos_to / cv_pos_from)
 ///////////////////////////////////////////////////////////////////////////////
@@ -45,7 +71,7 @@ static Pico_Layer* _dim_root_to (Pico_Layer* L, SDL_FDim d, SDL_FDim* out) {
     Pico_Abs_Rect Lb = {0, 0, L->scene.dim.w, L->scene.dim.h};
     Pico_Abs_Rect Pb = {0, 0, P->scene.dim.w, P->scene.dim.h};
     SDL_FRect src = _raw_rect(L->scene.src, &Lb, NULL);
-    SDL_FRect dst = _raw_rect(L->scene.dst, &Pb, &L->scene.dim);
+    SDL_FRect dst = _scene_dst(L, &Pb);
     d.w = d.w * dst.w / src.w;
     d.h = d.h * dst.h / src.h;
     return _dim_root_to(P, d, out);
@@ -61,7 +87,7 @@ static Pico_Layer* _dim_root_fr (Pico_Layer* L, SDL_FDim d, SDL_FDim* out) {
     Pico_Layer* R = _dim_root_fr(P, d, &d);
     Pico_Abs_Rect Lb = {0, 0, L->scene.dim.w, L->scene.dim.h};
     Pico_Abs_Rect Pb = {0, 0, P->scene.dim.w, P->scene.dim.h};
-    SDL_FRect dst = _raw_rect(L->scene.dst, &Pb, &L->scene.dim);
+    SDL_FRect dst = _scene_dst(L, &Pb);
     SDL_FRect src = _raw_rect(L->scene.src, &Lb, NULL);
     d.w = d.w * src.w / dst.w;
     d.h = d.h * src.h / dst.h;
@@ -79,7 +105,7 @@ static Pico_Layer* _pos_root_to (Pico_Layer* L, SDL_FPoint p, SDL_FPoint* out) {
     Pico_Abs_Rect Lb = {0, 0, L->scene.dim.w, L->scene.dim.h};
     Pico_Abs_Rect Pb = {0, 0, P->scene.dim.w, P->scene.dim.h};
     SDL_FRect src = _raw_rect(L->scene.src, &Lb, NULL);
-    SDL_FRect dst = _raw_rect(L->scene.dst, &Pb, &L->scene.dim);
+    SDL_FRect dst = _scene_dst(L, &Pb);
     float rx = (p.x - src.x) / src.w;
     float ry = (p.y - src.y) / src.h;
     p.x = dst.x + rx * dst.w;
@@ -97,7 +123,7 @@ static Pico_Layer* _pos_root_fr (Pico_Layer* L, SDL_FPoint p, SDL_FPoint* out) {
     Pico_Layer* R = _pos_root_fr(P, p, &p);
     Pico_Abs_Rect Lb = {0, 0, L->scene.dim.w, L->scene.dim.h};
     Pico_Abs_Rect Pb = {0, 0, P->scene.dim.w, P->scene.dim.h};
-    SDL_FRect dst = _raw_rect(L->scene.dst, &Pb, &L->scene.dim);
+    SDL_FRect dst = _scene_dst(L, &Pb);
     SDL_FRect src = _raw_rect(L->scene.src, &Lb, NULL);
     float rx = (p.x - dst.x) / dst.w;
     float ry = (p.y - dst.y) / dst.h;
@@ -117,7 +143,7 @@ static Pico_Layer* _rect_root_to (Pico_Layer* L, SDL_FRect r, SDL_FRect* out) {
     Pico_Abs_Rect Lb = {0, 0, L->scene.dim.w, L->scene.dim.h};
     Pico_Abs_Rect Pb = {0, 0, P->scene.dim.w, P->scene.dim.h};
     SDL_FRect src = _raw_rect(L->scene.src, &Lb, NULL);
-    SDL_FRect dst = _raw_rect(L->scene.dst, &Pb, &L->scene.dim);
+    SDL_FRect dst = _scene_dst(L, &Pb);
     float sx = dst.w / src.w;
     float sy = dst.h / src.h;
     r.x = dst.x + (r.x - src.x) * sx;
@@ -137,7 +163,7 @@ static Pico_Layer* _rect_root_fr (Pico_Layer* L, SDL_FRect r, SDL_FRect* out) {
     Pico_Layer* R = _rect_root_fr(P, r, &r);
     Pico_Abs_Rect Lb = {0, 0, L->scene.dim.w, L->scene.dim.h};
     Pico_Abs_Rect Pb = {0, 0, P->scene.dim.w, P->scene.dim.h};
-    SDL_FRect dst = _raw_rect(L->scene.dst, &Pb, &L->scene.dim);
+    SDL_FRect dst = _scene_dst(L, &Pb);
     SDL_FRect src = _raw_rect(L->scene.src, &Lb, NULL);
     float sx = src.w / dst.w;
     float sy = src.h / dst.h;
@@ -279,7 +305,7 @@ static Pico_Rel_Rect _root_rect (Pico_Layer* layer, const Pico_Rel_Rect* r) {
         // w/h==0 dst would collapse to an empty rect there.
         Pico_Layer* P = _walk_up(L);
         Pico_Abs_Rect Pb = {0, 0, P->scene.dim.w, P->scene.dim.h};
-        SDL_FRect f = _raw_rect(L->scene.dst, &Pb, &L->scene.dim);
+        SDL_FRect f = _scene_dst(L, &Pb);
         Pico_Rel_Rect dst = {
             '!', {f.x, f.y, f.w, f.h}, PICO_ANCHOR_NW
         };

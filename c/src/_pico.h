@@ -188,6 +188,7 @@ SDL_Surface* _pico_shot (Pico_Layer* layer, const Pico_Rel_Rect* rect);
 Pico_Abs_Dim  _pico_abs_dim  (Pico_Rel_Dim* dim, const Pico_Abs_Rect* base,
                               const Pico_Abs_Dim* ratio);
 Pico_Abs_Pos  _pico_abs_pos  (Pico_Rel_Pos pos, const Pico_Abs_Rect* base);
+SDL_FRect _pico_fit (PICO_FIT fit, SDL_FRect dst, float sw, float sh);
 Pico_Abs_Rect _pico_abs_rect (Pico_Rel_Rect rect, const Pico_Abs_Rect* base,
                               const Pico_Abs_Dim* ratio);
 Pico_Rel_Dim  _pico_rel_dim  (Pico_Abs_Dim abs, char mode);

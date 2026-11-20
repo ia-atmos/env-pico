@@ -1,4 +1,5 @@
 #include <assert.h>
+#include <math.h>
 #include <string.h>
 #include <stdio.h>
 
@@ -264,6 +265,13 @@ void _pico_layer_output (
     Pico_Abs_Rect src = _pico_abs_rect (
         layer->scene.src, &(Pico_Abs_Rect){0, 0, sup->w, sup->h}, NULL
     );
+
+    // scene.fit: keep the proportion of src inside dst (bars)
+    if (layer->scene.fit != PICO_FIT_STRETCH) {
+        SDL_FRect f = _pico_fit(layer->scene.fit,
+            (SDL_FRect){dst.x, dst.y, dst.w, dst.h}, src.w, src.h);
+        dst = (SDL_Rect){ roundf(f.x), roundf(f.y), roundf(f.w), roundf(f.h) };
+    }
 
     // clip dst to current layer (parent) bounds, propagate to src
     {
