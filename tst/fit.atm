@@ -1,0 +1,66 @@
+pico.open()
+pico.set.app [ title="Fit" ]
+val window = pico.layer.window
+val world  = pico.layer.world
+
+;; a wide window (400x200) with a square world (100x100)
+pico.set.layer(window)
+pico.set.scene  [ dim=['!', w=400, h=200] ]
+pico.set.effect [ color=:blue ]         ;; the color of the bars
+pico.set.layer(world)
+pico.set.effect [ color=:white ]
+pico.set.pencil [ color=:red ]
+val r = ['%', x=0.5, y=0.5, w=0.5, h=0.5, anchor=:C]
+
+;; default: stretched (deformed)
+assert(pico.get.scene().fit == :stretch)
+pico.output.clear()
+pico.output.draw.oval(r)
+pico.check("fit-01")
+
+;; bars: a 200x200 world in the middle, blue bars on the sides
+pico.set.scene [ fit=:bars ]
+assert(pico.get.scene().fit == :bars)
+pico.output.clear()
+pico.output.draw.oval(r)
+pico.check("fit-02")
+
+;; positions discount the bars: window pixel -> world
+do {
+    val p = ['%', anchor=:NW]
+    pico.cv.pos(world, p, window, ['!', x=200, y=100, anchor=:NW])
+    assert(pico.equal(p.x, 0.5) && pico.equal(p.y, 0.5))
+    pico.cv.pos(world, p, window, ['!', x=100, y=0, anchor=:NW])    ;; where the world starts
+    assert(pico.equal(p.x, 0) && pico.equal(p.y, 0))
+    pico.cv.pos(world, p, window, ['!', x=50, y=100, anchor=:NW])   ;; on the left bar: outside
+    assert(p.x < 0)
+}
+
+;; zoom composes: half of the world (50x100 crop) keeps 1:2
+pico.set.scene [ source=['%', x=0.5, y=0.5, w=0.5, h=1, anchor=:C] ]
+pico.output.clear()
+pico.output.draw.oval(r)
+pico.check("fit-03")
+
+;; a tall window: bars above and below
+pico.set.scene [ source=['%', x=0.5, y=0.5, w=1, h=1, anchor=:C] ]
+pico.set.layer(window)
+pico.set.scene [ dim=['!', w=200, h=400] ]
+pico.set.layer(world)
+pico.output.clear()
+pico.output.draw.oval(r)
+pico.check("fit-04")
+
+;; and back to stretch
+pico.set.scene [ fit=:stretch ]
+pico.output.clear()
+pico.output.draw.oval(r)
+pico.check("fit-05")
+
+;; an invalid name is an error
+do {
+    val ok, err = catch true { pico.set.scene [ fit=:crop ] }
+    assert(!ok && string.find(err, "invalid fit"))
+}
+
+pico.close()

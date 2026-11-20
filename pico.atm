@@ -979,6 +979,7 @@ static AVal _pico_atmos_mk_event (Pico_Event* e) {
 
 static const char* _PICO_ATMOS_STYLES[] = { "fill", "stroke" };
 static const char* _PICO_ATMOS_FLIPS[]  = { "none", "horizontal", "vertical", "both" };
+static const char* _PICO_ATMOS_FITS[]   = { "stretch", "bars" };
 
 // Index of a name in a list, or an error.
 static int _pico_atmos_enum (AVal v, const char* what, const char** names, int n, int* out) {
@@ -1470,6 +1471,7 @@ static AStatus _pico_atmos_l_get_scene (AFunc* self, int argc, AVal* argv) {
     _pico_atmos_set(t, "source", _pico_atmos_mk_rect(s.src));
     _pico_atmos_set(t, "clip",   _pico_atmos_mk_rect(s.clip));
     _pico_atmos_set(t, "clear",  a_bool(s.clear));
+    _pico_atmos_set(t, "fit",    a_strz(_PICO_ATMOS_FITS[s.fit & 1]));
     a_push(t);
     return A_OK;
 }
@@ -1722,7 +1724,7 @@ static AStatus _pico_atmos_l_set_pencil (AFunc* self, int argc, AVal* argv) {
     return A_OK;
 }
 
-// pico.set.scene [clear=, dim=, tile=, clip=, target=, source=]
+// pico.set.scene [clear=, dim=, tile=, clip=, target=, source=, fit=]
 static AStatus _pico_atmos_l_set_scene (AFunc* self, int argc, AVal* argv) {
     _PICO_ATMOS_IN("set.scene")
     AVal t = _PICO_ATMOS_ARG(0);
@@ -1733,6 +1735,11 @@ static AStatus _pico_atmos_l_set_scene (AFunc* self, int argc, AVal* argv) {
     AVal vclip = _pico_atmos_get(t, "clip");
     AVal vdst  = _pico_atmos_get(t, "target");
     AVal vsrc  = _pico_atmos_get(t, "source");
+    AVal vfit  = _pico_atmos_get(t, "fit");
+    int fit;
+    if (vfit.type != A_NIL) {
+        _PICO_ATMOS_TRY(_pico_atmos_enum(vfit, "fit", _PICO_ATMOS_FITS, 2, &fit));
+    }
 
     Pico_Rel_Dim  dim,  *xdim=NULL;
     Pico_Rel_Dim  tile, *xtile=NULL;
@@ -1765,6 +1772,7 @@ static AStatus _pico_atmos_l_set_scene (AFunc* self, int argc, AVal* argv) {
     if (vclip.type != A_NIL) { pico_set_scene_clip(clip); }
     if (vdst.type  != A_NIL) { pico_set_scene_dst(dst);   }
     if (vsrc.type  != A_NIL) { pico_set_scene_src(src);   }
+    if (vfit.type  != A_NIL) { pico_set_scene_fit(fit);   }
     return A_OK;
 }
 
@@ -2719,7 +2727,7 @@ pin pico = [
         mouse    = `:value a_func(_pico_atmos_l_get_mouse,    0)`,  ;; ([layer,] mode|pos) -> Mouse
         now      = `:value a_func(_pico_atmos_l_get_now,      0)`,  ;; () -> ms
         pencil   = `:value a_func(_pico_atmos_l_get_pencil,   0)`,  ;; () -> [color=, font=, style=, smooth=]
-        scene    = `:value a_func(_pico_atmos_l_get_scene,    0)`,  ;; () -> [dim=, tile=, target=, source=, clip=, clear=]
+        scene    = `:value a_func(_pico_atmos_l_get_scene,    0)`,  ;; () -> [dim=, tile=, target=, source=, clip=, clear=, fit=]
         text     = `:value a_func(_pico_atmos_l_get_text,     0)`,  ;; (dim, text) -> Dim
         video    = `:value a_func(_pico_atmos_l_get_video,    0)`,  ;; ([rect|mode,] layer|path) -> [dim=, fps=, frame=, done=]
         app      = `:value a_func(_pico_atmos_l_get_app,      0)`,  ;; () -> [fullscreen=, show=, title=, screen=]
@@ -2735,7 +2743,7 @@ pin pico = [
         mouse  = `:value a_func(_pico_atmos_l_set_mouse,  0)`,  ;; ([layer,] pos)
         ;; font: a font, a path, or true (the built-in font)
         pencil = `:value a_func(_pico_atmos_l_set_pencil, 0)`,  ;; [color=, font=, style=:fill|:stroke, smooth=]
-        scene  = `:value a_func(_pico_atmos_l_set_scene,  0)`,  ;; [dim=, tile=, target=, source=, clip=, clear=]
+        scene  = `:value a_func(_pico_atmos_l_set_scene,  0)`,  ;; [dim=, tile=, target=, source=, clip=, clear=, fit=:stretch|:bars]
         video  = `:value a_func(_pico_atmos_l_set_video,  0)`,  ;; (layer, frame) -> boolean
         app    = `:value a_func(_pico_atmos_l_set_app,    0)`,  ;; [fullscreen=, show=, title=]
     ],
