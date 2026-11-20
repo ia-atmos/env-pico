@@ -37,6 +37,8 @@ Layout:
 - scene `fit` (C: `PICO_FIT`, `pico_get/set_scene_fit`): `:stretch`
   (default) or `:bars`, which keeps the proportion of the layer in its
   target (for the world, bars in a resized or fullscreen window)
+- `atmos-pico -t`: pico is headless by itself (no display needed), and
+  `pico.test` is `true`
 - text is UTF-8 (was Latin-1)
 - pencil `smooth` (C: `pico_get/set_pencil_smooth`): text with smooth
   (anti-aliased) edges, off by default

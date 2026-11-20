@@ -776,6 +776,22 @@ order:
 
 ## Tests
 
+With the flag `-t` (`atmos-pico -t prog.atm`), which enables the `test`
+blocks of a program, pico runs headless by itself: no window on the screen,
+no sound, and the software renderer, so that the tests run with no display.
+The field `pico.test` is `true` in this mode, and `nil` otherwise:
+
+```
+pico.open()
+pico.output.draw.rect ['!', x=50, y=50, w=10, h=10]
+test {
+    pico.check("rect-01")       ;; only with -t
+}
+```
+
+A variable that is already set in the environment (`SDL_VIDEODRIVER`,
+`SDL_AUDIODRIVER`, `PICO_TESTS`) prevails.
+
 The next environment variables run the [reactive mode](#reactive-mode) with no
 interaction:
 

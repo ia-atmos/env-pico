@@ -23,6 +23,8 @@ section numbers for what was already written.
 | #6 | `fit`: keep the proportion of the world on the window with bars, instead of stretching (window resize and fullscreen). Proposed by `pico-slides` (2026-11-20), which computes the bars by hand meanwhile | done (#6a): scene field of any layer, `pico.set.scene [fit=:bars]` / `:stretch` (C: `pico_set_scene_fit`); `:crop` may come later |
 | #7 | All enums are tags in Atmos (author, 2026-11-20) | done: colors, anchors, styles, flips, event names, fit written as tags in tests, games, docs (a tag is a string at runtime, old spelling still accepted); modes `'!'` `'%'` `'#'` and key names stay strings |
 | #8 | CI flake again: `c/tst/expert.c` `dt<=150` failed under valgrind (run 21) | done (#8b): under valgrind (`PICO_VALGRIND`, set by `c/pico-sdl`) the C timing tests keep only their lower bounds |
+| #9 | By the session, to be confirmed ("work with no input", author in `atmos-lang`, 2026-11-20): under `atmos-pico -t` pico is headless by itself (dummy video and audio, software renderer) and `pico.test` is `true` (atmos-envs#3) | done on `main`, inert without `-t`; `tst/t-test.atm` |
+| #10 | By the session: the loop emits the time in the unit of the build (`ATMOS_TIME=ms`); the field `us` of `:frame` stays in microseconds | done; `us` under `ms` reported to `atmos-float` (#14), his to decide |
 
 ## A. Decisions waiting for an answer
 
