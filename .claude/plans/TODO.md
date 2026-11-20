@@ -26,6 +26,10 @@ section numbers for what was already written.
 | #9 | By the session, to be confirmed ("work with no input", author in `atmos-lang`, 2026-11-20): under `atmos-pico -t` pico is headless by itself (dummy video and audio, software renderer) and `pico.test` is `true` (atmos-envs#3) | done on `main`, inert without `-t`; `tst/t-test.atm` |
 | #10 | By the session: the loop emits the time in the unit of the build (`ATMOS_TIME=ms`); the field `us` of `:frame` stays in microseconds | done; `us` under `ms` reported to `atmos-float` (#14), his to decide |
 | #11 | By the session: small validations in the binding (a mode of more than one character, a negative `pico.input.delay`, the message of a non-string `title=`) | done, `tst/open.atm` |
+| #12 | By the session, asked by `pico-slides`: `PICO_ATM_RESIZE=f:w:h,...` scripts a resize of the window with its `:window.resize` | done, `tst/env-resize.atm` |
+| #13 | From `pico-slides`: text in more than one line (a `pico.get.text` / draw that takes a maximum width and breaks lines); it wraps by hand, word by word | waiting for the author (design) |
+| #14 | From `pico-slides`: a text whose box has an exact height. The `h` of a text is the font size and the box is taller (`h=30` gives 35 with DejaVuSans); it searches the size by trial | waiting for the author (design) |
+| #15 | From `pico-slides`: the cache of texts drawn from strings only grows until `pico.close()` (one per size at each resize). Advice given: `pico.layer.text` with its own pins. A call or a limit to drop the cache is open (also B.8) | waiting for the author |
 
 ## A. Decisions waiting for an answer
 

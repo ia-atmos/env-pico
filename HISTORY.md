@@ -24,7 +24,7 @@ Layout:
     - `pico.set.pencil [font=true]`: built-in font (was `false`)
     - `pico.in.*` (was `pico.xin.*`)
     - headless runs: `PICO_ATM_FRAMES`, `PICO_ATM_KEYS`,
-      `PICO_ATM_MOUSE`, `PICO_ATM_SHOT`
+      `PICO_ATM_MOUSE`, `PICO_ATM_RESIZE`, `PICO_ATM_SHOT`
 - resizing a layer with live sub-layers is an error
 - fullscreen: the window layer follows the display (its `dim` is the
   display size); the previous `dim` is restored on leave
