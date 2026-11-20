@@ -60,7 +60,7 @@ In the rest of this guide, we only show the lines in between:
 - The examples continue each other: the state of an example carries over to the
   next one, until an example restarts `atmos-pico`.
 - To follow the examples step by step, you may insert a
-  `pico.input.event('key.dn')` after a step, which waits for a key press.
+  `pico.input.event(:key.dn)` after a step, which waits for a key press.
 
 If you come from Lua, note that Atmos writes tables with brackets (`[...]`),
 starts indexes at `0`, comments with `;;`, declares variables with `val`
@@ -237,8 +237,8 @@ passing the `color` attribute:
 
 <table>
 <tr><td><pre>
-pico.set.effect [ color='yellow' ]  ;; background
-pico.set.pencil [ color='red'    ]  ;; shapes
+pico.set.effect [ color=:yellow ]  ;; background
+pico.set.pencil [ color=:red    ]  ;; shapes
 pico.output.clear()
 pico.output.draw.rect [ '!', x=50, y=50, w=50, h=50 ]
 </pre>
@@ -338,9 +338,9 @@ dimensions and aspect ratio.
 <table>
 <tr><td><pre>
 pico.output.clear()
-val _ = 'black'
-val o = 'blue'
-val x = 'silver'
+val _ = :black
+val o = :blue
+val x = :silver
 val PI = [
     [_,_,_,o,o,o,o,_,_,_],
     [_,o,o,o,o,o,o,o,o,_],
@@ -384,7 +384,7 @@ In addition to the usual fields, tables also describe
 - `[ '%', x=0.5, y=0.5 ]`:          a centered relative position
 - `[ '!', w=20, h=30 ]`:            a raw dimension
 - `[ '#', x=4, y=4, w=2, h=1 ]`:    a rectangle spanning 2 tiles horizontally
-- `[ '%', x=0, y=1, anchor='SW' ]`: a bottom-left position with *southwest* anchor
+- `[ '%', x=0, y=1, anchor=:SW ]`: a bottom-left position with *southwest* anchor
 
 The **mode** determines the behavior of coordinates within layers:
 
@@ -410,7 +410,7 @@ The **anchor** determines the reference point **within** shapes:
 
 When drawing, the anchor pins an inner shape position to the given coordinate.
 As shown in the previous examples, by default, `atmos-pico` uses the center
-anchor `'C'`.
+anchor `:C`.
 
 Let's draw a pixel and three rectangles, all at the same position, but using
 different anchors:
@@ -418,14 +418,14 @@ different anchors:
 <table>
 <tr><td><pre>
 pico.close() ; pico.open()
-pico.set.pencil [ color='white' ]
+pico.set.pencil [ color=:white ]
 pico.output.draw.pixel [ '%', x=0.5, y=0.5 ]
-pico.set.pencil [ color=pico.color.alpha('red',   0x80) ]
-pico.output.draw.rect [ '%', x=0.5, y=0.5, w=0.3, h=0.3, anchor='NW' ]
-pico.set.pencil [ color=pico.color.alpha('green', 0x80) ]
-pico.output.draw.rect [ '%', x=0.5, y=0.5, w=0.3, h=0.3, anchor='C' ]
-pico.set.pencil [ color=pico.color.alpha('blue',  0x80) ]
-pico.output.draw.rect [ '%', x=0.5, y=0.5, w=0.3, h=0.3, anchor='SE' ]
+pico.set.pencil [ color=pico.color.alpha(:red,   0x80) ]
+pico.output.draw.rect [ '%', x=0.5, y=0.5, w=0.3, h=0.3, anchor=:NW ]
+pico.set.pencil [ color=pico.color.alpha(:green, 0x80) ]
+pico.output.draw.rect [ '%', x=0.5, y=0.5, w=0.3, h=0.3, anchor=:C ]
+pico.set.pencil [ color=pico.color.alpha(:blue,  0x80) ]
+pico.output.draw.rect [ '%', x=0.5, y=0.5, w=0.3, h=0.3, anchor=:SE ]
 </pre>
 </td><td>
 <img src="../c/tst/asr/guide-04-00-01.png" width="200">
@@ -454,7 +454,7 @@ pico.set.scene [
     dim  = [ '#', w=5, h=5 ],   ;; world size (5x5 tiles)
 ]
 pico.output.draw.rect [ '#', x=3, y=3, w=1, h=1 ]
-pico.output.draw.rect [ '#', x=5, y=1, w=2, h=1, anchor='NE' ]
+pico.output.draw.rect [ '#', x=5, y=1, w=2, h=1, anchor=:NE ]
 </pre>
 </td><td>
 <img src="../c/tst/asr/guide-04-01-01.png" width="200">
@@ -552,7 +552,7 @@ the world background when we zoom out):
 <tr><td><pre>
 pico.close() ; pico.open()
 pico.set.layer(pico.layer.window) ;; (typically grey to distinguish from world)
-pico.set.effect [ color='black' ]
+pico.set.effect [ color=:black ]
 pico.set.layer(pico.layer.world)
 pico.output.draw.image('../c/res/open.png',
     ['%', x=0.5, y=0.5, w=0.5, h=0.5])
@@ -671,7 +671,7 @@ loop {
     loop k,v in e {
         print('', k, v)
     }
-    if e.tag=='key.dn' && e.key=='Escape' {
+    if e.tag==:key.dn && e.key=='Escape' {
         break
     }
 }
@@ -687,16 +687,16 @@ the window, and so on.
 To escape the loop, press the `Escape` key.
 Note that, by default, closing the window terminates the program immediately.
 
-Event types (*tags*) include `'key.dn'`, `'mouse.button.dn'`,
-`'mouse.motion'`, and many others.
+Event types (*tags*) include `:key.dn`, `:mouse.button.dn`,
+`:mouse.motion`, and many others.
 Since an event is a tagged table, we can also test it with the operator `??`,
 as in `e ?? :key.dn`.
 
 We can filter events and set timeouts:
 
 ```
-val e1 = pico.input.event('key.dn')         ;; wait for key press only
-val e2 = pico.input.event('key.dn', 5000)   ;; wait key up to 5000ms
+val e1 = pico.input.event(:key.dn)         ;; wait for key press only
+val e2 = pico.input.event(:key.dn, 5000)   ;; wait key up to 5000ms
 ```
 
 When a timeout expires without an event, `nil` is returned:
@@ -757,11 +757,11 @@ pico.close() ; pico.open()
 pin flag = pico.layer.empty [ dim=['!', w=300, h=200] ]
 pico.set.layer(flag)
 pico.set.pencil [ color=[ r=0x00, g=0x2B, b=0x7F ] ]
-pico.output.draw.rect [ '%', x=0.00, y=0.0, w=0.33, h=1.0, anchor='NW' ]
+pico.output.draw.rect [ '%', x=0.00, y=0.0, w=0.33, h=1.0, anchor=:NW ]
 pico.set.pencil [ color=[ r=0xFC, g=0xD1, b=0x16 ] ]
-pico.output.draw.rect [ '%', x=0.33, y=0.0, w=0.34, h=1.0, anchor='NW' ]
+pico.output.draw.rect [ '%', x=0.33, y=0.0, w=0.34, h=1.0, anchor=:NW ]
 pico.set.pencil [ color=[ r=0xCE, g=0x11, b=0x26 ] ]
-pico.output.draw.rect [ '%', x=0.67, y=0.0, w=0.33, h=1.0, anchor='NW' ]
+pico.output.draw.rect [ '%', x=0.67, y=0.0, w=0.33, h=1.0, anchor=:NW ]
 ```
 
 At this point, nothing appears on the screen yet, since we did not update the
@@ -812,8 +812,8 @@ We can also flip and rotate layers when compositing them, by setting their
 <tr><td><pre>
 pico.set.layer(flag)
 pico.set.effect [
-    flip   = 'horizontal',
-    rotate = [angle=30, anchor='C'],
+    flip   = :horizontal,
+    rotate = [angle=30, anchor=:C],
 ]
 pico.set.layer(pico.layer.world)
 pico.output.clear()
@@ -836,7 +836,7 @@ We can also set the transparency of a layer by lowering its `alpha` field:
 pico.set.layer(flag)
 pico.set.effect [
     rotate = [angle=0],
-    flip   = 'none',
+    flip   = :none,
     alpha  = 0x80,
 ]
 pico.set.layer(pico.layer.world)
@@ -934,7 +934,7 @@ pin panel = pico.layer.empty [
     up=pico.layer.world, clear=true, dim=['!', w=100, h=50],
 ]
 pico.set.layer(panel)
-pico.set.effect [ color='silver' ]
+pico.set.effect [ color=:silver ]
 pico.set.scene [ target = ['%', x=0.7, y=0.7, w=0.4] ]
 pin H = pico.layer.text [
     up=panel, dim=['!', h=20], text="Hello",
@@ -1174,7 +1174,7 @@ If the `FPS` argument is omitted, `pico.input.event` only awakes from events,
 but never from timeouts.
 
 In expert mode, closing the window no longer terminates the program: it
-becomes a `'quit'` event, which the main loop must handle.
+becomes a `:quit` event, which the main loop must handle.
 
 ### 8.2. A Simple Example
 
@@ -1206,9 +1206,9 @@ var m = ['!', x=5, y=5]             ;; mouse pixel
 loop {                              ;; main loop
     ;; redraw scene
     pico.output.clear()
-    pico.set.pencil [ color='red' ]
+    pico.set.pencil [ color=:red ]
     pico.output.draw.pixel(m)
-    pico.set.pencil [ color='blue' ]
+    pico.set.pencil [ color=:blue ]
     pico.output.draw.pixel(k)
     pico.output.present()
 
@@ -1216,13 +1216,13 @@ loop {                              ;; main loop
     val e = pico.input.event()
     assert(e, "no FPS set here")
     ifs {
-        e.tag == 'quit' => {
+        e.tag == :quit => {
             break
         }
-        e.tag == 'mouse.motion' => {
+        e.tag == :mouse.motion => {
             set m = pico.get.mouse('!')
         }
-        e.tag == 'key.dn' => {
+        e.tag == :key.dn => {
             match e.key {
                 'Up'    => { set k.y = k.y - 1 }
                 'Down'  => { set k.y = k.y + 1 }
@@ -1314,7 +1314,7 @@ loop {                                      ;; main loop
     pico.output.present()
 
     ;; handle events
-    val e, dt = pico.input.event('quit')
+    val e, dt = pico.input.event(:quit)
     if e {
         break
     }
@@ -1332,7 +1332,7 @@ elapsed time, returning the sprite and positions to apply.
 
 The main loop redraws the whole scene (rectangle paths and sprites) and awaits
 the next clock tick.
-In this example, `pico.input.event` either awakes from a `'quit'` event, which
+In this example, `pico.input.event` either awakes from a `:quit` event, which
 escapes the main loop, or after `50ms`, which applies the next animation step.
 
 In the omitted initialization, we use [#sub-layers](#73-sub-layers) to crop the
@@ -1431,9 +1431,9 @@ As an example, this is how the main loop of the two pixels of
 
 par {
     loop on :draw {
-        pico.set.pencil [ color='red' ]
+        pico.set.pencil [ color=:red ]
         pico.output.draw.pixel(m)
-        pico.set.pencil [ color='blue' ]
+        pico.set.pencil [ color=:blue ]
         pico.output.draw.pixel(k)
     }
 } with {
@@ -1547,7 +1547,7 @@ south (`y=1`) west (`x=0`) boundary, resulting in a new world point at `y=0.75`
 (south) and `x=0.25` (west).
 The extra `0.005` is half a pixel of the world, since a point also uses the
 center anchor by default.
-With `anchor='NW'` in the child, the result is exactly `0.25` and `0.75`.
+With `anchor=:NW` in the child, the result is exactly `0.25` and `0.75`.
 
 Nesting is useful, for instance, to check mouse collisions against shapes drawn
 inside shapes inside layers.
@@ -1565,7 +1565,7 @@ To save a screenshot of the current window, we call
 <table>
 <tr><td><pre>
 pico.close() ; pico.open()
-pico.set.pencil [ color='red' ]
+pico.set.pencil [ color=:red ]
 pico.output.draw.rect [ '%', x=0.5, y=0.5, w=0.5, h=0.5 ]
 pico.output.screenshot(pico.layer.window, "my-screenshot.png")
 </pre>

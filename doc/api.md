@@ -40,22 +40,22 @@ error `pico is not open` if called before `pico.open` or after `pico.close`.
 
 In alphabetical order:
 
-- **Anchor**: `string` | `[ x: number, y: number ]`
-    - String: `'C'`, `'NW'`, `'N'`, `'NE'`, `'E'`, `'SE'`, `'S'`, `'SW'`, `'W'`
-    - an absent anchor is `'C'` (center)
-    - the anchors that operations return are always tables (`'C'` is
+- **Anchor**: `tag` | `[ x: number, y: number ]`
+    - Tag: `:C`, `:NW`, `:N`, `:NE`, `:E`, `:SE`, `:S`, `:SW`, `:W`
+    - an absent anchor is `:C` (center)
+    - the anchors that operations return are always tables (`:C` is
       `[x=0.5, y=0.5]`)
-- **Color**: `table` | `integer` | `string`
+- **Color**: `table` | `integer` | `tag`
     - Table: `[ ['!'|'%'], r: number, g: number, b: number [, a: number] ]`
         - `'!'` (default): components from `0` to `255`
         - `'%'`: components from `0.0` to `1.0`
         - an absent `a` is opaque
     - Integer: `0xRRGGBB` (24-bit, alpha=0xFF) or `0xRRGGBBAA` (32-bit)
-    - String:
-        `'black'`, `'white'`, `'gray'`, `'silver'`, `'red'`, `'green'`,
-        `'blue'`, `'yellow'`, `'cyan'`, `'magenta'`, `'orange'`, `'purple'`,
-        `'pink'`, `'brown'`, `'lime'`, `'teal'`, `'navy'`, `'maroon'`,
-        `'olive'`, `'transparent'`
+    - Tag:
+        `:black`, `:white`, `:gray`, `:silver`, `:red`, `:green`,
+        `:blue`, `:yellow`, `:cyan`, `:magenta`, `:orange`, `:purple`,
+        `:pink`, `:brown`, `:lime`, `:teal`, `:navy`, `:maroon`,
+        `:olive`, `:transparent`
     - the colors that operations return are always tables
       `[ r: integer, g: integer, b: integer, a: integer ]` (from `0` to `255`)
 - **Dim**: `[ '!'|'%'|'#', [w: number], [h: number] ]`
@@ -69,12 +69,12 @@ In alphabetical order:
         left: boolean, right: boolean, middle: boolean ]`
     - `:mouse.button.dn [ ... ]`
     - `:mouse.button.up [ ... ]`
-    - the tag is a string, as in `e.tag == 'key.dn'`, which is also testable
+    - the tag is a string, as in `e.tag == :key.dn`, which is also testable
       with the operator `??`, as in `e ?? :key.dn` or `e ?? :mouse`
     - `key` is the name of the key, such as `'A'`, `'Escape'`, `'Up'`, or
       `'Left'`
     - the mouse position of an event is in pixels of the window
-- **Flip**: `'none'` | `'horizontal'` | `'vertical'` | `'both'`
+- **Flip**: `:none` | `:horizontal` | `:vertical` | `:both`
 - **Font**: a native value, as loaded by `pico.font.load`
 - **Layer**: a native value, as created by the `pico.layer.*` constructors
 - **Mouse**: `[ '!'|'%'|'#', x: number, y: number, anchor: Anchor, left: boolean, right: boolean, middle: boolean ]`
@@ -198,7 +198,7 @@ In alphabetical order:
         - **table**: filled in-place (mode/anchor read from input);
           returns the same table.
         - **mode string** (`'!'`, `'%'`, `'#'`): builds and returns
-          an unpinned value; anchor defaults to `'C'` (center; Pos/Rect only).
+          an unpinned value; anchor defaults to `:C` (center; Pos/Rect only).
     - Args are matched left-to-right against the 4-slot template
       `(L_to, to_or_mode, L_fr, fr)`. Both explicit `nil`s and
       trailing/leading omissions are accepted; a mismatched type
@@ -264,7 +264,7 @@ In alphabetical order:
         - `mode`: `'!'` pixels, `'%'` percentage, `'#'` tiles
         - String-mode form defaults `anchor` to `C` (cell-center).
           Use the table form with an explicit `anchor` field to override
-          (e.g. `'NW'`); only the mode and the anchor of the table are read.
+          (e.g. `:NW`); only the mode and the anchor of the table are read.
         - Returned `Mouse` is a new table, which mirrors `mode` and `anchor`
           of the request.
         - After an entry of `PICO_ATM_MOUSE` (see [Tests](#tests)), the
@@ -273,11 +273,11 @@ In alphabetical order:
             - `pico.get.mouse('!')` — cur, pixels, C anchor
             - `pico.get.mouse(nil, '!')` — explicit nil = cur
             - `pico.get.mouse(pico.layer.world, '%')` — given layer's frame
-            - `pico.get.mouse(['!', anchor='NW'])` — explicit anchor
+            - `pico.get.mouse(['!', anchor=:NW])` — explicit anchor
     - **pico.get.now**: Gets milliseconds since initialization.
         - `pico.get.now () -> integer`
     - **pico.get.pencil**: Gets pencil configuration.
-        - `pico.get.pencil () -> [ color: Color, font: (Font|string)?, style: 'fill'|'stroke' ]`
+        - `pico.get.pencil () -> [ color: Color, font: (Font|string)?, style: :fill|:stroke ]`
         - `font` is as set: a `Font`, a path, or `nil` for the built-in font
           (and after the `Font` is released, since the pencil then goes back
           to the built-in font).
@@ -336,13 +336,13 @@ In alphabetical order:
         - `pico.input.event (filter: string?) -> Event, integer`
         - `pico.input.event (filter: string?, ms: integer?) -> Event?, integer`
         - Returns event (or nil on timeout) and elapsed time in ms (delta time)
-        - `filter`: `'quit'`, `'window.resize'`, `'key.dn'`, `'key.up'`,
-          `'mouse.motion'`, `'mouse.button.dn'`, `'mouse.button.up'`, or
+        - `filter`: `:quit`, `:window.resize`, `:key.dn`, `:key.up`,
+          `:mouse.motion`, `:mouse.button.dn`, `:mouse.button.up`, or
           `nil` for any event. The events that do not match are discarded.
         - `ms`: an integer (a number with no fractional part) from `0`, or
           `nil` or `-1` for no timeout.
         - It is an error to pass an argument of another type
-          (`pico.input.event('quit', '10')`), a number in the place of the
+          (`pico.input.event(:quit, '10')`), a number in the place of the
           filter when `ms` is also given (`pico.input.event(10, 20)`), an
           unknown filter, or a timeout below `-1`. Arguments after the second
           are ignored, as in the other functions.
@@ -599,7 +599,7 @@ In alphabetical order:
         pico.set.pencil [
             color:  Color,              -- drawing color
             font:   Font|string|true,   -- font, TTF path, or true (built-in)
-            style:  'fill'|'stroke',    -- shape drawing style
+            style:  :fill|:stroke,    -- shape drawing style
         ]
         ```
         - The pencil belongs to the current layer.

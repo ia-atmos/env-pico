@@ -29,15 +29,15 @@
 ;;      Rect    ['%', x=, y=, w=, h=, anchor=]  mode at index 0: '!' pixels,
 ;;      Pos     ['%', x=, y=, anchor=]          '%' percentage, '#' tiles;
 ;;      Dim     ['%', w=, h=]                   a missing w/h is inferred
-;;      Anchor  'C' 'NW' 'N' 'NE' 'E' 'SE' 'S' 'SW' 'W', or [x=,y=]
-;;      Color   'red', 0xRRGGBB, 0xRRGGBBAA, or ['!'|'%', r=, g=, b=, a=]
+;;      Anchor  :C :NW :N :NE :E :SE :S :SW :W, or [x=,y=]
+;;      Color   :red, 0xRRGGBB, 0xRRGGBBAA, or ['!'|'%', r=, g=, b=, a=]
 ;;
-;; The names of colors are 'black' 'white' 'gray' 'silver' 'red' 'green'
-;; 'blue' 'yellow' 'cyan' 'magenta' 'orange' 'purple' 'pink' 'brown' 'lime'
-;; 'teal' 'navy' 'maroon' 'olive', and 'transparent' (alpha 0).
+;; The names of colors are :black :white :gray :silver :red :green
+;; :blue :yellow :cyan :magenta :orange :purple :pink :brown :lime
+;; :teal :navy :maroon :olive, and :transparent (alpha 0).
 ;;
 ;; The values that the operations return are not symmetric with the ones they
-;; accept: an anchor is always a table [x=,y=] ('C' comes back as
+;; accept: an anchor is always a table [x=,y=] (:C comes back as
 ;; [x=0.5,y=0.5]), and a color is always [r=,g=,b=,a=] with integers from 0
 ;; to 255 and no mode at index 0. Both are valid as arguments.
 ;;
@@ -135,7 +135,7 @@
 ;;      pico.input.event(filter)        only the given event, no timeout
 ;;      pico.input.event(filter, ms)    only the given event, up to `ms`
 ;;
-;; `filter` is the name of an event ('quit', 'key.dn', ...) or nil for any
+;; `filter` is the name of an event (:quit, :key.dn, ...) or nil for any
 ;; event. `ms` is an integer (a number with no fractional part) from 0, or
 ;; nil or -1 for no timeout. Anything else is an error: an argument of
 ;; another type, a number where the filter goes if `ms` is also given, an
@@ -2729,7 +2729,7 @@ pin pico = [
         layer  = `:value a_func(_pico_atmos_l_set_layer,  0)`,  ;; (layer) -> the previous one
         mouse  = `:value a_func(_pico_atmos_l_set_mouse,  0)`,  ;; ([layer,] pos)
         ;; font: a font, a path, or true (the built-in font)
-        pencil = `:value a_func(_pico_atmos_l_set_pencil, 0)`,  ;; [color=, font=, style='fill'|'stroke']
+        pencil = `:value a_func(_pico_atmos_l_set_pencil, 0)`,  ;; [color=, font=, style=:fill|:stroke]
         scene  = `:value a_func(_pico_atmos_l_set_scene,  0)`,  ;; [dim=, tile=, target=, source=, clip=, clear=]
         video  = `:value a_func(_pico_atmos_l_set_video,  0)`,  ;; (layer, frame) -> boolean
         app    = `:value a_func(_pico_atmos_l_set_app,    0)`,  ;; [fullscreen=, show=, title=]
@@ -2768,8 +2768,8 @@ pin pico = [
     input = [
         delay = `:value a_func(_pico_atmos_l_input_delay, 0)`,  ;; (ms) -> ms passed
         ;; () | (ms) | (filter [, ms]) -> event|nil, ms passed
-        ;;  - filter: 'quit', 'key.dn', 'key.up', 'mouse.motion',
-        ;;    'mouse.button.dn', 'mouse.button.up', 'window.resize', or nil
+        ;;  - filter: :quit, :key.dn, :key.up, :mouse.motion,
+        ;;    :mouse.button.dn, :mouse.button.up, :window.resize, or nil
         ;;    for any event
         ;;  - ms: an integer >= 0, or nil (or -1) for no timeout
         ;;  - any other type for the two is an error
