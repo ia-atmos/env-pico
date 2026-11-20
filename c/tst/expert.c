@@ -22,7 +22,7 @@ int main (void) {
 
     // test: delay returns dt
     int dt = pico_input_delay(100);
-    assert(dt>=100 && dt<=150);   // slack for valgrind on CI
+    assert(dt>=100 && (_pico_slow() || dt<=150));
 
     pico_close();
     return 0;

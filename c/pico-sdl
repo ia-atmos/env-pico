@@ -49,7 +49,7 @@ gcc -Wall -Werror -g -o "$DIR/$EXE" "$1" \
 
 cd $DIR/
 if [ -n "$PICO_TESTS" ]; then
-    $VALGRIND "./$EXE"
+    PICO_VALGRIND=1 $VALGRIND "./$EXE"
 else
     "./$EXE"
 fi

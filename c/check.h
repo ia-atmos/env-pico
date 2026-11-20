@@ -101,6 +101,13 @@
 #include "pico.h"
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
+
+// Under valgrind (the `pico-sdl` script sets PICO_VALGRIND) the program
+// is many times slower: timing tests keep only their lower bounds.
+static inline int _pico_slow (void) {
+    return getenv("PICO_VALGRIND") != NULL;
+}
 
 int _pico_cmp_files (const char* path1, const char* path2) {
     int ok = 1;
