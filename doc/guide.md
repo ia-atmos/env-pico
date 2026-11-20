@@ -1659,3 +1659,16 @@ pico.set.scene [ dim=['!', w=160, h=90] ]   ;; world: same proportions
 
 The window cannot be resized (`dim` on the window layer) while in
 fullscreen.
+
+Instead of changing the world, we may keep its proportion with `fit`:
+
+```
+pico.set.scene [ fit=:bars ]        ;; the current layer is the world
+```
+
+With `:bars`, the world is scaled until it fits whole in the window,
+centered, and what is left shows the window layer (the bars, in its clear
+color).
+With `:stretch`, the default, the world fills the window, deformed.
+The option is valid for any layer, also in a resized window, and
+positions discount the bars: the mouse on a bar is outside the world.

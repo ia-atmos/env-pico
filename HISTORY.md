@@ -34,6 +34,9 @@ Layout:
   be confused with the window layer
     - new read-only field `screen` (C: `pico_get_app_screen`): the size
       of the display, fullscreen or not
+- scene `fit` (C: `PICO_FIT`, `pico_get/set_scene_fit`): `:stretch`
+  (default) or `:bars`, which keeps the proportion of the layer in its
+  target (for the world, bars in a resized or fullscreen window)
 - text is UTF-8 (was Latin-1)
 - pencil `smooth` (C: `pico_get/set_pencil_smooth`): text with smooth
   (anti-aliased) edges, off by default

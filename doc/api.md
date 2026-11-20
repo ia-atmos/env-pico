@@ -282,7 +282,7 @@ In alphabetical order:
           (and after the `Font` is released, since the pencil then goes back
           to the built-in font).
     - **pico.get.scene**: Gets scene configuration.
-        - `pico.get.scene () -> [ dim: Dim, tile: Tile, target: Rect, source: Rect, clip: Rect, clear: boolean ]`
+        - `pico.get.scene () -> [ dim: Dim, tile: Tile, target: Rect, source: Rect, clip: Rect, clear: boolean, fit: :stretch|:bars ]`
         - `dim` and `tile` are always in pixels (`'!'`).
     - **pico.get.text**: Gets text dimensions.
         - `pico.get.text (dim: Dim, text: string) -> Dim`
@@ -617,8 +617,19 @@ In alphabetical order:
             target: Rect,       -- placement in parent (resolved at each use)
             tile:   Tile,       -- tile size
             clear:  boolean,    -- cascade-clear flag
+            fit:    :stretch|:bars, -- placement in the target (default: :stretch)
         ]
         ```
+        - `fit` tells how the layer is placed in its `target` when their
+          proportions differ:
+            - `:stretch` (default): the layer fills the target, deformed.
+            - `:bars`: the layer is scaled until it fits whole, centered,
+              with the proportion of its `source`; what is left of the
+              target shows the parent (for the world, the window layer
+              with its clear color: the bars).
+        - `fit` is valid for any layer, in a resized window and in
+          fullscreen alike. Positions discount the bars (mouse,
+          `pico.cv.*`): a point on a bar is outside the layer.
         - if `tile` is given, it is resolved in conjunction with `dim`:
             - `dim '!'` / `tile '!'`: both in px
             - `dim '!'` / `tile '#'`: `tile` counts cells (tile = ⌊dim/t⌋)
