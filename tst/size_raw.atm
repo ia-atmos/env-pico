@@ -9,7 +9,7 @@ val log = all.dim
 set phy@0 = '!'
 set log@0 = '!'
 
-val r = ['!', x=50-25, y=50-25, w=50, h=50, anchor='NW']
+val r = ['!', x=50-25, y=50-25, w=50, h=50, anchor=:NW]
 
 ;; phy: normal -> double -> half -> normal
 print("WINDOW")
@@ -100,7 +100,7 @@ do {
     val dim = ['!', w=log.w*2, h=log.h*2]
     pico.set.scene [ dim=dim ]
     pico.output.clear()
-    val r = ['!', x=log.w-25, y=log.h-25, w=50, h=50, anchor='NW']
+    val r = ['!', x=log.w-25, y=log.h-25, w=50, h=50, anchor=:NW]
     pico.output.draw.rect(r)
     pico.check("size_raw-08")
 }
@@ -110,7 +110,7 @@ do {
     val dim = ['!', w=log.w/2, h=log.h/2]
     pico.set.scene [ dim=dim ]
     pico.output.clear()
-    val r = ['!', x=log.w/4-25, y=log.w/4-25, w=50, h=50, anchor='NW']
+    val r = ['!', x=log.w/4-25, y=log.w/4-25, w=50, h=50, anchor=:NW]
     pico.output.draw.rect(r)
     pico.check("size_raw-09")
 }

@@ -14,11 +14,11 @@ print("pos_vs_rect")
 loop y in (-1, 10) {
     loop x in (-1, 10) {
         pico.output.clear()
-        pico.set.pencil [ color='white' ]
+        pico.set.pencil [ color=:white ]
         pico.output.draw.rect(r)
 
         val p = pico.in.pos(r, ['%', x=x/10.0, y=y/10.0])
-        pico.set.pencil [ color='red' ]
+        pico.set.pencil [ color=:red ]
         pico.output.draw.pixel(p)
 
         val on_ = pico.vs.rect.pos(r, p)
@@ -52,11 +52,11 @@ loop j in 16 {
     loop i in 16 {
         val x = -25 + i*10
         pico.output.clear()
-        pico.set.pencil [ color='white' ]
+        pico.set.pencil [ color=:white ]
         pico.output.draw.rect(r)
 
         val r2 = pico.in.rect(r, ['%', x=x/100.0, y=y/100.0, w=0.5, h=0.5])
-        pico.set.pencil [ color='red' ]
+        pico.set.pencil [ color=:red ]
         pico.output.draw.rect(r2)
 
         val overlap = pico.vs.rect.rect(r2, r)
@@ -87,11 +87,11 @@ print("rect_vs_rect - diff anchor")
 loop y in (-5, 10) {
     loop x in (-5, 10) {
         pico.output.clear()
-        pico.set.pencil [ color='white' ]
+        pico.set.pencil [ color=:white ]
         pico.output.draw.rect(r)
 
-        val r2 = pico.in.rect(r, ['%', x=x/10.0, y=y/10.0, w=0.5, h=0.5, anchor='NW'])
-        pico.set.pencil [ color='red' ]
+        val r2 = pico.in.rect(r, ['%', x=x/10.0, y=y/10.0, w=0.5, h=0.5, anchor=:NW])
+        pico.set.pencil [ color=:red ]
         pico.output.draw.rect(r2)
 
         val overlap = pico.vs.rect.rect(r2, r)

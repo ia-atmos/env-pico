@@ -4,7 +4,7 @@
 ;; is an error. Arguments after the second are ignored.
 
 pico.open [ title="Input Event" ]
-pico.set.aids(false)        ;; 'quit' does not terminate the program
+pico.set.aids(false)        ;; :quit does not terminate the program
 
 func fails (msg, f) {
     val ok, err = catch true { f() }
@@ -19,7 +19,7 @@ do {
     assert(e1==nil && type(dt1)=='number')
     val e2, dt2 = pico.input.event(20)
     assert(e2==nil && dt2>=20)
-    val e3 = pico.input.event('quit', 0)
+    val e3 = pico.input.event(:quit, 0)
     assert(e3 == nil)
     val e4 = pico.input.event(nil, 0)
     assert(e4 == nil)
@@ -31,32 +31,32 @@ print("events")
 do {
     pico.quit()
     val e1 = pico.input.event()
-    assert(e1.tag == 'quit')
+    assert(e1.tag == :quit)
     pico.quit()
-    val e2 = pico.input.event('quit')
-    assert(e2.tag == 'quit')
+    val e2 = pico.input.event(:quit)
+    assert(e2.tag == :quit)
     pico.quit()
-    val e3 = pico.input.event('quit', 100)
-    assert(e3.tag == 'quit')
+    val e3 = pico.input.event(:quit, 100)
+    assert(e3.tag == :quit)
     pico.quit()
     val e4 = pico.input.event(nil, nil)
-    assert(e4.tag == 'quit')
+    assert(e4.tag == :quit)
     pico.quit()
     val e5 = pico.input.event(100)
-    assert(e5.tag == 'quit')
+    assert(e5.tag == :quit)
     pico.quit()
-    val e6 = pico.input.event('quit', -1)       ;; -1: no timeout
-    assert(e6.tag == 'quit')
+    val e6 = pico.input.event(:quit, -1)       ;; -1: no timeout
+    assert(e6.tag == :quit)
     ;; the filter discards the other events
     pico.quit()
-    val e7 = pico.input.event('key.dn', 0)
+    val e7 = pico.input.event(:key.dn, 0)
     assert(e7 == nil)
     val e8 = pico.input.event(0)
     assert(e8 == nil)
     ;; arguments after the second are ignored
     pico.quit()
-    val e9 = pico.input.event('quit', 100, 'x')
-    assert(e9.tag == 'quit')
+    val e9 = pico.input.event(:quit, 100, 'x')
+    assert(e9.tag == :quit)
     val e10 = pico.input.event(nil, 0, [], true)
     assert(e10 == nil)
 }
@@ -65,21 +65,21 @@ print("errors")
 do {
     ;; a pending event must stay: an error does not wait or consume
     pico.quit()
-    fails("bad argument #2 (integer expected, got string)",   \{ pico.input.event('quit', 'x') })
-    fails("bad argument #2 (integer expected, got boolean)",  \{ pico.input.event('quit', true) })
-    fails("bad argument #2 (integer expected, got number)",   \{ pico.input.event('quit', 1.5) })
+    fails("bad argument #2 (integer expected, got string)",   \{ pico.input.event(:quit, 'x') })
+    fails("bad argument #2 (integer expected, got boolean)",  \{ pico.input.event(:quit, true) })
+    fails("bad argument #2 (integer expected, got number)",   \{ pico.input.event(:quit, 1.5) })
     fails("bad argument #2 (integer expected, got table)",    \{ pico.input.event(nil, []) })
     fails("bad argument #1 (string or integer expected, got boolean)", \{ pico.input.event(true) })
     fails("bad argument #1 (string or integer expected, got number)",  \{ pico.input.event(1.5) })
     fails("bad argument #1 (string or integer expected, got table)",   \{ pico.input.event([]) })
     fails("bad argument #1 (string expected, got number)",    \{ pico.input.event(10, 20) })
-    fails("bad argument #1 (string expected, got number)",    \{ pico.input.event(10, 'quit') })
-    fails("invalid timeout",                                  \{ pico.input.event('quit', -2) })
+    fails("bad argument #1 (string expected, got number)",    \{ pico.input.event(10, :quit) })
+    fails("invalid timeout",                                  \{ pico.input.event(:quit, -2) })
     fails("invalid timeout",                                  \{ pico.input.event(-2) })
     fails("invalid event \"xxx\"",                            \{ pico.input.event('xxx') })
     fails("invalid event \"xxx\"",                            \{ pico.input.event('xxx', 0) })
     val e = pico.input.event(0)
-    assert(e.tag == 'quit')
+    assert(e.tag == :quit)
 }
 
 print("ok")

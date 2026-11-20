@@ -5,7 +5,7 @@ pico.set.app [ title="View Target" ]
 do {
     print("target: bottom-right quadrant")
     pico.set.scene [
-        target = ['%', x=1, y=1, w=0.5, h=0.5, anchor='SE']
+        target = ['%', x=1, y=1, w=0.5, h=0.5, anchor=:SE]
     ]
     pico.output.clear()
     pico.output.draw.rect(['%', x=0.5, y=0.5, w=0.5, h=0.5])
@@ -19,7 +19,7 @@ do {
     val r1 = ['%', x=0.5, y=0.5, w=0.5, h=0.5]
     pico.output.draw.rect(r1)
     val r2 = pico.in.rect(r1, ['%', x=0.5, y=0.5, w=0.5, h=0.5])
-    pico.set.pencil [ color='red' ]
+    pico.set.pencil [ color=:red ]
     pico.output.draw.rect(r2)
     pico.check("view-target-02")
 }
@@ -31,7 +31,7 @@ do {
         target = ['%', x=0.5, y=0.5, w=1, h=1]
     ]
     pico.output.clear()
-    pico.set.pencil [ color='white' ]
+    pico.set.pencil [ color=:white ]
     pico.output.draw.rect(['%', x=0.5, y=0.5, w=0.5, h=0.5])
     pico.check("view-target-03")
 }
@@ -44,12 +44,12 @@ do {
     pico.set.layer(bg)
     pico.set.effect [ color=[r=0x80, g=0x00, b=0x00] ]
     pico.output.clear()
-    pico.set.pencil [ color='white' ]
+    pico.set.pencil [ color=:white ]
     pico.output.draw.rect(['%', x=0.5, y=0.5, w=0.5, h=0.5])
     pico.set.layer(pico.layer.world)
-    pico.set.effect [ color='black' ]
+    pico.set.effect [ color=:black ]
     pico.output.clear()
-    pico.output.draw.layer(bg, ['%', x=1, y=1, w=0.5, h=0.5, anchor='SE'])
+    pico.output.draw.layer(bg, ['%', x=1, y=1, w=0.5, h=0.5, anchor=:SE])
     pico.check("view-target-04")
 }
 
@@ -60,9 +60,9 @@ do {
 do {
     print("target: detached stored target matches explicit rect (04)")
     pico.set.layer(bg)
-    pico.set.scene [ target = ['%', x=1, y=1, w=0.5, h=0.5, anchor='SE'] ]
+    pico.set.scene [ target = ['%', x=1, y=1, w=0.5, h=0.5, anchor=:SE] ]
     pico.set.layer(pico.layer.world)
-    pico.set.effect [ color='black' ]
+    pico.set.effect [ color=:black ]
     pico.output.clear()
     pico.output.draw.layer(bg)
     pico.check("view-target-04")
@@ -81,7 +81,7 @@ do {
     pico.set.effect [ color=[r=0x80, g=0x00, b=0x00] ]
     pico.output.clear()
     pico.set.layer(pico.layer.world)
-    pico.set.effect [ color='black' ]
+    pico.set.effect [ color=:black ]
     pico.output.clear()
     pico.output.draw.layer(bg2)
     pico.check("view-target-05")
@@ -105,7 +105,7 @@ do {
     print("target: w=h=0, full layer dim")
     pico.set.layer(bg2)
     pico.set.scene [
-        target = ['%', x=0, y=0, w=0, anchor='NW']
+        target = ['%', x=0, y=0, w=0, anchor=:NW]
     ]
     pico.set.layer(pico.layer.world)
     pico.output.clear()
@@ -118,15 +118,15 @@ do {
 ;;     becomes scene.target.
 do {
     print("target: rect-as-dim shortcut")
-    val r = ['%', x=1, y=1, w=0.5, h=0.5, anchor='SE']
+    val r = ['%', x=1, y=1, w=0.5, h=0.5, anchor=:SE]
     pin bg3 = pico.layer.empty [ up=pico.layer.world, target=r ]
     pico.set.layer(bg3)
     pico.set.effect [ color=[r=0x80, g=0x00, b=0x00] ]
     pico.output.clear()
-    pico.set.pencil [ color='white' ]
+    pico.set.pencil [ color=:white ]
     pico.output.draw.rect(['%', x=0.5, y=0.5, w=0.5, h=0.5])
     pico.set.layer(pico.layer.world)
-    pico.set.effect [ color='black' ]
+    pico.set.effect [ color=:black ]
     pico.output.clear()
     pico.output.draw.layer(bg3)
     pico.check("view-target-08")

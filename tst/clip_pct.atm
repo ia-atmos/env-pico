@@ -21,7 +21,7 @@ do {
 do {
     print("red centered under gray")
     val r2 = pico.in.rect(r1, ['%', x=0.5, y=0.5, w=0.5, h=0.5])
-    pico.set.pencil [ color='red' ]
+    pico.set.pencil [ color=:red ]
     pico.output.draw.rect(r2)
     pico.check("clip-03")
 }
@@ -29,7 +29,7 @@ do {
 do {
     print("blue centered under gray")
     val p3 = pico.in.pos(r1, ['%', x=0.5, y=0.5])
-    pico.set.pencil [ color='blue' ]
+    pico.set.pencil [ color=:blue ]
     pico.output.draw.pixel(p3)
     pico.check("clip-04")
 }
@@ -37,7 +37,7 @@ do {
 do {
     print("yellow clipped under gray bottom right")
     val r4 = pico.in.rect(r1, ['%', x=1, y=1, w=0.5, h=0.5])
-    pico.set.pencil [ color='yellow' ]
+    pico.set.pencil [ color=:yellow ]
     pico.output.draw.rect(r4)
     pico.check("clip-05")
 }

@@ -38,7 +38,7 @@ do {
 
     ;; configure world: blue, target at (66%, 66%)
     pico.set.layer(pico.layer.world)
-    pico.set.scene [ target=['%', x=0.66, y=0.66, w=0.4, h=0.4, anchor='C'] ]
+    pico.set.scene [ target=['%', x=0.66, y=0.66, w=0.4, h=0.4, anchor=:C] ]
     pico.set.effect [ color=['!', r=0x00, g=0x00, b=0xFF] ]
     pico.output.clear()
 
@@ -47,7 +47,7 @@ do {
     pico.set.effect [ color=['!', r=0x80, g=0x80, b=0x80] ]
     pico.output.clear()
     pico.set.pencil [ color=['!', r=0xFF, g=0x00, b=0x00] ]
-    pico.output.draw.rect(['%', x=0.33, y=0.33, w=0.4, h=0.4, anchor='C'])
+    pico.output.draw.rect(['%', x=0.33, y=0.33, w=0.4, h=0.4, anchor=:C])
 
     pico.output.draw.layers()   ;; expert: compose world onto window.tex
     pico.output.present(false)  ;; expert: manual present before screenshot

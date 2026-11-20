@@ -3,7 +3,7 @@
 
 pico.open()
 pico.set.app [ title="Layer clip" ]
-pico.set.effect [ color='white' ]
+pico.set.effect [ color=:white ]
 pico.output.clear()
 
 pin img = pico.layer.image [ up=pico.layer.world, path="../c/res/open.png" ]
@@ -12,7 +12,7 @@ pin img = pico.layer.image [ up=pico.layer.world, path="../c/res/open.png" ]
 do {
     val old = pico.set.layer(img)
     pico.set.scene [
-        target = ['%', x=0.5, y=0.5, w=0.5, h=0.5, anchor='C'],
+        target = ['%', x=0.5, y=0.5, w=0.5, h=0.5, anchor=:C],
     ]
     pico.set.layer(old)
     pico.output.clear()
@@ -24,7 +24,7 @@ do {
 do {
     val old = pico.set.layer(img)
     pico.set.scene [
-        target = ['%', x=0.5, y=0.5, w=2.0, h=2.0, anchor='C'],
+        target = ['%', x=0.5, y=0.5, w=2.0, h=2.0, anchor=:C],
     ]
     pico.set.layer(old)
     pico.output.clear()
@@ -36,14 +36,14 @@ do {
 do {
     val old = pico.set.layer(img)
     pico.set.scene [
-        target = ['%', x=0.5, y=0.5, w=0.5, h=0.5, anchor='C'],
+        target = ['%', x=0.5, y=0.5, w=0.5, h=0.5, anchor=:C],
     ]
     pico.set.layer(old)
     pico.output.clear()
     pico.output.draw.layer(img,
-        ['%', x=0, y=0.5, w=0.5, h=0.5, anchor='C'])
+        ['%', x=0, y=0.5, w=0.5, h=0.5, anchor=:C])
     pico.output.draw.layer(img,
-        ['%', x=1.0, y=0.5, w=0.5, h=0.5, anchor='C'])
+        ['%', x=1.0, y=0.5, w=0.5, h=0.5, anchor=:C])
     pico.output.present()
     pico.check("layer-clip-03")
 }
@@ -52,8 +52,8 @@ do {
 do {
     val old = pico.set.layer(img)
     pico.set.scene [
-        target = ['%', x=0.5, y=0.5, w=0.5, h=0.5, anchor='C'],
-        source = ['%', x=0.5, y=0.5, w=2.0, h=2.0, anchor='C'],
+        target = ['%', x=0.5, y=0.5, w=0.5, h=0.5, anchor=:C],
+        source = ['%', x=0.5, y=0.5, w=2.0, h=2.0, anchor=:C],
     ]
     pico.set.layer(old)
     pico.output.clear()
@@ -64,11 +64,11 @@ do {
 ;; case 5: world scene.src y-overflow (mimics navigate-02 after 3 Ctrl+UP)
 do {
     pico.output.clear()
-    pico.set.pencil [ color='black' ]
+    pico.set.pencil [ color=:black ]
     pico.output.draw.rect(
-        ['%', x=0.5, y=0.5, w=0.25, h=0.25, anchor='C'])
+        ['%', x=0.5, y=0.5, w=0.25, h=0.25, anchor=:C])
     pico.set.scene [
-        source = ['%', x=0.5, y=0.2, w=1.0, h=1.0, anchor='C'],
+        source = ['%', x=0.5, y=0.2, w=1.0, h=1.0, anchor=:C],
     ]
     pico.output.present()
     pico.check("layer-clip-05")
@@ -79,20 +79,20 @@ do {
     pin L = pico.layer.empty [ up=pico.layer.world, clear=true, dim=['!', w=48, h=48] ]
     do {
         val old = pico.set.layer(L)
-        pico.set.effect [ color='green' ]
-        pico.set.pencil [ color='black' ]
+        pico.set.effect [ color=:green ]
+        pico.set.pencil [ color=:black ]
         pico.output.draw.rect(
-            ['%', x=0.5, y=0.5, w=0.4, h=0.4, anchor='C'])
+            ['%', x=0.5, y=0.5, w=0.4, h=0.4, anchor=:C])
         pico.set.scene [
-            target = ['%', x=0.5, y=0.5, w=1.0, h=1.0, anchor='C'],
-            source = ['%', x=0.5, y=0.2, w=1.0, h=1.0, anchor='C'],
+            target = ['%', x=0.5, y=0.5, w=1.0, h=1.0, anchor=:C],
+            source = ['%', x=0.5, y=0.2, w=1.0, h=1.0, anchor=:C],
         ]
         pico.set.layer(old)
     }
     pico.output.clear()
     ;; reset world.scene.src so case 6 tests Phase A aux only
     pico.set.scene [
-        source = ['%', x=0.5, y=0.5, w=1.0, h=1.0, anchor='C'],
+        source = ['%', x=0.5, y=0.5, w=1.0, h=1.0, anchor=:C],
     ]
     pico.output.present()
     pico.check("layer-clip-06")

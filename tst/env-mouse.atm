@@ -25,8 +25,8 @@ func shape (t) {
 }
 
 ;; a real event, from the warp of the mouse, to compare with the scripted ones
-pico.set.mouse(window, ['!', x=30, y=40, anchor='NW'])
-val real = pico.input.event('mouse.motion', 500)
+pico.set.mouse(window, ['!', x=30, y=40, anchor=:NW])
+val real = pico.input.event(:mouse.motion, 500)
 assert(real, "no real event")
 print("real", real.tag, shape(real), shape(real.anchor))
 assert(real@0=='!' && real.x==30.5 && real.y==40.5)
@@ -38,7 +38,7 @@ func check (e, tag, x, y, left) {
     assert(e ?? :mouse)
     assert(shape(e) == shape(real), "shape")
     assert(shape(e.anchor) == shape(real.anchor), "shape of anchor")
-    ;; pixels of the window, anchor 'C'
+    ;; pixels of the window, anchor :C
     assert(e@0 == '!')
     assert(e.x==x+0.5 && e.y==y+0.5)
     assert(e.anchor.x==0.5 && e.anchor.y==0.5)
@@ -46,11 +46,11 @@ func check (e, tag, x, y, left) {
     ;; `pico.get.mouse` agrees with the event, in any layer and mode
     val m1 = pico.get.mouse(window, '!')
     assert(m1.x==e.x && m1.y==e.y && m1.left==left)
-    val m2 = pico.get.mouse(window, ['!', anchor='NW'])
+    val m2 = pico.get.mouse(window, ['!', anchor=:NW])
     assert(m2.x==x && m2.y==y && m2.left==left)
-    val m3 = pico.get.mouse(['%', anchor='NW'])     ;; world
+    val m3 = pico.get.mouse(['%', anchor=:NW])     ;; world
     assert(pico.equal(m3.x,x/500) && pico.equal(m3.y,y/500) && m3.left==left)
-    val m4 = pico.get.mouse(['!', anchor='NW'])     ;; world: 100x100
+    val m4 = pico.get.mouse(['!', anchor=:NW])     ;; world: 100x100
     assert(pico.equal(m4.x,x/5) && pico.equal(m4.y,y/5))
 }
 
@@ -63,8 +63,8 @@ par :any {
     ;; redraws at every frame
     loop on :draw {
         set frames = frames + 1
-        pico.set.pencil [ color='red' ]
-        pico.output.draw.rect(['!', x=x, y=y, w=10, h=10, anchor='NW'])
+        pico.set.pencil [ color=:red ]
+        pico.output.draw.rect(['!', x=x, y=y, w=10, h=10, anchor=:NW])
     }
 } with {
     loop on :mouse {
@@ -73,30 +73,30 @@ par :any {
 } with {
     val e1 = await :mouse.motion
     assert(frames == 1)                 ;; before the :draw of frame 2
-    check(e1, 'mouse.motion', 100, 50, false)
+    check(e1, :mouse.motion, 100, 50, false)
 
     ;; drags the rect while the button is down
     val e2 = await :mouse.button.dn
     assert(frames == 3)
-    check(e2, 'mouse.button.dn', 250, 250, true)
+    check(e2, :mouse.button.dn, 250, 250, true)
     par :any {
         loop e on :mouse.motion {
             assert(frames == 5)
-            check(e, 'mouse.motion', 300, 260, true)
-            val m = pico.get.mouse(['!', anchor='NW'])
+            check(e, :mouse.motion, 300, 260, true)
+            val m = pico.get.mouse(['!', anchor=:NW])
             set x = m.x
             set y = m.y
         }
     } with {
         val e3 = await :mouse.button.up
         assert(frames == 7)
-        check(e3, 'mouse.button.up', 300, 260, false)
+        check(e3, :mouse.button.up, 300, 260, false)
     }
 
     ;; the second entry of frame 8
     val e4 = await :mouse.motion
     assert(frames == 7)
-    check(e4, 'mouse.motion', 10, 20, false)
+    check(e4, :mouse.motion, 10, 20, false)
     await false
 } with {
     await :mouse.button.dn [left=true]
@@ -112,15 +112,15 @@ assert(pico.equal(x,60) && pico.equal(y,52))
 
 ;; with no more entries, the mouse stays where the script left it
 do {
-    val m = pico.get.mouse(window, ['!', anchor='NW'])
+    val m = pico.get.mouse(window, ['!', anchor=:NW])
     assert(m.x==10 && m.y==20 && m.left==false)
 }
 
 ;; the screenshot of frame 7: the rect where the mouse dragged it
 pico.set.expert(false)
 pico.output.clear()
-pico.set.pencil [ color='red' ]
-pico.output.draw.rect(['!', x=60, y=52, w=10, h=10, anchor='NW'])
+pico.set.pencil [ color=:red ]
+pico.output.draw.rect(['!', x=60, y=52, w=10, h=10, anchor=:NW])
 pico.output.screenshot(window, "../c/tst/out/env-mouse-02.png")
 
 func same (a, b) {
@@ -135,9 +135,9 @@ func same (a, b) {
 assert(same("../c/tst/out/env-mouse-01.png", "../c/tst/out/env-mouse-02.png"), "env-mouse-01 vs env-mouse-02")
 
 ;; `pico.set.mouse` brings the real mouse back
-pico.set.mouse(window, ['!', x=70, y=90, anchor='NW'])
+pico.set.mouse(window, ['!', x=70, y=90, anchor=:NW])
 do {
-    val m = pico.get.mouse(window, ['!', anchor='NW'])
+    val m = pico.get.mouse(window, ['!', anchor=:NW])
     assert(m.x==70 && m.y==90)
 }
 

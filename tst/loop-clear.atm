@@ -10,9 +10,9 @@ val world = pico.layer.world
 
 ;; two children of the world, and a detached layer
 pin acc = pico.layer.empty [ up=world, dim=['!',w=40,h=10],
-    target=['!', x=5, y=40, w=40, h=10, anchor='NW'] ]
+    target=['!', x=5, y=40, w=40, h=10, anchor=:NW] ]
 pin clr = pico.layer.empty [ up=world, clear=true, dim=['!',w=40,h=10],
-    target=['!', x=55, y=40, w=40, h=10, anchor='NW'] ]
+    target=['!', x=55, y=40, w=40, h=10, anchor=:NW] ]
 pin other = pico.layer.empty [ dim=['!',w=40,h=10] ]
 
 func bytes (path) {
@@ -25,7 +25,7 @@ func bytes (path) {
 
 ;; a mark for the frame `n` in the current layer
 func mark (n) {
-    pico.output.draw.rect(['!', x=n*10, y=2, w=5, h=5, anchor='NW'])
+    pico.output.draw.rect(['!', x=n*10, y=2, w=5, h=5, anchor=:NW])
 }
 
 ;; the marks of the frames `fr` to 3 in a layer

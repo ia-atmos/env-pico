@@ -30,10 +30,10 @@ print("draw on layer (no auto-present)")
 pico.set.layer(background)
 pico.set.effect [ color=['!', r=0x80, g=0x00, b=0x00] ]
 pico.output.clear()
-pico.output.draw.rect(['%', x=0.5, y=0.5, w=0.5, h=0.5, anchor='C'])
+pico.output.draw.rect(['%', x=0.5, y=0.5, w=0.5, h=0.5, anchor=:C])
 pico.set.layer(pico.layer.world)
 pico.output.clear()
-pico.output.draw.layer(background, ['%', x=0.5, y=0.5, w=1, h=1, anchor='C'])
+pico.output.draw.layer(background, ['%', x=0.5, y=0.5, w=1, h=1, anchor=:C])
 pico.check("layers-01")
 
 ;; draw on ui layer (blue background)
@@ -41,11 +41,11 @@ print("draw on ui layer")
 pico.set.layer(ui)
 pico.set.effect [ color=['!', r=0x00, g=0x00, b=0x80] ]
 pico.output.clear()
-pico.set.pencil [ color='green' ]
-pico.output.draw.rect(['%', x=0.5, y=0.5, w=0.5, h=0.5, anchor='C'])
+pico.set.pencil [ color=:green ]
+pico.output.draw.rect(['%', x=0.5, y=0.5, w=0.5, h=0.5, anchor=:C])
 pico.set.layer(pico.layer.world)
 pico.output.clear()
-pico.output.draw.layer(ui, ['%', x=0.5, y=0.5, w=1, h=1, anchor='C'])
+pico.output.draw.layer(ui, ['%', x=0.5, y=0.5, w=1, h=1, anchor=:C])
 pico.check("layers-02")
 
 ;; switch back to world
@@ -56,10 +56,10 @@ assert(layer == pico.layer.world)
 
 ;; composite layers onto world
 print("draw layers onto world")
-pico.set.effect [ color='black' ]
+pico.set.effect [ color=:black ]
 pico.output.clear()
-pico.output.draw.layer(background, ['%', x=1.0/3, y=1.0/3, h=1.0/3, anchor='C'])
-pico.output.draw.layer(ui, ['%', x=2.0/3, y=2.0/3, w=1.0/3, anchor='C'])
+pico.output.draw.layer(background, ['%', x=1.0/3, y=1.0/3, h=1.0/3, anchor=:C])
+pico.output.draw.layer(ui, ['%', x=2.0/3, y=2.0/3, w=1.0/3, anchor=:C])
 pico.check("layers-03")
 
 ;; present works on world
@@ -73,11 +73,11 @@ pico.set.layer(reuse)
 pico.set.effect [ color=['!', r=0x00, g=0x80, b=0x00] ]
 pico.output.clear()
 pico.set.pencil [ color=['!', r=0xFF, g=0xFF, b=0x00] ]
-pico.output.draw.rect(['%', x=0.5, y=0.5, w=0.5, h=0.5, anchor='C'])
+pico.output.draw.rect(['%', x=0.5, y=0.5, w=0.5, h=0.5, anchor=:C])
 pico.set.layer(pico.layer.world)
-pico.set.effect [ color='black' ]
+pico.set.effect [ color=:black ]
 pico.output.clear()
-pico.output.draw.layer(reuse, ['%', x=0.5, y=0.5, w=1, h=1, anchor='C'])
+pico.output.draw.layer(reuse, ['%', x=0.5, y=0.5, w=1, h=1, anchor=:C])
 pico.check("layers-04")
 
 ;; layer.pixmap
@@ -87,14 +87,14 @@ pin mybuf = pico.layer.pixmap [ pixels=[
     [ ['!',r=0,g=0,b=255], ['!',r=255,g=255,b=0] ],
 ] ]
 pico.output.clear()
-pico.output.draw.layer(mybuf, ['%', x=0.5, y=0.5, w=0.5, h=0.5, anchor='C'])
+pico.output.draw.layer(mybuf, ['%', x=0.5, y=0.5, w=0.5, h=0.5, anchor=:C])
 pico.check("layers-05")
 
 ;; target as dim: sets both the dim and the scene.target
 print("layer.empty: target as dim")
 do {
     ;; world is 100x100; '%' w=0.5,h=0.5 -> 50x50 layer
-    val r = ['%', x=0.25, y=0.75, w=0.5, h=0.5, anchor='C']
+    val r = ['%', x=0.25, y=0.75, w=0.5, h=0.5, anchor=:C]
     pin l = pico.layer.empty [ up=pico.layer.world, clear=true, target=r ]
     pico.set.layer(l)
     val s = pico.get.scene()
@@ -108,7 +108,7 @@ do {
 ;; target on other constructors
 print("layer.pixmap: target sets scene.target")
 do {
-    val r = ['%', x=0.5, y=0.5, w=0.25, h=0.25, anchor='C']
+    val r = ['%', x=0.5, y=0.5, w=0.25, h=0.25, anchor=:C]
     val px = [ [ ['!',r=0xFF,g=0,b=0], ['!',r=0,g=0xFF,b=0]    ],
                [ ['!',r=0,g=0,b=0xFF], ['!',r=0xFF,g=0xFF,b=0] ] ]
     pin l = pico.layer.pixmap [ up=pico.layer.world, pixels=px, target=r ]

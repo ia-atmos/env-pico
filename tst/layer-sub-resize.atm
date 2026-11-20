@@ -11,7 +11,7 @@ func fails (msg, f) {
 }
 
 val MSG  = "cannot resize a layer with live sub-layers"
-val CROP = ['!', x=0, y=0, w=4, h=4, anchor='NW']
+val CROP = ['!', x=0, y=0, w=4, h=4, anchor=:NW]
 val world = pico.layer.world
 
 print("1. pico.set.scene [dim=]")
@@ -27,7 +27,7 @@ do {
         fails(MSG, \{ pico.set.scene [ dim=['!',w=16,h=16] ] })   ;; even the same
         assert(pico.get.scene().dim.w == 16)
         ;; what does not replace the texture is still allowed
-        pico.set.scene [ tile=['!',w=4,h=4], clip=['!',x=0,y=0,w=8,h=8,anchor='NW'] ]
+        pico.set.scene [ tile=['!',w=4,h=4], clip=['!',x=0,y=0,w=8,h=8,anchor=:NW] ]
         assert(pico.get.scene().tile.w == 4)
         ;; the sub-layer itself has no sub-layers
         pico.set.layer(sub)

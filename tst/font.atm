@@ -18,12 +18,12 @@ do {
 }
 
 ;; numbers
-pico.output.draw.text(10, ['!', x=0, y=0, h=10, anchor='NW'])
+pico.output.draw.text(10, ['!', x=0, y=0, h=10, anchor=:NW])
 pico.output.clear()
 
 ;; pico.output.draw.text
 do {
-    val r1 = ['!', x=10, y=10, w=0, h=10, anchor='NW']
+    val r1 = ['!', x=10, y=10, w=0, h=10, anchor=:NW]
     pico.output.draw.text("hg - gh", r1)
     pico.check("font-01")
 
@@ -38,7 +38,7 @@ pico.output.clear()
 do {
     pico.set.pencil [ font=FONT ]
 
-    val r1 = ['!', x=10, y=10, w=0, h=10, anchor='NW']
+    val r1 = ['!', x=10, y=10, w=0, h=10, anchor=:NW]
     pico.output.draw.text("hg - gh", r1)
     pico.check("font-03")
 
@@ -53,7 +53,7 @@ do {
     pico.set.pencil [ font=true ]
     assert(pico.get.pencil().font == nil)
     pico.output.clear()
-    pico.output.draw.text("hg - gh", ['!', x=10, y=10, w=0, h=10, anchor='NW'])
+    pico.output.draw.text("hg - gh", ['!', x=10, y=10, w=0, h=10, anchor=:NW])
     pico.check("font-01")
 }
 
@@ -64,7 +64,7 @@ do {
     pico.set.pencil [ font=f ]
     assert(pico.get.pencil().font == f)
     pico.output.clear()
-    pico.output.draw.text("hg - gh", ['!', x=10, y=10, w=0, h=10, anchor='NW'])
+    pico.output.draw.text("hg - gh", ['!', x=10, y=10, w=0, h=10, anchor=:NW])
     pico.check("font-03")
 
     pico.set.pencil [ font=true ]
@@ -94,7 +94,7 @@ do {
     pico.set.pencil [ font=true ]
     assert(pico.get.pencil().font == nil)
     pico.output.clear()
-    pico.output.draw.text("hg - gh", ['!', x=10, y=10, w=0, h=10, anchor='NW'])
+    pico.output.draw.text("hg - gh", ['!', x=10, y=10, w=0, h=10, anchor=:NW])
     pico.check("font-01")
 }
 

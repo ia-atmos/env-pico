@@ -9,26 +9,26 @@ do {
     ;; world 100x100, window 500x500 -> 5x scale
     print('', 1)
     do {
-        val out = ['!', anchor='NW']
-        pico.cv.pos(window, out, nil, ['!', x=50, y=50, anchor='NW'])
+        val out = ['!', anchor=:NW]
+        pico.cv.pos(window, out, nil, ['!', x=50, y=50, anchor=:NW])
         assert(out.x==250 && out.y==250)
-        pico.cv.pos(window, out, ['!', x=50, y=50, anchor='NW'])
+        pico.cv.pos(window, out, ['!', x=50, y=50, anchor=:NW])
         assert(out.x==250 && out.y==250)
     }
 
     print('', 2)
     do {
-        val out = ['!', anchor='NW']
-        pico.cv.pos(nil, out, window, ['!', x=250, y=250, anchor='NW'])
+        val out = ['!', anchor=:NW]
+        pico.cv.pos(nil, out, window, ['!', x=250, y=250, anchor=:NW])
         assert(out.x==50 && out.y==50)
-        pico.cv.pos(out, window, ['!', x=250, y=250, anchor='NW'])
+        pico.cv.pos(out, window, ['!', x=250, y=250, anchor=:NW])
         assert(out.x==50 && out.y==50)
     }
 
     print('', 3)
-    val win = ['!', anchor='NW']
-    pico.cv.pos(window, win, ['!', x=37, y=89, anchor='NW'])
-    val back = ['!', anchor='NW']
+    val win = ['!', anchor=:NW]
+    pico.cv.pos(window, win, ['!', x=37, y=89, anchor=:NW])
+    val back = ['!', anchor=:NW]
     pico.cv.pos(nil, back, window, win)
     assert(back.x==37 && back.y==89)
 }
@@ -38,8 +38,8 @@ do {
     assert(v.x*100//1==50 && v.y*100//98)
 
     set v = pico.cv.rect(
-        ['!',anchor='NW'],
-        ['%',x=1,y=1,w=0.5,h=0.5,anchor='SE']
+        ['!',anchor=:NW],
+        ['%',x=1,y=1,w=0.5,h=0.5,anchor=:SE]
     )
     assert(v.x==50 && v.y==50)
 }
@@ -51,29 +51,29 @@ do {
     pico.set.layer(sub_cv)
 
     print('', 'pos sub -> world')
-    var w = ['!', anchor='NW']
-    pico.cv.pos(world, w, nil, ['!', x=10, y=20, anchor='NW'])
+    var w = ['!', anchor=:NW]
+    pico.cv.pos(world, w, nil, ['!', x=10, y=20, anchor=:NW])
     assert(w.x==20 && w.y==40)
-    set w = pico.cv.pos(world, w, ['!', x=10, y=20, anchor='NW'])
+    set w = pico.cv.pos(world, w, ['!', x=10, y=20, anchor=:NW])
     assert(w.x==20 && w.y==40)
 
     print('', 'pos world -> sub')
-    var s = ['!', anchor='NW']
-    set s = pico.cv.pos(nil, s, world, ['!', x=20, y=40, anchor='NW'])
+    var s = ['!', anchor=:NW]
+    set s = pico.cv.pos(nil, s, world, ['!', x=20, y=40, anchor=:NW])
     assert(s.x==10 && s.y==20)
-    pico.cv.pos(s, world, ['!', x=20, y=40, anchor='NW'])
+    pico.cv.pos(s, world, ['!', x=20, y=40, anchor=:NW])
     assert(s.x==10 && s.y==20)
 
     print('', 'pos sub -> window (2 hops)')
-    val win = ['!', anchor='NW']
-    pico.cv.pos(window, win, ['!', x=10, y=20, anchor='NW'])
+    val win = ['!', anchor=:NW]
+    pico.cv.pos(window, win, ['!', x=10, y=20, anchor=:NW])
     assert(win.x==100 && win.y==200)
 
     print('', 'rect sub -> world')
-    set w = ['!', anchor='NW']
-    pico.cv.rect(world, w, nil, ['!', x=10, y=20, w=5, h=10, anchor='NW'])
+    set w = ['!', anchor=:NW]
+    pico.cv.rect(world, w, nil, ['!', x=10, y=20, w=5, h=10, anchor=:NW])
     assert(w.x==20 && w.y==40 && w.w==10 && w.h==20)
-    set w = pico.cv.rect(world, w, ['!', x=10, y=20, w=5, h=10, anchor='NW'])
+    set w = pico.cv.rect(world, w, ['!', x=10, y=20, w=5, h=10, anchor=:NW])
     assert(w.x==20 && w.y==40 && w.w==10 && w.h==20)
 
     print('', 'dim sub -> world')
@@ -88,20 +88,20 @@ print "pico.cv.* descendant target/source (bidirectional)"
 do {
     ;; cur=world, target=sub_cv (descendant). sub_cv is 50x50 in world 100x100.
     print('', 'pos world -> sub (target=descendant)')
-    var s = ['!', anchor='NW']
-    set s = pico.cv.pos(sub_cv, s, nil, ['!', x=20, y=40, anchor='NW'])
+    var s = ['!', anchor=:NW]
+    set s = pico.cv.pos(sub_cv, s, nil, ['!', x=20, y=40, anchor=:NW])
     assert(s.x==10 && s.y==20)
-    pico.cv.pos(sub_cv, s, ['!', x=20, y=40, anchor='NW'])
+    pico.cv.pos(sub_cv, s, ['!', x=20, y=40, anchor=:NW])
     assert(s.x==10 && s.y==20)
 
     print('', 'pos sub -> world (source=descendant)')
-    val w = ['!', anchor='NW']
-    pico.cv.pos(nil, w, sub_cv, ['!', x=10, y=20, anchor='NW'])
+    val w = ['!', anchor=:NW]
+    pico.cv.pos(nil, w, sub_cv, ['!', x=10, y=20, anchor=:NW])
     assert(w.x==20 && w.y==40)
 
     print('', 'rect world -> sub (target=descendant)')
-    set s = ['!', anchor='NW']
-    pico.cv.rect(sub_cv, s, nil, ['!', x=20, y=40, w=10, h=20, anchor='NW'])
+    set s = ['!', anchor=:NW]
+    pico.cv.rect(sub_cv, s, nil, ['!', x=20, y=40, w=10, h=20, anchor=:NW])
     assert(s.x==10 && s.y==20 && s.w==5 && s.h==10)
 
     print('', 'dim world -> sub (target=descendant)')
@@ -193,11 +193,11 @@ do {
     set out = pico.cv.pos(window, '!', ['!', x=50, y=50])
     assert(out && out.x==248 && out.y==248 && out@0=='!')
 
-    set out = pico.cv.pos(window, ['!', anchor='NW'], ['!', x=50, y=50, anchor='NW'])
+    set out = pico.cv.pos(window, ['!', anchor=:NW], ['!', x=50, y=50, anchor=:NW])
     assert(out && out.x==250 && out.y==250 && out@0=='!')
 
     print('', "rect with '%'")
-    set out = pico.cv.rect('%', window, ['!', x=250, y=250, w=50, h=50, anchor='NW'])
+    set out = pico.cv.rect('%', window, ['!', x=250, y=250, w=50, h=50, anchor=:NW])
     assert(out && out@0=='%')
 
     ;; '#' output uses the *target* layer's tile:
@@ -211,7 +211,7 @@ do {
 
     print('', "invalid mode-string 'z' errors")
     val ok = catch true {
-        pico.cv.pos(window, 'z', nil, ['!', x=0, y=0, anchor='NW'])
+        pico.cv.pos(window, 'z', nil, ['!', x=0, y=0, anchor=:NW])
     }
     assert(!ok)
 }

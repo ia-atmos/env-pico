@@ -8,13 +8,13 @@ pico.set.scene [ dim=['!', w=64, h=48] ]
 ;; color_clear
 print("color_clear")
 do {
-    pico.set.effect [ color='red' ]
+    pico.set.effect [ color=:red ]
     var c = pico.get.effect().color
     assert(c.r==255 && c.g==0 && c.b==0 && c.a==255)
-    pico.set.effect [ color='blue' ]
+    pico.set.effect [ color=:blue ]
     set c = pico.get.effect().color
     assert(c.r==0 && c.g==0 && c.b==255 && c.a==255)
-    pico.set.effect [ color='black' ]
+    pico.set.effect [ color=:black ]
     set c = pico.get.effect().color
     assert(c.r==0 && c.g==0 && c.b==0 && c.a==255)
 }
@@ -33,13 +33,13 @@ do {
 ;; color_draw
 print("color_draw")
 do {
-    pico.set.pencil [ color='green' ]
+    pico.set.pencil [ color=:green ]
     var c = pico.get.pencil().color
     assert(c.r==0 && c.g==255 && c.b==0)
-    pico.set.pencil [ color='yellow' ]
+    pico.set.pencil [ color=:yellow ]
     set c = pico.get.pencil().color
     assert(c.r==255 && c.g==255 && c.b==0)
-    pico.set.pencil [ color='white' ]
+    pico.set.pencil [ color=:white ]
     set c = pico.get.pencil().color
     assert(c.r==255 && c.g==255 && c.b==255)
 }
@@ -47,12 +47,12 @@ do {
 ;; style
 print("style")
 do {
-    pico.set.pencil [ style='fill' ]
-    assert(pico.get.pencil().style == 'fill')
-    pico.set.pencil [ style='stroke' ]
-    assert(pico.get.pencil().style == 'stroke')
-    pico.set.pencil [ style='fill' ]
-    assert(pico.get.pencil().style == 'fill')
+    pico.set.pencil [ style=:fill ]
+    assert(pico.get.pencil().style == :fill)
+    pico.set.pencil [ style=:stroke ]
+    assert(pico.get.pencil().style == :stroke)
+    pico.set.pencil [ style=:fill ]
+    assert(pico.get.pencil().style == :fill)
 }
 
 ;; view (get defaults, set, get back)
@@ -65,18 +65,18 @@ do {
     assert(v.source@0=='%' && v.source.x==0.5 && v.source.y==0.5 && v.source.w==1 && v.source.h==1)
     assert(v.clip@0=='%' && v.clip.x==0.5 && v.clip.y==0.5 && v.clip.w==1 && v.clip.h==1)
 
-    pico.set.scene [ target=['%', x=0.5, y=0.5, w=0.5, h=0.5, anchor='C'] ]
+    pico.set.scene [ target=['%', x=0.5, y=0.5, w=0.5, h=0.5, anchor=:C] ]
     set v = pico.get.scene()
     assert(v.target.w==0.5 && v.target.h==0.5)
 
-    pico.set.scene [ source=['%', x=0.6, y=0.4, w=0.8, h=0.8, anchor='C'] ]
+    pico.set.scene [ source=['%', x=0.6, y=0.4, w=0.8, h=0.8, anchor=:C] ]
     set v = pico.get.scene()
     assert(pico.equal(v.source.x,0.6) && pico.equal(v.source.y,0.4))
 
     ;; restore
     pico.set.scene [
-        target=['%', x=0.5, y=0.5, w=1, h=1, anchor='C'],
-        source=['%', x=0.5, y=0.5, w=1, h=1, anchor='C'],
+        target=['%', x=0.5, y=0.5, w=1, h=1, anchor=:C],
+        source=['%', x=0.5, y=0.5, w=1, h=1, anchor=:C],
     ]
 }
 

@@ -34,7 +34,7 @@ do {
     print("both given: rect and oval unchanged")
     pico.output.clear()
     pico.output.draw.rect(['%', x=0.5, y=0.5, w=0.8, h=0.4])
-    pico.set.pencil [ color='red' ]
+    pico.set.pencil [ color=:red ]
     pico.output.draw.oval(['%', x=0.5, y=0.5, w=0.8, h=0.4])
     pico.check("rect-circle-05")
 }

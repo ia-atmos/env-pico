@@ -18,7 +18,7 @@ do {
 ;; pico.layer.video: create layer
 print("layer.video: create")
 pin vid = pico.layer.video [ path=VIDEO ]
-val full = ['%', x=0.5, y=0.5, w=1, h=1, anchor='C']
+val full = ['%', x=0.5, y=0.5, w=1, h=1, anchor=:C]
 
 ;; pico.set.video: first frame (0)
 do {

@@ -22,7 +22,7 @@ val window = pico.layer.window
 
 do {
     print("entire screen - 01")
-    pico.output.draw.rect(['!', x=10, y=10, w=20, h=20, anchor='NW'])
+    pico.output.draw.rect(['!', x=10, y=10, w=20, h=20, anchor=:NW])
     pico.set.layer(window)
     val f = pico.output.screenshot(nil)
     pico.set.layer(world)
@@ -34,7 +34,7 @@ do {
 do {
     print("entire screen - 02")
     pico.set.pencil [ color=['!', r=200, g=0, b=0] ]
-    pico.output.draw.rect(['!', x=30, y=30, w=10, h=10, anchor='NW'])
+    pico.output.draw.rect(['!', x=30, y=30, w=10, h=10, anchor=:NW])
     pico.set.layer(window)
     val f = pico.output.screenshot(nil, OUT ++ "shot-02.png")
     pico.set.layer(world)
@@ -45,9 +45,9 @@ do {
 do {
     print("part of screen (raw)")
     pico.set.pencil [ color=['!', r=0, g=200, b=0] ]
-    pico.output.draw.rect(['!', x=40, y=5, w=10, h=10, anchor='NW'])
+    pico.output.draw.rect(['!', x=40, y=5, w=10, h=10, anchor=:NW])
     pico.set.layer(window)
-    val f = pico.output.screenshot(nil, ['!', x=0, y=0, w=250, h=150, anchor='NW'])
+    val f = pico.output.screenshot(nil, ['!', x=0, y=0, w=250, h=150, anchor=:NW])
     pico.set.layer(world)
     assert(f != nil)
     check(f, ASR ++ "shot-03.png")
@@ -57,9 +57,9 @@ do {
 do {
     print("part of screen (pct)")
     pico.set.pencil [ color=['!', r=0, g=0, b=200] ]
-    pico.output.draw.rect(['!', x=50, y=50, w=10, h=10, anchor='NW'])
+    pico.output.draw.rect(['!', x=50, y=50, w=10, h=10, anchor=:NW])
     ;; the window as an explicit layer, with no switch
-    val f = pico.output.screenshot(window, ['%', x=0, y=0, w=0.5, h=0.3, anchor='NW'])
+    val f = pico.output.screenshot(window, ['%', x=0, y=0, w=0.5, h=0.3, anchor=:NW])
     assert(pico.get.layer() == world)
     assert(f != nil)
     check(f, ASR ++ "shot-04.png")
@@ -71,7 +71,7 @@ do {
     pico.set.effect [ color=['!', r=0x10, g=0x10, b=0x10] ]
     pico.output.clear()
     pico.set.pencil [ color=['!', r=0xFF, g=0x00, b=0x00] ]
-    pico.output.draw.rect(['!', x=10, y=10, w=30, h=30, anchor='NW'])
+    pico.output.draw.rect(['!', x=10, y=10, w=30, h=30, anchor=:NW])
     val f = pico.output.screenshot(nil, OUT ++ "shot-world.png")
     assert(f == OUT ++ "shot-world.png")
     check(f, ASR ++ "shot-world.png")
@@ -84,7 +84,7 @@ do {
     pico.set.effect [ color=['!', r=0x00, g=0x80, b=0x00] ]
     pico.output.clear()
     pico.set.pencil [ color=['!', r=0xFF, g=0xFF, b=0x00] ]
-    pico.output.draw.rect(['!', x=5, y=5, w=10, h=10, anchor='NW'])
+    pico.output.draw.rect(['!', x=5, y=5, w=10, h=10, anchor=:NW])
     val f = pico.output.screenshot(nil, OUT ++ "shot-empty.png")
     pico.set.layer(world)
     assert(f == OUT ++ "shot-empty.png")
@@ -105,7 +105,7 @@ do {
 do {
     print("sub layer")
     pin sub1 = pico.layer.sub [ sup=empty1,
-        crop=['!', x=0, y=0, w=32, h=16, anchor='NW'] ]
+        crop=['!', x=0, y=0, w=32, h=16, anchor=:NW] ]
     pico.set.layer(sub1)
     val f = pico.output.screenshot(nil, OUT ++ "shot-sub.png")
     pico.set.layer(world)
@@ -175,8 +175,8 @@ do {
     pico.set.layer(world)
     pico.set.effect [ color=['!', r=0x20, g=0x20, b=0x20] ]
     pico.output.clear()
-    pico.output.draw.layer(red,  ['!', x=20, y=20, w=20, h=20, anchor='NW'])
-    pico.output.draw.layer(blue, ['!', x=50, y=40, w=20, h=20, anchor='NW'])
+    pico.output.draw.layer(red,  ['!', x=20, y=20, w=20, h=20, anchor=:NW])
+    pico.output.draw.layer(blue, ['!', x=50, y=40, w=20, h=20, anchor=:NW])
 
     val f1 = pico.output.screenshot(world, OUT ++ "shot-scene.png")
     check(f1, ASR ++ "shot-scene.png")
@@ -192,7 +192,7 @@ do {
 do {
     print("screenshot layer - crop (pct)")
     pin snap = pico.layer.screenshot [ sup=empty1,
-        crop=['%', x=0, y=0, w=0.5, h=1.0, anchor='NW'] ]
+        crop=['%', x=0, y=0, w=0.5, h=1.0, anchor=:NW] ]
     pico.set.layer(snap)
     val f = pico.output.screenshot(nil, OUT ++ "shot-snap-half.png")
     pico.set.layer(world)
@@ -205,16 +205,16 @@ do {
 ;;    with no rect (uses the target) into world's SE quadrant
 do {
     print("screenshot layer - target (+ crop)")
-    val r = ['%', x=1, y=1, w=0.5, h=0.5, anchor='SE']
+    val r = ['%', x=1, y=1, w=0.5, h=0.5, anchor=:SE]
     pin snap = pico.layer.screenshot [ sup=empty1,
-        crop=['%', x=0, y=0, w=0.5, h=1.0, anchor='NW'], target=r ]
+        crop=['%', x=0, y=0, w=0.5, h=1.0, anchor=:NW], target=r ]
     pico.set.layer(snap)
     val s = pico.get.scene()
     assert(s.target@0 == '%')
     assert(s.target.x==1 && s.target.y==1)
     assert(s.target.w==0.5 && s.target.h==0.5)
     pico.set.layer(world)
-    pico.set.effect [ color='black' ]
+    pico.set.effect [ color=:black ]
     pico.output.clear()
     pico.output.draw.layer(snap)
     val f = pico.output.screenshot(world, OUT ++ "shot-snap-target.png")

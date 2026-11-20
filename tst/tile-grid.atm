@@ -12,8 +12,8 @@ do {
     pico.set.effect [ grid=true ]
     pico.set.scene [ dim=['!', w=16, h=16] ]
     pico.output.clear()
-    pico.set.pencil [ color='red' ]
-    pico.output.draw.rect ['!', x=4, y=4, w=8, h=8, anchor='NW']
+    pico.set.pencil [ color=:red ]
+    pico.output.draw.rect ['!', x=4, y=4, w=8, h=8, anchor=:NW]
     pico.check("tile-grid-01")
 }
 
@@ -23,8 +23,8 @@ do {
     pico.set.effect [ grid=true ]
     pico.set.scene [ dim=['#', w=4, h=4], tile=['!', w=4, h=4] ]
     pico.output.clear()
-    pico.set.pencil [ color='green' ]
-    pico.output.draw.rect ['#', x=1, y=1, w=2, h=2, anchor='NW']
+    pico.set.pencil [ color=:green ]
+    pico.output.draw.rect ['#', x=1, y=1, w=2, h=2, anchor=:NW]
     pico.check("tile-grid-02")
 }
 
@@ -34,8 +34,8 @@ do {
     pico.set.effect [ grid=true ]
     pico.set.scene [ dim=['#', w=8, h=8], tile=['!', w=2, h=2] ]
     pico.output.clear()
-    pico.set.pencil [ color='blue' ]
-    pico.output.draw.rect ['#', x=3, y=3, w=2, h=2, anchor='NW']
+    pico.set.pencil [ color=:blue ]
+    pico.output.draw.rect ['#', x=3, y=3, w=2, h=2, anchor=:NW]
     pico.check("tile-grid-03")
 }
 
@@ -45,8 +45,8 @@ do {
     pico.set.effect [ grid=true ]
     pico.set.scene [ dim=['#', w=4, h=8], tile=['!', w=4, h=2] ]
     pico.output.clear()
-    pico.set.pencil [ color='yellow' ]
-    pico.output.draw.rect ['#', x=2, y=4, w=1, h=2, anchor='NW']
+    pico.set.pencil [ color=:yellow ]
+    pico.output.draw.rect ['#', x=2, y=4, w=1, h=2, anchor=:NW]
     pico.check("tile-grid-04")
 }
 
@@ -56,8 +56,8 @@ do {
     pico.set.effect [ grid=false ]
     pico.set.scene [ dim=['#', w=4, h=4], tile=['!', w=4, h=4] ]
     pico.output.clear()
-    pico.set.pencil [ color='red' ]
-    pico.output.draw.rect ['#', x=2, y=2, w=1, h=1, anchor='C']
+    pico.set.pencil [ color=:red ]
+    pico.output.draw.rect ['#', x=2, y=2, w=1, h=1, anchor=:C]
     pico.check("tile-grid-05")
 }
 
@@ -70,11 +70,11 @@ pin layerA = pico.layer.empty [ dim=['!', w=16, h=16] ]
 do {
     print("layer A: 4x4 tiles, grid on")
     pico.set.layer(layerA)
-    pico.set.effect [ grid=true, color='black' ]
+    pico.set.effect [ grid=true, color=:black ]
     pico.set.scene [ dim=['#', w=4, h=4], tile=['!', w=4, h=4] ]
     pico.output.clear()
-    pico.set.pencil [ color='red' ]
-    pico.output.draw.rect ['#', x=1, y=1, w=2, h=2, anchor='NW']
+    pico.set.pencil [ color=:red ]
+    pico.output.draw.rect ['#', x=1, y=1, w=2, h=2, anchor=:NW]
     pico.set.layer(pico.layer.world)
 }
 
@@ -83,11 +83,11 @@ pin layerB = pico.layer.empty [ dim=['!', w=16, h=16] ]
 do {
     print("layer B: 8x4 non-square tiles, grid on")
     pico.set.layer(layerB)
-    pico.set.effect [ grid=true, color='black' ]
+    pico.set.effect [ grid=true, color=:black ]
     pico.set.scene [ dim=['#', w=8, h=4], tile=['!', w=2, h=4] ]
     pico.output.clear()
-    pico.set.pencil [ color='green' ]
-    pico.output.draw.rect ['#', x=5, y=2, w=2, h=1, anchor='NW']
+    pico.set.pencil [ color=:green ]
+    pico.output.draw.rect ['#', x=5, y=2, w=2, h=1, anchor=:NW]
     pico.set.layer(pico.layer.world)
 }
 
@@ -96,11 +96,11 @@ pin layerC = pico.layer.empty [ dim=['!', w=16, h=16] ]
 do {
     print("layer C: 4x4 tiles, grid off")
     pico.set.layer(layerC)
-    pico.set.effect [ grid=false, color='black' ]
+    pico.set.effect [ grid=false, color=:black ]
     pico.set.scene [ dim=['#', w=4, h=4], tile=['!', w=4, h=4] ]
     pico.output.clear()
-    pico.set.pencil [ color='blue' ]
-    pico.output.draw.rect ['#', x=3, y=3, w=1, h=1, anchor='NW']
+    pico.set.pencil [ color=:blue ]
+    pico.output.draw.rect ['#', x=3, y=3, w=1, h=1, anchor=:NW]
     pico.set.layer(pico.layer.world)
 }
 
@@ -108,9 +108,9 @@ do {
 do {
     print("3 layers: A(grid on) B(grid on) C(grid off)")
     pico.output.clear()
-    pico.output.draw.layer(layerA, ['!', x=0,   y=0, w=150, h=150, anchor='NW'])
-    pico.output.draw.layer(layerB, ['!', x=160, y=0, w=150, h=150, anchor='NW'])
-    pico.output.draw.layer(layerC, ['!', x=320, y=0, w=150, h=150, anchor='NW'])
+    pico.output.draw.layer(layerA, ['!', x=0,   y=0, w=150, h=150, anchor=:NW])
+    pico.output.draw.layer(layerB, ['!', x=160, y=0, w=150, h=150, anchor=:NW])
+    pico.output.draw.layer(layerC, ['!', x=320, y=0, w=150, h=150, anchor=:NW])
     pico.check("tile-grid-06")
 }
 
@@ -118,9 +118,9 @@ do {
 do {
     print("3 layers: different scales")
     pico.output.clear()
-    pico.output.draw.layer(layerA, ['!', x=0,   y=170, w=120, h=120, anchor='NW'])
-    pico.output.draw.layer(layerB, ['!', x=140, y=170, w=200, h=200, anchor='NW'])
-    pico.output.draw.layer(layerC, ['!', x=0,   y=310, w=240, h=120, anchor='NW'])
+    pico.output.draw.layer(layerA, ['!', x=0,   y=170, w=120, h=120, anchor=:NW])
+    pico.output.draw.layer(layerB, ['!', x=140, y=170, w=200, h=200, anchor=:NW])
+    pico.output.draw.layer(layerC, ['!', x=0,   y=310, w=240, h=120, anchor=:NW])
     pico.check("tile-grid-07")
 }
 

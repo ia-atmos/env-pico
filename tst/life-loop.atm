@@ -19,7 +19,7 @@ func bytes (path) {
 
 ;; a mark for the frame `n` in the current layer
 func mark (n) {
-    pico.output.draw.rect(['!', x=n*10, y=2, w=5, h=5, anchor='NW'])
+    pico.output.draw.rect(['!', x=n*10, y=2, w=5, h=5, anchor=:NW])
 }
 
 var frames = 0
@@ -32,7 +32,7 @@ par :any {
             pin f = pico.font.load(FONT)
             pico.set.layer(l)
             pico.set.pencil [ font=f ]
-            pico.output.draw.text("abc", ['!', x=0, y=0, h=10, anchor='NW'])
+            pico.output.draw.text("abc", ['!', x=0, y=0, h=10, anchor=:NW])
         }
         assert(pico.get.layer() == world)
         do {

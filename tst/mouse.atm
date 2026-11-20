@@ -6,12 +6,12 @@ var pos
 ;; helper: window-pixel mouse set (NW anchor)
 func mouse_w (x, y) {
     val old = pico.set.layer(window)
-    pico.set.mouse(['!', x=x, y=y, anchor='NW'])
+    pico.set.mouse(['!', x=x, y=y, anchor=:NW])
     pico.set.layer(old)
 }
 
 ;; helper: each call site is exercised in both forms
-;;   * table form `[mode, anchor='NW']` — preserves legacy NW numbers
+;;   * table form `[mode, anchor=:NW]` — preserves legacy NW numbers
 ;;   * mode-string form — new C-anchor default; result is shifted by
 ;;     +0.5 for '!'  and  +0.5/scene.dim.w for '%'
 
@@ -26,9 +26,9 @@ do {
     ;; phy (0,0) -> log (0,0)
     do {
         mouse_w(0, 3)
-        set pos = pico.get.mouse(['!', anchor='NW'])
+        set pos = pico.get.mouse(['!', anchor=:NW])
         assert(pos.x==0 && pos.y>0.29 && pos.y<0.31)
-        set pos = pico.get.mouse(nil, ['!', anchor='NW'])
+        set pos = pico.get.mouse(nil, ['!', anchor=:NW])
         assert(pos.x==0 && pos.y>0.29 && pos.y<0.31)
         set pos = pico.get.mouse('!')
         assert(pos.anchor.x==0.5 && pos.anchor.y==0.5)
@@ -40,7 +40,7 @@ do {
     ;; phy (250,250) -> log (25,25)
     do {
         mouse_w(250, 251)
-        set pos = pico.get.mouse(['!', anchor='NW'])
+        set pos = pico.get.mouse(['!', anchor=:NW])
         assert(pos.x==25 && pos.y>25.09 && pos.y<25.11)
         set pos = pico.get.mouse('!')
         assert(pos.x==25.5 && pos.y>25.59 && pos.y<25.61)
@@ -49,7 +49,7 @@ do {
     ;; phy (490,490) -> log (49,49)
     do {
         mouse_w(499, 490)
-        set pos = pico.get.mouse(['!', anchor='NW'])
+        set pos = pico.get.mouse(['!', anchor=:NW])
         assert(pos.x>49.89 && pos.x<49.91 && pos.y==49)
         set pos = pico.get.mouse('!')
         assert(pos.x>50.39 && pos.x<50.41 && pos.y==49.5)
@@ -60,12 +60,12 @@ do {
 ;; centered 100x100 logical
 print("zoom out 2x")
 do {
-    pico.set.scene [ source=['!', x=-25, y=-25, w=100, h=100, anchor='NW'] ]
+    pico.set.scene [ source=['!', x=-25, y=-25, w=100, h=100, anchor=:NW] ]
 
     ;; phy (250, 250) -> log (25,25)
     do {
         mouse_w(250, 253)
-        set pos = pico.get.mouse(['!', anchor='NW'])
+        set pos = pico.get.mouse(['!', anchor=:NW])
         assert(pos.x==25 && pos.y>25.59 && pos.y<25.61)
         set pos = pico.get.mouse('!')
         assert(pos.x==25.5 && pos.y>26.09 && pos.y<26.11)
@@ -74,7 +74,7 @@ do {
     ;; phy (0,0) -> log (-25,-25)
     do {
         mouse_w(0, 0)
-        set pos = pico.get.mouse(['!', anchor='NW'])
+        set pos = pico.get.mouse(['!', anchor=:NW])
         assert(pos.x==-25 && pos.y==-25)
         set pos = pico.get.mouse('!')
         assert(pos.x==-24.5 && pos.y==-24.5)
@@ -83,7 +83,7 @@ do {
     ;; phy (500,500) -> log (75,75)
     do {
         mouse_w(495, 499)
-        set pos = pico.get.mouse(['!', anchor='NW'])
+        set pos = pico.get.mouse(['!', anchor=:NW])
         assert(pos.x==74 && pos.y>74.79 && pos.y<74.81)
         set pos = pico.get.mouse('!')
         assert(pos.x==74.5 && pos.y>75.29 && pos.y<75.31)
@@ -94,12 +94,12 @@ do {
 ;; centered 10x10 logical
 print("zoom in 5x")
 do {
-    pico.set.scene [ source=['!', x=20, y=20, w=10, h=10, anchor='NW'] ]
+    pico.set.scene [ source=['!', x=20, y=20, w=10, h=10, anchor=:NW] ]
 
     ;; phy (0,0) -> log (20,20)
     do {
         mouse_w(1, 2)
-        set pos = pico.get.mouse(['!', anchor='NW'])
+        set pos = pico.get.mouse(['!', anchor=:NW])
         assert(pos.x>20.01 && pos.x<20.03 && pos.y>20.03 && pos.y<20.05)
         set pos = pico.get.mouse('!')
         assert(pos.x>20.51 && pos.x<20.53 && pos.y>20.53 && pos.y<20.55)
@@ -108,7 +108,7 @@ do {
     ;; phy center (250,250) -> log (25,25)
     do {
         mouse_w(254, 251)
-        set pos = pico.get.mouse(['!', anchor='NW'])
+        set pos = pico.get.mouse(['!', anchor=:NW])
         assert(pos.x>25.07 && pos.x<25.09 && pos.y>25.01 && pos.y<25.03)
         set pos = pico.get.mouse('!')
         assert(pos.x>25.57 && pos.x<25.59 && pos.y>25.51 && pos.y<25.53)
@@ -117,7 +117,7 @@ do {
     ;; phy (500,500) -> log (30,30)
     do {
         mouse_w(497, 498)
-        set pos = pico.get.mouse(['!', anchor='NW'])
+        set pos = pico.get.mouse(['!', anchor=:NW])
         assert(pos.x>29.93 && pos.x<29.95 && pos.y>29.95 && pos.y<29.97)
         set pos = pico.get.mouse('!')
         assert(pos.x>30.43 && pos.x<30.45 && pos.y>30.45 && pos.y<30.47)
@@ -128,12 +128,12 @@ do {
 ;; bottom-right (SE) half
 print("scroll/zoom SE")
 do {
-    pico.set.scene [ source=['!', x=25, y=25, w=25, h=25, anchor='NW'] ]
+    pico.set.scene [ source=['!', x=25, y=25, w=25, h=25, anchor=:NW] ]
 
     ;; phy (0,0) -> log (25,25)
     do {
         mouse_w(2, 1)
-        set pos = pico.get.mouse(['!', anchor='NW'])
+        set pos = pico.get.mouse(['!', anchor=:NW])
         assert(pos.x>25.09 && pos.x<25.11 && pos.y>25.04 && pos.y<25.06)
         set pos = pico.get.mouse('!')
         assert(pos.x>25.59 && pos.x<25.61 && pos.y>25.54 && pos.y<25.56)
@@ -142,7 +142,7 @@ do {
     ;; phy (250,250) -> log (37,37)
     do {
         mouse_w(253, 250)
-        set pos = pico.get.mouse(['!', anchor='NW'])
+        set pos = pico.get.mouse(['!', anchor=:NW])
         assert(pos.x>37.64 && pos.x<37.66 && pos.y==37.5)
         set pos = pico.get.mouse('!')
         assert(pos.x>38.14 && pos.x<38.16 && pos.y==38.0)
@@ -151,12 +151,12 @@ do {
 
 print("normal PCT")
 do {
-    pico.set.scene [ source=['!', x=0, y=0, w=50, h=50, anchor='NW'] ]
+    pico.set.scene [ source=['!', x=0, y=0, w=50, h=50, anchor=:NW] ]
 
     ;; phy (250,250) -> pct (0.5,0.5)
     do {
         mouse_w(250, 250)
-        set pos = pico.get.mouse(['%', anchor='NW'])
+        set pos = pico.get.mouse(['%', anchor=:NW])
         assert(pos.x==0.5 && pos.y==0.5)
         set pos = pico.get.mouse('%')
         assert(pos.anchor.x==0.5 && pos.anchor.y==0.5)
@@ -166,7 +166,7 @@ do {
     ;; phy (0,0) -> pct (0,0)
     do {
         mouse_w(0, 0)
-        set pos = pico.get.mouse(['%', anchor='NW'])
+        set pos = pico.get.mouse(['%', anchor=:NW])
         assert(pos.x==0.0 && pos.y==0.0)
         set pos = pico.get.mouse('%')
         assert(pos.x>0.009 && pos.x<0.011 && pos.y>0.009 && pos.y<0.011)
@@ -175,12 +175,12 @@ do {
 
 print("zoom PCT")
 do {
-    pico.set.scene [ source=['!', x=20, y=20, w=10, h=10, anchor='NW'] ]
+    pico.set.scene [ source=['!', x=20, y=20, w=10, h=10, anchor=:NW] ]
 
     ;; phy (0,0) -> raw (20,20) -> pct (0.4,0.4)
     do {
         mouse_w(0, 0)
-        set pos = pico.get.mouse(['%', anchor='NW'])
+        set pos = pico.get.mouse(['%', anchor=:NW])
         assert(pos.x>0.39 && pos.x<0.41)
         assert(pos.y>0.39 && pos.y<0.41)
         set pos = pico.get.mouse('%')
@@ -191,7 +191,7 @@ do {
     ;; phy (250,250) -> raw (25,25) -> pct (0.5,0.5)
     do {
         mouse_w(250, 250)
-        set pos = pico.get.mouse(['%', anchor='NW'])
+        set pos = pico.get.mouse(['%', anchor=:NW])
         assert(pos.x>0.49 && pos.x<0.51)
         assert(pos.y>0.49 && pos.y<0.51)
         set pos = pico.get.mouse('%')
@@ -204,11 +204,11 @@ print("window mode (raw phy)")
 do {
     mouse_w(123, 456)
     val old = pico.set.layer(window)
-    set pos = pico.get.mouse(['!', anchor='NW'])
+    set pos = pico.get.mouse(['!', anchor=:NW])
     pico.set.layer(old)
     assert(pos.x==123 && pos.y==456)
     ;; equivalent via explicit layer arg (no set_layer dance)
-    set pos = pico.get.mouse(window, ['!', anchor='NW'])
+    set pos = pico.get.mouse(window, ['!', anchor=:NW])
     assert(pos.x==123 && pos.y==456)
     set pos = pico.get.mouse(window, '!')
     assert(pos.x==123.5 && pos.y==456.5)
@@ -217,13 +217,13 @@ do {
 ;; roundtrip: set(rel) -> get(rel) -> assert equal
 print("roundtrip '!'")
 do {
-    pico.set.scene [ source=['!', x=0, y=0, w=50, h=50, anchor='NW'] ]
+    pico.set.scene [ source=['!', x=0, y=0, w=50, h=50, anchor=:NW] ]
 
-    pico.set.mouse(['!', x=25, y=25, anchor='NW'])
-    set pos = pico.get.mouse(['!', anchor='NW'])
+    pico.set.mouse(['!', x=25, y=25, anchor=:NW])
+    set pos = pico.get.mouse(['!', anchor=:NW])
     assert(pos.x==25 && pos.y==25)
-    pico.set.mouse(nil, ['!', x=25, y=25, anchor='NW'])
-    set pos = pico.get.mouse(nil, ['!', anchor='NW'])
+    pico.set.mouse(nil, ['!', x=25, y=25, anchor=:NW])
+    set pos = pico.get.mouse(nil, ['!', anchor=:NW])
     assert(pos.x==25 && pos.y==25)
     set pos = pico.get.mouse('!')
     assert(pos.x==25.5 && pos.y==25.5)
@@ -231,8 +231,8 @@ do {
 
 print("roundtrip '%'")
 do {
-    pico.set.mouse(['%', x=0.5, y=0.5, anchor='NW'])
-    set pos = pico.get.mouse(['%', anchor='NW'])
+    pico.set.mouse(['%', x=0.5, y=0.5, anchor=:NW])
+    set pos = pico.get.mouse(['%', anchor=:NW])
     assert(pos.x>0.49 && pos.x<0.51)
     assert(pos.y>0.49 && pos.y<0.51)
     set pos = pico.get.mouse('%')
@@ -242,10 +242,10 @@ do {
 
 print("roundtrip '!' zoomed")
 do {
-    pico.set.scene [ source=['!', x=20, y=20, w=10, h=10, anchor='NW'] ]
+    pico.set.scene [ source=['!', x=20, y=20, w=10, h=10, anchor=:NW] ]
 
-    pico.set.mouse(['!', x=25, y=25, anchor='NW'])
-    set pos = pico.get.mouse(['!', anchor='NW'])
+    pico.set.mouse(['!', x=25, y=25, anchor=:NW])
+    set pos = pico.get.mouse(['!', anchor=:NW])
     assert(pos.x==25 && pos.y==25)
     set pos = pico.get.mouse('!')
     assert(pos.x==25.5 && pos.y==25.5)

@@ -24,11 +24,11 @@ loop k in 6 {
     val i = k * 25
     pico.output.clear()
 
-    pico.set.pencil [ color='white' ]
+    pico.set.pencil [ color=:white ]
     pico.output.draw.rect(r)
 
     val rr = pico.in.rect(r, ['%', x=0.5, y=0.5, w=i/100.0, h=i/100.0])
-    pico.set.pencil [ color=pico.color.alpha('red', 150) ]
+    pico.set.pencil [ color=pico.color.alpha(:red, 150) ]
     pico.output.draw.rect(rr)
 
     val fmt = string.format("dim-%02d", N)
