@@ -25,6 +25,11 @@ do {
     assert(w.screen.w>=500 && w.screen.h>=500)
     pico.set.app [ title="Open" ]
     assert(pico.get.app().title == "Open")
+
+    ;; invalid arguments
+    fails("invalid mode", \{ pico.output.draw.rect ['!!', x=1, y=1, w=1, h=1] })
+    fails("invalid mode", \{ pico.output.draw.rect ['', x=1, y=1, w=1, h=1] })
+    fails("invalid time", \{ pico.input.delay(-1) })
 }
 
 print("2. a hidden window from its creation")
@@ -32,6 +37,7 @@ do {
     pico.close()
     assert(pico.layer.world==nil && pico.layer.window==nil)
     fails("pico is not open", \{ pico.get.app() })
+    fails("expected string field 'title'", \{ pico.open [ title=10 ] })
     pico.open [ title="Hidden", show=false ]
     val w = pico.get.app()
     assert(w.title=="Hidden" && w.show==false)

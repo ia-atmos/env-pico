@@ -574,7 +574,13 @@ static int _pico_atmos_mode_t (AVal t, int req, char* out) {
     AVal v = a_tab_get(A_TAB_OF(t), a_int(0));
     char mode = '!';
     if (v.type == A_STR) {
-        mode = A_STR_OF(v)->s[0];
+        const char* m = A_STR_OF(v)->s;
+        if (m[0]=='\0' || m[1]!='\0') {
+            a_error("%s : invalid mode \"%s\": expected '!', '%%', or '#'",
+                _PICO_ATMOS_FN, m);
+            return 0;
+        }
+        mode = m[0];
     } else if (v.type!=A_NIL || req) {
         a_error("%s : invalid mode at index 0", _PICO_ATMOS_FN);
         return 0;
@@ -1037,7 +1043,10 @@ static AStatus _pico_atmos_l_open (AFunc* self, int argc, AVal* argv) {
             win.show = a_truthy(show);
         }
         if (title.type != A_NIL) {
-            _PICO_ATMOS_TRY(_pico_atmos_str(title, 0, &win.title));
+            if (title.type != A_STR) {
+                return a_error("%s : expected string field 'title'", _PICO_ATMOS_FN);
+            }
+            win.title = A_STR_OF(title)->s;
         }
     }
     _pico_atmos_open(&win);
@@ -2128,6 +2137,9 @@ static AStatus _pico_atmos_l_input_delay (AFunc* self, int argc, AVal* argv) {
     _PICO_ATMOS_IN("input.delay")
     if (!a_isnum(_PICO_ATMOS_ARG(0))) {
         return _pico_atmos_bad(0, "number", _PICO_ATMOS_ARG(0));
+    }
+    if (a_dbl(argv[0]) < 0) {
+        return a_error("%s : invalid time", _PICO_ATMOS_FN);
     }
     a_push(a_int(pico_input_delay((int) a_dbl(argv[0]))));
     return A_OK;
