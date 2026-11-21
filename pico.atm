@@ -227,10 +227,6 @@
 ;; `../c/tst/out` and `../c/tst/asr`, relative to the current directory.
 
 ```:prelude
-// A_CLOCK_US is A_TIME_US in compilers before its rename
-#ifndef A_CLOCK_US
-#define A_CLOCK_US A_TIME_US
-#endif
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
