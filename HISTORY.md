@@ -39,6 +39,8 @@ Layout:
   target (for the world, bars in a resized or fullscreen window)
 - `atmos-pico -t`: pico is headless by itself (no display needed), and
   `pico.test` is `true`
+- `pico.ctx.layer(l)`: the pair `[enter, leave]` of a `context` that keeps
+  `l` current for the code of its block
 - text is UTF-8 (was Latin-1)
 - pencil `smooth` (C: `pico_get/set_pencil_smooth`): text with smooth
   (anti-aliased) edges, off by default

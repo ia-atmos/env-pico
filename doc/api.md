@@ -189,6 +189,33 @@ In alphabetical order:
         - `pico.color.lighter (clr: Color, pct: number) -> Color`
     - **pico.color.mix**: Mixes two colors.
         - `pico.color.mix (c1: Color, c2: Color) -> Color`
+- **pico.ctx**: Pairs `[enter, leave]` for the `context` of Atmos, which sets
+  a state while the code of its block runs, and restores it before any other
+  code runs.
+    - **pico.ctx.layer**: Makes a layer current for the code of the block.
+        - `pico.ctx.layer (layer: Layer) -> [enter, leave]`
+        - `enter` makes `layer` current and returns the previous layer;
+          `leave` makes that one current again.
+        - Tasks that draw into the same layer go into one context: the
+          layer switches once around all of them, not once per task.
+
+        ```
+        pin hud = pico.layer.empty [ up=pico.layer.world, ... ]
+        spawn {
+            context pico.ctx.layer(hud) {
+                loop on :draw {
+                    pico.output.draw.rect(...)      ;; into `hud`
+                }
+            }
+        }
+        loop on :draw {
+            pico.output.draw.rect(...)              ;; into the world
+        }
+        ```
+
+        - A change of the current layer inside the block holds only until
+          the code awaits: when it awakes, the context makes `layer`
+          current again.
 - **pico.cv**
     - Projects a value from `L_fr`'s frame into `L_to`'s frame via
       the parent chain. Either layer may be `nil` (== cur). Each

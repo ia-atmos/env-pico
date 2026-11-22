@@ -30,6 +30,7 @@ section numbers for what was already written.
 | #13 | From `pico-slides`: text in more than one line (a `pico.get.text` / draw that takes a maximum width and breaks lines); it wraps by hand, word by word | waiting for the author (design) |
 | #14 | From `pico-slides`: a text whose box has an exact height. The `h` of a text is the font size and the box is taller (`h=30` gives 35 with DejaVuSans); it searches the size by trial | waiting for the author (design) |
 | #15 | From `pico-slides`: the cache of texts drawn from strings only grows until `pico.close()` (one per size at each resize). Advice given: `pico.layer.text` with its own pins. A call or a limit to drop the cache is open (also B.8) | waiting for the author |
+| #16 | `pico.ctx.layer(l)`: pair `[enter, leave]` for the language's `context` (asked by `atmos-context`; the author's "Sim para ambos" in that session, 2026-11-22) | done, `tst/ctx-layer.atm`; replaces the dropped `pico.with.layer` (A.21) |
 
 ## A. Decisions waiting for an answer
 
