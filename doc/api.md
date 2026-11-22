@@ -316,6 +316,8 @@ In alphabetical order:
         - `dim` is **required** and must be a table: `h` is the
           input font size (in `dim.mode`'s realm).
         - `w` is filled in by the call (when initially `0`).
+        - Shares the cache of `pico.output.draw.text`: each distinct
+          string and size measured is kept until `pico.close()`.
         - Returns the rel `Dim` (the same table passed in,
           mutated). To get pixels, use `'!'` mode or multiply
           by the scene dim.
@@ -568,6 +570,11 @@ In alphabetical order:
             - `rect.h` is required; a missing `w` is inferred from the text
             - `text` may also be a number
             - uses the current pencil font and color
+            - each distinct text (string, size, font, color, `smooth`) is
+              kept until `pico.close()`: for texts that keep changing
+              (counters, clocks, a layout redone at each resize with other
+              sizes), pin a `pico.layer.text` instead, which is released
+              with its block
         - **pico.output.draw.tri**: Draws triangle.
             - `pico.output.draw.tri (p1: Pos, p2: Pos, p3: Pos)`
         - **pico.output.draw.video**: Draws video frame.
