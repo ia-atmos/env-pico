@@ -2861,6 +2861,17 @@ pin pico = [
 ;; `pico.layer.window` at each `pico.open`
 `_pico_atmos_init($pico);`
 
+;; pico.ctx.layer(l): the pair [enter, leave] of a `context` that makes `l`
+;; the current layer while the code of its block runs:
+;;      context pico.ctx.layer(hud) { loop on :draw { ... } }
+;; `enter` makes `l` current and returns the previous layer; `leave` makes it
+;; current again.
+set pico.ctx = [
+    layer = func (l) {
+        [ \{ pico.set.layer(l) }, \(old) { pico.set.layer(old) } ]
+    },
+]
+
 ;; Under `-t` (test blocks enabled), pico runs headless: no window on the
 ;; screen and no sound, with the software renderer (as `PICO_TESTS=1`), so
 ;; that the `test` blocks of a program run anywhere, with no display.

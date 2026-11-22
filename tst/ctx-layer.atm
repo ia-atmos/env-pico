@@ -1,0 +1,63 @@
+;; pico.ctx.layer(l): a `context` that keeps `l` current for the code of its
+;; block. Tasks of a HUD (a pool of 10) and of a minimap draw each frame into
+;; their layers, while another task draws into the world.
+`setenv("PICO_ATM_FRAMES", "20:20", 0);`
+
+pico.open [ title="Ctx Layer" ]
+val world = pico.layer.world
+pin hud = pico.layer.empty [ up=world, clear=true, dim=['!',w=100,h=10],
+    target=['!', x=0, y=0, w=100, h=10, anchor=:NW] ]
+pin map = pico.layer.empty [ up=world, clear=true, dim=['!',w=20,h=20],
+    target=['!', x=80, y=80, w=20, h=20, anchor=:NW] ]
+
+var n = 0
+var sw = 0                              ;; switches of the current layer
+val ctx = pico.ctx.layer
+val count = \(c) {                      ;; the pair of `c`, counting
+    [ \{ set sw = sw + 1 ; c@0() }, \(o) { set sw = sw + 1 ; c@1(o) } ]
+}
+
+task Bar (i) {
+    loop on :draw {
+        assert(pico.get.layer() == hud)
+        pico.output.draw.rect ['!', x=(n+i*10)%100, y=2, w=3, h=3, anchor=:NW]
+    }
+}
+
+par :any {
+    loop on :frame {
+        set n = n + 1
+    }
+} with {
+    loop on :draw {
+        assert(pico.get.layer() == world)
+        pico.output.draw.rect ['!', x=n%100, y=50, w=5, h=5]
+    }
+} with {
+    context count(ctx(hud)) {
+        pin ts = tasks()
+        loop i in 10 {
+            spawn @ts Bar(i)
+        }
+        await :never
+    }
+} with {
+    context ctx(map) {
+        loop on :draw {
+            assert(pico.get.layer() == map)
+            pico.output.draw.pixel ['!', x=n%20, y=10]
+        }
+    }
+} with {
+    await :quit
+}
+
+;; the lazy switch: a few times per frame around the whole pool, not twice
+;; per task of the pool (2*10 per frame by hand)
+print("switches", sw, "frames", n)
+assert(n == 20)
+assert(sw <= 4*n)
+assert(pico.get.layer() == world)
+
+;; the picture of the last frame, against its reference
+pico.check("ctx-layer-01")
