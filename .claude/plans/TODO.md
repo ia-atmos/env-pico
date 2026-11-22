@@ -31,6 +31,7 @@ section numbers for what was already written.
 | #14 | From `pico-slides`: a text whose box has an exact height. The `h` of a text is the font size and the box is taller (`h=30` gives 35 with DejaVuSans); it searches the size by trial | todo (author, 2026-11-22): not now; options #14a document the relation (recommended now), #14b `h` is the box, #14c a pencil option |
 | #15 | From `pico-slides`: the cache of texts drawn from strings only grows until `pico.close()` (one per size at each resize). Advice given: `pico.layer.text` with its own pins. A call or a limit to drop the cache is open (also B.8) | done (#15a, author 2026-11-22): no call or limit; `doc/api.md` sends changing texts to `pico.layer.text` |
 | #16 | `pico.ctx.layer(l)`: pair `[enter, leave]` for the language's `context` (asked by `atmos-context`; the author's "Sim para ambos" in that session, 2026-11-22) | done, `tst/ctx-layer.atm`; replaces the dropped `pico.with.layer` (A.21) |
+| #17 | Reopens #15 (the author in `pico-slides`, 2026-11-22: "poderia limpar automaticamente a cada resize (internamente)?" then "sim"): the cache drops its texts by itself when the `dim` of any layer changes (world, window, resize, fullscreen, any layer); images, fonts and sounds stay | done, `c/tst/text-cache.c` (`_pico_cache_count`) |
 
 ## A. Decisions waiting for an answer
 
