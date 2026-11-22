@@ -231,6 +231,8 @@ void _pico_layer_traverse (Pico_Layer* up, _pico_layer_traverse_cb_t pre, _pico_
 void* _pico_cache_get   (const char* key);
 void  _pico_cache_put   (const char* key, PICO_CACHE kind, void* value);
 void  _pico_cache_close (void);
+void  _pico_cache_drop_texts (void);
+int   _pico_cache_count (const char* prefix);
 
 // user-owned resource tracking (leftovers are freed at pico_close)
 void  _pico_mem_own      (Pico_Own* own, int cached, int kind, void* self);

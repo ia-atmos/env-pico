@@ -5,7 +5,7 @@
 // pico_get_text: unchanged content must keep the SAME texture (no
 // re-raster); any change in (font, height, color, text) must produce
 // a different entry. Entries are owned by pico and released at
-// pico_close.
+// pico_close, or when the dim of a layer changes.
 
 int main (void) {
     pico_open(NULL);
@@ -97,6 +97,42 @@ int main (void) {
         pico_layer_free(a);
         pico_layer_free(b);
         assert(G.live == 0);
+    }
+
+    // a change of the dim of a layer drops the texts (the grid labels of
+    // the world are texts too: off, so as to count only these)
+    {
+        pico_set_effect_grid(0);
+        pico_output_draw_text("abc", r);
+        assert(_pico_cache_count("/text/") > 0);
+
+        // the same dim keeps them
+        pico_set_scene_dim((Pico_Rel_Dim){ '!', {100, 100} });
+        assert(_pico_cache_count("/text/") > 0);
+
+        // the world
+        pico_set_scene_dim((Pico_Rel_Dim){ '!', {200, 200} });
+        assert(_pico_cache_count("/text/") == 0);
+
+        // a detached layer
+        pico_output_draw_text("abc", r);
+        Pico_Layer* l = pico_layer_empty(NULL, 0, (Pico_Rel_Dim){'!',{10,10}}, NULL);
+        pico_set_layer(l);
+        pico_set_scene_dim((Pico_Rel_Dim){ '!', {20, 20} });
+        pico_set_layer(pico_layer_world());
+        assert(_pico_cache_count("/text/") == 0);
+        pico_layer_free(l);
+
+        // the window (a resize, as by the user)
+        pico_output_draw_text("abc", r);
+        pico_set_layer(pico_layer_window());
+        pico_set_scene_dim((Pico_Rel_Dim){ '!', {400, 400} });
+        pico_set_layer(pico_layer_world());
+        assert(_pico_cache_count("/text/") == 0);
+
+        // drawn again after a drop: a new entry
+        pico_output_draw_text("abc", r);
+        assert(_pico_cache_count("/text/") == 1);
     }
 
     // cached entries need no free: pico_close releases them

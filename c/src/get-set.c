@@ -345,6 +345,9 @@ void pico_set_scene (Pico_Layer_Scene view) {
     if (L->tex != NULL) {
         SDL_DestroyTexture(L->tex);
     }
+    if (L->scene.dim.w!=view.dim.w || L->scene.dim.h!=view.dim.h) {
+        _pico_cache_drop_texts();
+    }
     L->scene = view;
     L->tex = _pico_tex_create(view.dim);
     pico_output_clear();
@@ -367,6 +370,7 @@ void _pico_window_follow (Pico_Abs_Dim di) {
         return;
     }
     assert(L->subs==0 && "cannot resize a layer with live sub-layers");
+    _pico_cache_drop_texts();
     L->scene.dim = di;
     assert(L->tex != NULL);
     SDL_DestroyTexture(L->tex);
@@ -384,6 +388,9 @@ static void _apply_scene_dim (Pico_Layer* L, Pico_Abs_Dim di) {
         return;
     }
     assert(L->subs==0 && "cannot resize a layer with live sub-layers");
+    if (L->scene.dim.w!=di.w || L->scene.dim.h!=di.h) {
+        _pico_cache_drop_texts();
+    }
     L->scene.dim = di;
     assert(L->tex != NULL);
     SDL_DestroyTexture(L->tex);

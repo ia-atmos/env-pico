@@ -20,8 +20,8 @@ extern unsigned int  pico_tiny_ttf_len;
 
 // Private memo table behind the easy paths (draw_image, draw_text,
 // draw_video, sound_path, pencil_font_path): string key -> resource.
-// Entries are never exposed to the user, never evicted, and released
-// together at pico_close.
+// Entries are never exposed to the user, and released together at
+// pico_close; the texts also when the dim of a layer changes.
 
 static unsigned long _cache_hash (const char* key) {
     unsigned long hash = 5381;
@@ -54,6 +54,39 @@ void _pico_cache_put (const char* key, PICO_CACHE kind, void* value) {
     unsigned long idx = _cache_hash(key);
     e->next = G.cache[idx];
     G.cache[idx] = e;
+}
+
+// Releases the texts of the cache (keys "/text/..."). Called when the dim
+// of a layer changes: the pixel height of a text drawn from a string
+// depends on it, so the texts before the change are not drawn again
+// (e.g. a layout redone at each resize).
+void _pico_cache_drop_texts (void) {
+    for (int i=0; i<PICO_HASH_BUK; i++) {
+        Pico_Cache_Entry** pe = &G.cache[i];
+        while (*pe != NULL) {
+            Pico_Cache_Entry* e = *pe;
+            if (e->kind==PICO_CACHE_LAYER && strncmp(e->key,"/text/",6)==0) {
+                *pe = e->next;
+                _pico_mem_layer_free((Pico_Layer*)e->value);
+                free(e->key);
+                free(e);
+            } else {
+                pe = &e->next;
+            }
+        }
+    }
+}
+
+// The number of entries of the cache whose key starts with `prefix`
+// (for the tests).
+int _pico_cache_count (const char* prefix) {
+    int n = 0;
+    for (int i=0; i<PICO_HASH_BUK; i++) {
+        for (Pico_Cache_Entry* e=G.cache[i]; e!=NULL; e=e->next) {
+            n += (strncmp(e->key, prefix, strlen(prefix)) == 0);
+        }
+    }
+    return n;
 }
 
 void _pico_cache_close (void) {
