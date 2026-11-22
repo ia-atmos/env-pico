@@ -60,7 +60,7 @@ task Bird (y, speed) {
 }
 
 par {
-    toggle on :Show {
+    mute on :Pause {
         pin birds = tasks(5)
         par {
             loop on 500ms {
@@ -109,12 +109,12 @@ par {
     val r = [ '%', x=0.5, y=0.5, w=dim.w, h=dim.h ]
     loop {
         await(:key.dn [key='P'])
-        emit(:Show [false])
+        emit(:Pause [true])
         watching :key.dn [key='P'] {
             loop on :draw {
                 pico.output.draw.image(img, r)
             }
         }
-        emit(:Show [true])
+        emit(:Pause [false])
     }
 }

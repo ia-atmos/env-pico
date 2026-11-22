@@ -72,13 +72,13 @@ loop {
     pin battle = spawn Battle()
 
     ;; Pause with 'P':
-    ;;  * awaits 'P' to toggle battle off
+    ;;  * awaits 'P' to mute battle
     ;;  * shows a "paused" image
-    ;;  * awaits 'P' to toggle battle on
+    ;;  * awaits 'P' to unmute battle
     spawn {
         loop {
             await(:key.dn [key='P'])
-            toggle battle(false)
+            mute battle(true)
             spawn {
                 val p = [ '%', x=0.5, y=0.5 ]
                 loop on :draw {
@@ -86,7 +86,7 @@ loop {
                 }
             }
             await(:key.dn [key='P'])
-            toggle battle(true)
+            mute battle(false)
         }
     }
 
