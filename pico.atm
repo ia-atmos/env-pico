@@ -2372,6 +2372,9 @@ static AStatus _pico_atmos_l_output_screenshot (AFunc* self, int argc, AVal* arg
     if (a1.type!=A_NIL && a1.type!=A_STR && a1.type!=A_TAB) {
         return _pico_atmos_bad(1, "string or rect", a1);
     }
+    if (a1.type==A_TAB && a2.type!=A_NIL) {
+        return a_error("%s : unexpected argument #3 after a rect", _PICO_ATMOS_FN);
+    }
     Pico_Rel_Rect rect, *xrect=NULL;
     if (vrect.type != A_NIL) {
         _PICO_ATMOS_TRY(_pico_atmos_rect(vrect, &rect));

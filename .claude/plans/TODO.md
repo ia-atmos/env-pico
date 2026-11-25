@@ -130,7 +130,6 @@ section numbers for what was already written.
      checked;
    - `PICO_ATM_MOUSE`: left button only; a `dn`/`up` emits no motion;
    - `pico.open`: `fs=`/`show=` accept any value by truthiness;
-   - `pico.output.screenshot(layer, rect, x)` ignores the third argument;
    - `pico.layer.images` grid: fractional `w`/`h` truncated, `n<1` ignored;
    - `pico.input.delay` truncates fractional ms;
    - `pico.check` creates only the last directory level (`out`).

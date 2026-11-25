@@ -30,6 +30,9 @@ do {
     fails("invalid mode", \{ pico.output.draw.rect ['!!', x=1, y=1, w=1, h=1] })
     fails("invalid mode", \{ pico.output.draw.rect ['', x=1, y=1, w=1, h=1] })
     fails("invalid time", \{ pico.input.delay(-1) })
+    fails("unexpected argument #3", \{
+        pico.output.screenshot(pico.layer.window, ['!', x=0, y=0, w=1, h=1, anchor=:NW], "x.png")
+    })
 }
 
 print("2. a hidden window from its creation")
