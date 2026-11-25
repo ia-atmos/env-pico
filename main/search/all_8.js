@@ -6,5 +6,5 @@ var searchData=
   ['init_3',['init',['../structPicoState.html#aab1cd47ec03aa3751b95f34a7184acc2',1,'PicoState']]],
   ['input_4',['Input',['../group__Input.html',1,'']]],
   ['is_20pico_20sdl_5',['What is pico-sdl?',['../index.html#autotoc_md1',1,'']]],
-  ['italic_6',['italic',['../structPico__Layer__Pencil.html#a7597844d747e75e9a7a7c6b9611055e7',1,'Pico_Layer_Pencil']]]
+  ['italic_6',['italic',['../structPico__Pencil__Text.html#ad5b2229266d6ce760ef294550e9f5381',1,'Pico_Pencil_Text']]]
 ];

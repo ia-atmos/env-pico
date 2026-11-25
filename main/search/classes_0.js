@@ -15,11 +15,13 @@ var searchData=
   ['pico_5flayer_5fvideo_12',['Pico_Layer_Video',['../structPico__Layer__Video.html',1,'']]],
   ['pico_5fmouse_13',['Pico_Mouse',['../structPico__Mouse.html',1,'']]],
   ['pico_5fown_14',['Pico_Own',['../structPico__Own.html',1,'']]],
-  ['pico_5frel_5fdim_15',['Pico_Rel_Dim',['../structPico__Rel__Dim.html',1,'']]],
-  ['pico_5frel_5fpos_16',['Pico_Rel_Pos',['../structPico__Rel__Pos.html',1,'']]],
-  ['pico_5frel_5frect_17',['Pico_Rel_Rect',['../structPico__Rel__Rect.html',1,'']]],
-  ['pico_5frot_18',['Pico_Rot',['../structPico__Rot.html',1,'']]],
-  ['pico_5fsound_19',['Pico_Sound',['../structPico__Sound.html',1,'']]],
-  ['pico_5fvideo_20',['Pico_Video',['../structPico__Video.html',1,'']]],
-  ['picostate_21',['PicoState',['../structPicoState.html',1,'']]]
+  ['pico_5fpencil_5fshape_15',['Pico_Pencil_Shape',['../structPico__Pencil__Shape.html',1,'']]],
+  ['pico_5fpencil_5ftext_16',['Pico_Pencil_Text',['../structPico__Pencil__Text.html',1,'']]],
+  ['pico_5frel_5fdim_17',['Pico_Rel_Dim',['../structPico__Rel__Dim.html',1,'']]],
+  ['pico_5frel_5fpos_18',['Pico_Rel_Pos',['../structPico__Rel__Pos.html',1,'']]],
+  ['pico_5frel_5frect_19',['Pico_Rel_Rect',['../structPico__Rel__Rect.html',1,'']]],
+  ['pico_5frot_20',['Pico_Rot',['../structPico__Rot.html',1,'']]],
+  ['pico_5fsound_21',['Pico_Sound',['../structPico__Sound.html',1,'']]],
+  ['pico_5fvideo_22',['Pico_Video',['../structPico__Video.html',1,'']]],
+  ['picostate_23',['PicoState',['../structPicoState.html',1,'']]]
 ];
