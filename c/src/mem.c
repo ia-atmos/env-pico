@@ -19,7 +19,7 @@ extern unsigned int  pico_tiny_ttf_len;
 ///////////////////////////////////////////////////////////////////////////////
 
 // Private memo table behind the easy paths (draw_image, draw_text,
-// draw_video, sound_path, pencil_font_path): string key -> resource.
+// draw_video, sound_path, pencil_text_font_path): string key -> resource.
 // Entries are never exposed to the user, and released together at
 // pico_close; the texts also when the dim of a layer changes.
 
@@ -202,7 +202,8 @@ Pico_Layer* _pico_mem_layer_new (
         .subs   = 0,
         .tex    = tex,
         .pencil = {
-            .color={0xFF, 0xFF, 0xFF, 0xFF}, .font=NULL, .style=PICO_STYLE_FILL
+            .color={0xFF, 0xFF, 0xFF, 0xFF},
+            .shape={ .style=PICO_STYLE_FILL }, .text={ .font=NULL }
         },
         .effect = {
             .alpha=0xFF, .color=PICO_COLOR_TRANSPARENT, .flip=PICO_FLIP_NONE, .grid=0, .rotate={0, PICO_ANCHOR_C}
@@ -353,17 +354,17 @@ static SDL_Texture* _tex_text (int height, const char* text, Pico_Abs_Dim* dim) 
     // brush/decorative fonts render caps taller than '|'), which bounds
     // any string's raster (metrics under-report the raster, so we
     // measure it).
-    TTF_Font* ttf = _pico_font_ttf(G.layer->pencil.font, height);
+    TTF_Font* ttf = _pico_font_ttf(G.layer->pencil.text.font, height);
     // bold/italic synthesized from the same font: the TTF_Font of a size is
     // shared, so the style is set here and reset at the end
-    int style = (G.layer->pencil.bold   ? TTF_STYLE_BOLD   : 0)
-              | (G.layer->pencil.italic ? TTF_STYLE_ITALIC : 0);
+    int style = (G.layer->pencil.text.bold   ? TTF_STYLE_BOLD   : 0)
+              | (G.layer->pencil.text.italic ? TTF_STYLE_ITALIC : 0);
     TTF_SetFontStyle(ttf, style);
     int ref;
     TTF_SizeText(ttf, "|gjpqyA", &(int){0}, &ref);
     int H = ref > TTF_FontLineSkip(ttf) ? ref : TTF_FontLineSkip(ttf);
 
-    SDL_Surface* sfc = G.layer->pencil.smooth
+    SDL_Surface* sfc = G.layer->pencil.text.smooth
         ? TTF_RenderUTF8_Blended(ttf, text, c)
         : TTF_RenderUTF8_Solid(ttf, text, c);
     pico_assert(sfc != NULL);

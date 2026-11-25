@@ -143,7 +143,7 @@ typedef struct PicoState {
     int           live;         // user-owned layers/fonts/sounds alive
     Pico_Own*     owned;        // list of them (see Pico_Own)
     int           fonts;        // font serial counter
-    Pico_Font     font;         // built-in font (pencil.font == NULL)
+    Pico_Font     font;         // built-in font (pencil.text.font == NULL)
     Pico_Cache_Entry* cache[PICO_HASH_BUK];
     Pico_Layer    world;
     Pico_Layer*   layer;

@@ -114,7 +114,7 @@ Pico_Layer* _pico_layer_text_fp (int height, const char* text) {
     assert(text!=NULL && text[0]!='\0' && "text required");
 
     // content fingerprint: everything that forces a re-raster
-    Pico_Font* font = G.layer->pencil.font;
+    Pico_Font* font = G.layer->pencil.text.font;
     Pico_Color clr = G.layer->pencil.color;
     int id = (font == NULL) ? 0 : font->id;
     int n = strlen("/text/") + 10 + 1 + 10 + 1 + 3+1+3+1+3 + 1 + 3 + 1
@@ -122,8 +122,8 @@ Pico_Layer* _pico_layer_text_fp (int height, const char* text) {
     char* key = alloca(n);
     snprintf(key, n, "/text/%d/%d/%d.%d.%d/%d%d%d/%s",
              id, height, clr.r, clr.g, clr.b,
-             !!G.layer->pencil.smooth, !!G.layer->pencil.bold,
-             !!G.layer->pencil.italic, text);
+             !!G.layer->pencil.text.smooth, !!G.layer->pencil.text.bold,
+             !!G.layer->pencil.text.italic, text);
 
     Pico_Layer* ret = (Pico_Layer*) _pico_cache_get(key);
     if (ret == NULL) {
@@ -139,10 +139,10 @@ static void _show_tile (Pico_Layer_Scene* view, SDL_Rect dst) {
     if (view->tile.w<=0 || view->tile.h<=0) return;
 
     Pico_Color x_clr   = pico_get_pencil_color();
-    PICO_STYLE x_style = pico_get_pencil_style();
+    PICO_STYLE x_style = pico_get_pencil_shape_style();
 
     pico_set_pencil_color((Pico_Color){0xFF, 0xFF, 0xFF, 0xAA});
-    pico_set_pencil_style(PICO_STYLE_STROKE);
+    pico_set_pencil_shape_style(PICO_STYLE_STROKE);
 
     // grid
     int dx = dst.w * view->tile.w / view->dim.w;
@@ -170,7 +170,7 @@ static void _show_tile (Pico_Layer_Scene* view, SDL_Rect dst) {
     );
 
     pico_set_pencil_color(x_clr);
-    pico_set_pencil_style(x_style);
+    pico_set_pencil_shape_style(x_style);
 }
 
 static void _show_grid (Pico_Layer* layer, Pico_Abs_Rect src, SDL_Rect dst) {

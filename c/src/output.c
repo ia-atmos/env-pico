@@ -94,7 +94,7 @@ void pico_output_draw_oval (Pico_Rel_Rect rect) {
     SDL_SetRenderDrawColor(G.window.ren,
         G.layer->pencil.color.r, G.layer->pencil.color.g, G.layer->pencil.color.b, G.layer->pencil.color.a
     );
-    switch (G.layer->pencil.style) {
+    switch (G.layer->pencil.shape.style) {
         case PICO_STYLE_FILL:
             filledEllipseRGBA (G.window.ren,
                 i.x+i.w/2, i.y+i.h/2, i.w/2, i.h/2,
@@ -147,7 +147,7 @@ void pico_output_draw_poly (int n, const Pico_Rel_Pos* ps) {
     SDL_SetRenderDrawColor(G.window.ren,
         G.layer->pencil.color.r, G.layer->pencil.color.g, G.layer->pencil.color.b, G.layer->pencil.color.a
     );
-    switch (G.layer->pencil.style) {
+    switch (G.layer->pencil.shape.style) {
         case PICO_STYLE_FILL:
             filledPolygonRGBA(G.window.ren,
                 xs, ys, n,
@@ -175,7 +175,7 @@ void pico_output_draw_rect (Pico_Rel_Rect rect) {
     Pico_Abs_Dim sqr = { 1, 1 };
     Pico_Abs_Dim* rat = ((rect.w==0) != (rect.h==0)) ? &sqr : NULL;
     Pico_Abs_Rect i = _pico_abs_rect(rect, NULL, rat);
-    switch (G.layer->pencil.style) {
+    switch (G.layer->pencil.shape.style) {
         case PICO_STYLE_FILL:
             SDL_RenderFillRect(G.window.ren, &i);
             break;
@@ -221,7 +221,7 @@ void pico_output_draw_tri (
     SDL_SetRenderDrawColor(G.window.ren,
         G.layer->pencil.color.r, G.layer->pencil.color.g, G.layer->pencil.color.b, G.layer->pencil.color.a
     );
-    switch (G.layer->pencil.style) {
+    switch (G.layer->pencil.shape.style) {
         case PICO_STYLE_FILL:
             filledTrigonRGBA(G.window.ren,
                 i1.x, i1.y,

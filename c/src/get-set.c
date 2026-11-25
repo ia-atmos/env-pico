@@ -22,29 +22,39 @@ Pico_Color pico_get_pencil_color (void) {
     return G.layer->pencil.color;
 }
 
-Pico_Font* pico_get_pencil_font (void) {
+Pico_Pencil_Shape pico_get_pencil_shape (void) {
     _pico_guard();
-    return G.layer->pencil.font;
+    return G.layer->pencil.shape;
 }
 
-int pico_get_pencil_bold (void) {
+Pico_Pencil_Text pico_get_pencil_text (void) {
     _pico_guard();
-    return G.layer->pencil.bold;
+    return G.layer->pencil.text;
 }
 
-int pico_get_pencil_italic (void) {
+Pico_Font* pico_get_pencil_text_font (void) {
     _pico_guard();
-    return G.layer->pencil.italic;
+    return G.layer->pencil.text.font;
 }
 
-int pico_get_pencil_smooth (void) {
+int pico_get_pencil_text_bold (void) {
     _pico_guard();
-    return G.layer->pencil.smooth;
+    return G.layer->pencil.text.bold;
 }
 
-PICO_STYLE pico_get_pencil_style (void) {
+int pico_get_pencil_text_italic (void) {
     _pico_guard();
-    return G.layer->pencil.style;
+    return G.layer->pencil.text.italic;
+}
+
+int pico_get_pencil_text_smooth (void) {
+    _pico_guard();
+    return G.layer->pencil.text.smooth;
+}
+
+PICO_STYLE pico_get_pencil_shape_style (void) {
+    _pico_guard();
+    return G.layer->pencil.shape.style;
 }
 
 int pico_get_aids (void) {
@@ -235,15 +245,25 @@ void pico_set_pencil_color (Pico_Color color) {
     G.layer->pencil.color = color;
 }
 
-void pico_set_pencil_font (Pico_Font* font) {
+void pico_set_pencil_shape (Pico_Pencil_Shape shape) {
     _pico_guard();
-    G.layer->pencil.font = font;
+    G.layer->pencil.shape = shape;
 }
 
-void pico_set_pencil_font_path (const char* path) {
+void pico_set_pencil_text (Pico_Pencil_Text text) {
+    _pico_guard();
+    G.layer->pencil.text = text;
+}
+
+void pico_set_pencil_text_font (Pico_Font* font) {
+    _pico_guard();
+    G.layer->pencil.text.font = font;
+}
+
+void pico_set_pencil_text_font_path (const char* path) {
     _pico_guard();
     if (path == NULL) {
-        G.layer->pencil.font = NULL;
+        G.layer->pencil.text.font = NULL;
         return;
     }
     int n = strlen("/font/") + strlen(path) + 1;
@@ -254,27 +274,27 @@ void pico_set_pencil_font_path (const char* path) {
         font = _pico_mem_font_new(1, path);
         _pico_cache_put(key, PICO_CACHE_FONT, font);
     }
-    G.layer->pencil.font = font;
+    G.layer->pencil.text.font = font;
 }
 
-void pico_set_pencil_bold (int on) {
+void pico_set_pencil_text_bold (int on) {
     _pico_guard();
-    G.layer->pencil.bold = !!on;
+    G.layer->pencil.text.bold = !!on;
 }
 
-void pico_set_pencil_italic (int on) {
+void pico_set_pencil_text_italic (int on) {
     _pico_guard();
-    G.layer->pencil.italic = !!on;
+    G.layer->pencil.text.italic = !!on;
 }
 
-void pico_set_pencil_smooth (int on) {
+void pico_set_pencil_text_smooth (int on) {
     _pico_guard();
-    G.layer->pencil.smooth = !!on;
+    G.layer->pencil.text.smooth = !!on;
 }
 
-void pico_set_pencil_style (PICO_STYLE style) {
+void pico_set_pencil_shape_style (PICO_STYLE style) {
     _pico_guard();
-    G.layer->pencil.style = style;
+    G.layer->pencil.shape.style = style;
 }
 
 void pico_set_aids (int on) {

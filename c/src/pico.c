@@ -126,8 +126,8 @@ void pico_open (const Pico_App* cfg) {
                 .tex  = log,
                 .pencil = {
                     .color = PICO_COLOR_WHITE,
-                    .font  = NULL,
-                    .style = PICO_STYLE_FILL,
+                    .shape = { .style = PICO_STYLE_FILL },
+                    .text  = { .font = NULL },
                 },
                 .effect = {
                     .alpha  = 0xFF,
@@ -156,8 +156,8 @@ void pico_open (const Pico_App* cfg) {
                     .tex  = phy,
                     .pencil = {
                         .color = PICO_COLOR_WHITE,
-                        .font  = NULL,
-                        .style = PICO_STYLE_FILL,
+                        .shape = { .style = PICO_STYLE_FILL },
+                        .text  = { .font = NULL },
                     },
                     .effect = {
                         .alpha  = 0xFF,

@@ -224,13 +224,24 @@ typedef struct {
     Pico_Anchor anchor;
 } Pico_Rot;
 
+/// @brief The part of the pencil for shapes (rect, oval, tri, poly).
 typedef struct {
-    Pico_Color    color;
+    PICO_STYLE    style;        // fill or stroke (default: fill)
+} Pico_Pencil_Shape;
+
+/// @brief The part of the pencil for text.
+typedef struct {
     Pico_Font*    font;         // NULL = built-in font
-    PICO_STYLE    style;
-    int           smooth;       // text with smooth edges (default: 0)
-    int           bold;         // text in bold, from the same font (default: 0)
-    int           italic;       // text in italic, from the same font (default: 0)
+    int           smooth;       // smooth edges (default: 0)
+    int           bold;         // bold, from the same font (default: 0)
+    int           italic;       // italic, from the same font (default: 0)
+} Pico_Pencil_Text;
+
+/// @brief The pencil of a layer: its color applies to every drawing.
+typedef struct {
+    Pico_Color        color;
+    Pico_Pencil_Shape shape;
+    Pico_Pencil_Text  text;
 } Pico_Layer_Pencil;
 
 typedef struct {
@@ -279,7 +290,7 @@ void pico_open (const Pico_App* win);
 /// Releases every resource still alive: those loaded implicitly by
 /// path or content (`pico_output_draw_image`, `pico_output_draw_text`,
 /// `pico_output_draw_video`, `pico_output_sound_path`,
-/// `pico_set_pencil_font_path`), and those created explicitly and not
+/// `pico_set_pencil_text_font_path`), and those created explicitly and not
 /// yet freed (`pico_layer_*`, `pico_font_load`, `pico_sound_load`).
 /// Every handle is invalid afterwards. The automatic exit on window
 /// close (see @ref pico_set_aids) goes through this same call.
@@ -451,14 +462,18 @@ void pico_output_sound_path (const char* path);
 /// @sa pico_set_pencil
 Pico_Layer_Pencil pico_get_pencil       (void);
 Pico_Color  pico_get_pencil_color (void);
-Pico_Font*  pico_get_pencil_font  (void);
+/// @brief Gets the part of the pencil for shapes.
+Pico_Pencil_Shape pico_get_pencil_shape (void);
+PICO_STYLE  pico_get_pencil_shape_style (void);
+/// @brief Gets the part of the pencil for text.
+Pico_Pencil_Text  pico_get_pencil_text  (void);
+Pico_Font*  pico_get_pencil_text_font  (void);
 /// @brief Gets whether text is drawn with smooth (anti-aliased) edges.
-int         pico_get_pencil_smooth (void);
+int         pico_get_pencil_text_smooth (void);
 /// @brief Gets whether text is drawn in bold (synthesized from the font).
-int         pico_get_pencil_bold   (void);
+int         pico_get_pencil_text_bold   (void);
 /// @brief Gets whether text is drawn in italic (synthesized from the font).
-int         pico_get_pencil_italic (void);
-PICO_STYLE  pico_get_pencil_style (void);
+int         pico_get_pencil_text_italic (void);
 
 /// @brief Gets the state of auto aids.
 /// @return 1 if enabled, or 0 otherwise
@@ -594,7 +609,7 @@ void pico_layer_free (Pico_Layer* layer);
 /// @brief Loads a font from a TTF file.
 /// @param path path to the font file
 /// @return new font; release with @ref pico_font_free
-/// @sa pico_set_pencil_font
+/// @sa pico_set_pencil_text_font
 Pico_Font* pico_font_load (const char* path);
 
 /// @brief Frees a font created by @ref pico_font_load.
@@ -674,21 +689,25 @@ void pico_set_dim (Pico_Rel_Dim dim);
 /// @sa pico_get_pencil
 void pico_set_pencil       (Pico_Layer_Pencil pencil);
 void pico_set_pencil_color (Pico_Color color);
-void pico_set_pencil_font  (Pico_Font* font);
+/// @brief Sets the part of the pencil for shapes.
+void pico_set_pencil_shape (Pico_Pencil_Shape shape);
+void pico_set_pencil_shape_style (PICO_STYLE style);
+/// @brief Sets the part of the pencil for text.
+void pico_set_pencil_text  (Pico_Pencil_Text text);
+void pico_set_pencil_text_font  (Pico_Font* font);
 /// @brief Sets the pencil font from a TTF file.
 /// The font is loaded once per path and kept until @ref pico_close.
 /// @param path path to the font file (NULL selects the built-in font)
-void pico_set_pencil_font_path (const char* path);
+void pico_set_pencil_text_font_path (const char* path);
 /// @brief Sets whether text is drawn with smooth (anti-aliased) edges.
 /// Off by default: glyphs have hard edges, as in pixel art.
-void pico_set_pencil_smooth (int on);
+void pico_set_pencil_text_smooth (int on);
 /// @brief Sets whether text is drawn in bold, synthesized from the current
 /// font (no separate file). Off by default.
-void pico_set_pencil_bold   (int on);
+void pico_set_pencil_text_bold   (int on);
 /// @brief Sets whether text is drawn in italic, synthesized from the
 /// current font (no separate file). Off by default.
-void pico_set_pencil_italic (int on);
-void pico_set_pencil_style (PICO_STYLE style);
+void pico_set_pencil_text_italic (int on);
 
 /// @brief Toggles auto aids (quit/exit, window resize, ctrl+keys).
 /// @param on 1 to enable, 0 to disable
