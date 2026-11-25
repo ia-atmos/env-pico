@@ -354,6 +354,11 @@ static SDL_Texture* _tex_text (int height, const char* text, Pico_Abs_Dim* dim) 
     // any string's raster (metrics under-report the raster, so we
     // measure it).
     TTF_Font* ttf = _pico_font_ttf(G.layer->pencil.font, height);
+    // bold/italic synthesized from the same font: the TTF_Font of a size is
+    // shared, so the style is set here and reset at the end
+    int style = (G.layer->pencil.bold   ? TTF_STYLE_BOLD   : 0)
+              | (G.layer->pencil.italic ? TTF_STYLE_ITALIC : 0);
+    TTF_SetFontStyle(ttf, style);
     int ref;
     TTF_SizeText(ttf, "|gjpqyA", &(int){0}, &ref);
     int H = ref > TTF_FontLineSkip(ttf) ? ref : TTF_FontLineSkip(ttf);
@@ -379,6 +384,7 @@ static SDL_Texture* _tex_text (int height, const char* text, Pico_Abs_Dim* dim) 
     SDL_Texture* tex = SDL_CreateTextureFromSurface(G.window.ren, box);
     pico_assert(tex != NULL);
     *dim = (Pico_Abs_Dim){ sfc->w, H };
+    TTF_SetFontStyle(ttf, TTF_STYLE_NORMAL);
     SDL_FreeSurface(sfc);
     SDL_FreeSurface(box);
     return tex;

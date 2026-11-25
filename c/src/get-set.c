@@ -27,6 +27,16 @@ Pico_Font* pico_get_pencil_font (void) {
     return G.layer->pencil.font;
 }
 
+int pico_get_pencil_bold (void) {
+    _pico_guard();
+    return G.layer->pencil.bold;
+}
+
+int pico_get_pencil_italic (void) {
+    _pico_guard();
+    return G.layer->pencil.italic;
+}
+
 int pico_get_pencil_smooth (void) {
     _pico_guard();
     return G.layer->pencil.smooth;
@@ -245,6 +255,16 @@ void pico_set_pencil_font_path (const char* path) {
         _pico_cache_put(key, PICO_CACHE_FONT, font);
     }
     G.layer->pencil.font = font;
+}
+
+void pico_set_pencil_bold (int on) {
+    _pico_guard();
+    G.layer->pencil.bold = !!on;
+}
+
+void pico_set_pencil_italic (int on) {
+    _pico_guard();
+    G.layer->pencil.italic = !!on;
 }
 
 void pico_set_pencil_smooth (int on) {

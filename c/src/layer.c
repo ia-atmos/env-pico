@@ -117,12 +117,13 @@ Pico_Layer* _pico_layer_text_fp (int height, const char* text) {
     Pico_Font* font = G.layer->pencil.font;
     Pico_Color clr = G.layer->pencil.color;
     int id = (font == NULL) ? 0 : font->id;
-    int n = strlen("/text/") + 10 + 1 + 10 + 1 + 3+1+3+1+3 + 1 + 1 + 1
+    int n = strlen("/text/") + 10 + 1 + 10 + 1 + 3+1+3+1+3 + 1 + 3 + 1
         + strlen(text) + 1;
     char* key = alloca(n);
-    snprintf(key, n, "/text/%d/%d/%d.%d.%d/%d/%s",
+    snprintf(key, n, "/text/%d/%d/%d.%d.%d/%d%d%d/%s",
              id, height, clr.r, clr.g, clr.b,
-             !!G.layer->pencil.smooth, text);
+             !!G.layer->pencil.smooth, !!G.layer->pencil.bold,
+             !!G.layer->pencil.italic, text);
 
     Pico_Layer* ret = (Pico_Layer*) _pico_cache_get(key);
     if (ret == NULL) {

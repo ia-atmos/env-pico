@@ -229,6 +229,8 @@ typedef struct {
     Pico_Font*    font;         // NULL = built-in font
     PICO_STYLE    style;
     int           smooth;       // text with smooth edges (default: 0)
+    int           bold;         // text in bold, from the same font (default: 0)
+    int           italic;       // text in italic, from the same font (default: 0)
 } Pico_Layer_Pencil;
 
 typedef struct {
@@ -452,6 +454,10 @@ Pico_Color  pico_get_pencil_color (void);
 Pico_Font*  pico_get_pencil_font  (void);
 /// @brief Gets whether text is drawn with smooth (anti-aliased) edges.
 int         pico_get_pencil_smooth (void);
+/// @brief Gets whether text is drawn in bold (synthesized from the font).
+int         pico_get_pencil_bold   (void);
+/// @brief Gets whether text is drawn in italic (synthesized from the font).
+int         pico_get_pencil_italic (void);
 PICO_STYLE  pico_get_pencil_style (void);
 
 /// @brief Gets the state of auto aids.
@@ -676,6 +682,12 @@ void pico_set_pencil_font_path (const char* path);
 /// @brief Sets whether text is drawn with smooth (anti-aliased) edges.
 /// Off by default: glyphs have hard edges, as in pixel art.
 void pico_set_pencil_smooth (int on);
+/// @brief Sets whether text is drawn in bold, synthesized from the current
+/// font (no separate file). Off by default.
+void pico_set_pencil_bold   (int on);
+/// @brief Sets whether text is drawn in italic, synthesized from the
+/// current font (no separate file). Off by default.
+void pico_set_pencil_italic (int on);
 void pico_set_pencil_style (PICO_STYLE style);
 
 /// @brief Toggles auto aids (quit/exit, window resize, ctrl+keys).
