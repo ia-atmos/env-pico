@@ -3,20 +3,20 @@ pico.set.app [ title="Text Smooth" ]
 val r = ['%', x=0.5, y=0.5, w=0, h=0.15, anchor=:C]
 
 ;; default: hard edges
-assert(pico.get.pencil().smooth == false)
+assert(pico.get.pencil().text.smooth == false)
 pico.output.clear()
 pico.output.draw.text("Smooth", r)
 pico.check("text-smooth-01")
 
 ;; smooth edges (same string: another raster)
-pico.set.pencil [ smooth=true ]
-assert(pico.get.pencil().smooth == true)
+pico.set.pencil [ text=[smooth=true] ]
+assert(pico.get.pencil().text.smooth == true)
 pico.output.clear()
 pico.output.draw.text("Smooth", r)
 pico.check("text-smooth-02")
 
 ;; and back
-pico.set.pencil [ smooth=false ]
+pico.set.pencil [ text=[smooth=false] ]
 pico.output.clear()
 pico.output.draw.text("Smooth", r)
 pico.check("text-smooth-01")

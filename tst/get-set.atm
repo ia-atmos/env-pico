@@ -47,12 +47,35 @@ do {
 ;; style
 print("style")
 do {
-    pico.set.pencil [ style=:fill ]
-    assert(pico.get.pencil().style == :fill)
-    pico.set.pencil [ style=:stroke ]
-    assert(pico.get.pencil().style == :stroke)
-    pico.set.pencil [ style=:fill ]
-    assert(pico.get.pencil().style == :fill)
+    pico.set.pencil [ shape=[style=:fill] ]
+    assert(pico.get.pencil().shape.style == :fill)
+    pico.set.pencil [ shape=[style=:stroke] ]
+    assert(pico.get.pencil().shape.style == :stroke)
+    pico.set.pencil [ shape=[style=:fill] ]
+    assert(pico.get.pencil().shape.style == :fill)
+}
+
+;; pencil: the parts `shape` and `text`, fields not given keep their values
+print("pencil parts")
+do {
+    pico.set.pencil [ color=:red, shape=[style=:stroke], text=[bold=true, smooth=true] ]
+    pico.set.pencil [ text=[italic=true] ]          ;; only italic changes
+    val p = pico.get.pencil()
+    assert(p.color.r==255 && p.color.g==0)
+    assert(p.shape.style == :stroke)
+    assert(p.text.bold==true && p.text.italic==true && p.text.smooth==true)
+    assert(p.text.font == nil)
+    pico.set.pencil [ color=:white, shape=[style=:fill], text=[bold=false, italic=false, smooth=false] ]
+
+    ;; the fields of before the split say where they went
+    func fails (msg, f) {
+        val ok, err = catch true { f() }
+        assert(!ok && string.find(err, msg), "expected error : " ++ msg)
+    }
+    fails("unexpected field 'style' : expected in 'shape'", \{ pico.set.pencil [ style=:fill ] })
+    fails("unexpected field 'bold' : expected in 'text'",   \{ pico.set.pencil [ bold=true ] })
+    fails("expected", \{ pico.set.pencil [ text=10 ] })
+    assert(pico.get.pencil().shape.style == :fill)  ;; nothing changed on an error
 }
 
 ;; view (get defaults, set, get back)

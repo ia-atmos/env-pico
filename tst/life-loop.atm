@@ -31,16 +31,16 @@ par :any {
             pin l = pico.layer.empty [ dim=['!',w=40,h=20] ]
             pin f = pico.font.load(FONT)
             pico.set.layer(l)
-            pico.set.pencil [ font=f ]
+            pico.set.pencil [ text=[font=f] ]
             pico.output.draw.text("abc", ['!', x=0, y=0, h=10, anchor=:NW])
         }
         assert(pico.get.layer() == world)
         do {
             pin f = pico.font.load(FONT)
-            pico.set.pencil [ font=f ]
-            assert(pico.get.pencil().font == f)
+            pico.set.pencil [ text=[font=f] ]
+            assert(pico.get.pencil().text.font == f)
         }
-        assert(pico.get.pencil().font == nil)
+        assert(pico.get.pencil().text.font == nil)
         mark(frames)
     }
 } with {

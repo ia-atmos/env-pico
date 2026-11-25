@@ -260,19 +260,19 @@ do {
     assert(builtin != empty)
     pico.output.clear()
     pin dv = pico.font.load("../c/res/DejaVuSans.ttf")
-    pico.set.pencil [ font=dv ]
+    pico.set.pencil [ text=[font=dv] ]
     pico.output.draw.text("abc", TXT)
     val dejavu = shot("7-dejavu")
     assert(dejavu!=empty && dejavu!=builtin)
-    pico.set.pencil [ font=true ]
+    pico.set.pencil [ text=[font=true] ]
     pico.output.clear()
 
     do {
         pin f = pico.font.load("../c/res/DejaVuSans.ttf")
-        pico.set.pencil [ font=f ]          ;; a pinned value in a table, with no pin
-        assert(pico.get.pencil().font == f)
+        pico.set.pencil [ text=[font=f] ]          ;; a pinned value in a table, with no pin
+        assert(pico.get.pencil().text.font == f)
     }                               ;; released: the pencil goes back to the built-in font
-    assert(pico.get.pencil().font == nil)
+    assert(pico.get.pencil().text.font == nil)
     pico.output.draw.text("abc", TXT)
     assert(shot("7-text") == builtin)
     pico.output.clear()
@@ -282,25 +282,25 @@ do {
         pin l = pico.layer.empty [ up=world, dim=['!',w=40,h=20], target=HALF ]
         do {
             pin f = pico.font.load("../c/res/DejaVuSans.ttf")
-            pico.set.pencil [ font=f ]
+            pico.set.pencil [ text=[font=f] ]
             val old = pico.set.layer(l)
-            pico.set.pencil [ font=f ]
+            pico.set.pencil [ text=[font=f] ]
             pico.set.layer(old)
         }
-        assert(pico.get.pencil().font == nil)
+        assert(pico.get.pencil().text.font == nil)
         pico.output.draw.text("abc", TXT)
         pico.set.layer(l)
-        assert(pico.get.pencil().font == nil)
+        assert(pico.get.pencil().text.font == nil)
         pico.output.draw.text("abc", ['!', x=0, y=0, h=10, anchor=:NW])
         pico.set.layer(world)
         val two = shot("7-two")
         pico.output.clear()
         pico.set.layer(l)
         pico.output.clear()
-        pico.set.pencil [ font=true ]
+        pico.set.pencil [ text=[font=true] ]
         pico.output.draw.text("abc", ['!', x=0, y=0, h=10, anchor=:NW])
         pico.set.layer(world)
-        pico.set.pencil [ font=true ]
+        pico.set.pencil [ text=[font=true] ]
         pico.output.draw.text("abc", TXT)
         assert(shot("7-two-true") == two)
         pico.output.clear()
@@ -312,24 +312,24 @@ do {
         pin l = pico.layer.empty [ dim=['!',w=40,h=20] ]
         pin f = pico.font.load("../c/res/DejaVuSans.ttf")
         pico.set.layer(l)
-        pico.set.pencil [ font=f ]
+        pico.set.pencil [ text=[font=f] ]
     }
     assert(pico.get.layer() == world)
-    assert(pico.get.pencil().font == nil)
+    assert(pico.get.pencil().text.font == nil)
     do {
         pin f = pico.font.load("../c/res/DejaVuSans.ttf")
         pin l = pico.layer.empty [ dim=['!',w=40,h=20] ]
         pico.set.layer(l)
-        pico.set.pencil [ font=f ]
+        pico.set.pencil [ text=[font=f] ]
     }
     assert(pico.get.layer() == world)
-    assert(pico.get.pencil().font == nil)
+    assert(pico.get.pencil().text.font == nil)
 
     ;; the font of a layer that is dropped goes with it
     do {
         pin l = pico.layer.empty [ dim=['!',w=40,h=20] ]
         val old = pico.set.layer(l)
-        pico.set.pencil [ font=pico.font.load("../c/res/DejaVuSans.ttf") ]
+        pico.set.pencil [ text=[font=pico.font.load("../c/res/DejaVuSans.ttf")] ]
         pico.output.draw.text("abc", ['!', x=0, y=0, h=10, anchor=:NW])
         pico.set.layer(old)
     }
@@ -356,7 +356,7 @@ fails("invalid mode '?'",      \{ pico.output.draw.rect(['?', x=1, y=1]) })
 fails("expected numeric field 'x'", \{ pico.output.draw.rect(['!', y=1]) })
 fails("invalid anchor \"X\"",  \{ pico.output.draw.rect(['!', x=1, y=1, anchor='X']) })
 fails("invalid color \"xxx\"", \{ pico.set.pencil [ color='xxx' ] })
-fails("invalid style",         \{ pico.set.pencil [ style='xxx' ] })
+fails("invalid style",         \{ pico.set.pencil [ shape=[style='xxx'] ] })
 fails("invalid flip",          \{ pico.set.effect [ flip='xxx' ] })
 fails("invalid event",         \{ pico.input.event('xxx') })
 fails("'dim' required",        \{ pico.layer.empty [] })
@@ -389,7 +389,7 @@ fails("invalid layer", \{ pico.set.layer(kept) })
 fails("invalid layer", \{ pico.set.layer(world) })
 fails("invalid layer", \{ pico.output.draw.layer(ksub) })
 fails("invalid layer", \{ pico.layer.empty [ up=kept, dim=['!',w=1,h=1] ] })
-fails("invalid font",  \{ pico.set.pencil [ font=kfont ] })
+fails("invalid font",  \{ pico.set.pencil [ text=[font=kfont] ] })
 fails("invalid sound", \{ pico.output.sound(ksnd) })
 set world = pico.layer.world
 assert(pico.get.layer() == world)
@@ -402,5 +402,5 @@ pin last2 = pico.layer.empty [ up=last1, dim=['!',w=2,h=2] ]
 pin last3 = pico.layer.sub [ sup=last1, crop=['!',x=0,y=0,w=4,h=4,anchor=:NW] ]
 pin last4 = pico.font.load("../c/res/DejaVuSans.ttf")
 pico.set.layer(last2)
-pico.set.pencil [ font=last4 ]
+pico.set.pencil [ text=[font=last4] ]
 print("ok")

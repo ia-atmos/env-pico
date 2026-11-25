@@ -34,9 +34,9 @@ do {
 
 pico.output.clear()
 
-;; pico.set.pencil [font=path]: DejaVuSans.ttf
+;; pico.set.pencil [ text=[font=path] ]: DejaVuSans.ttf
 do {
-    pico.set.pencil [ font=FONT ]
+    pico.set.pencil [ text=[font=FONT] ]
 
     val r1 = ['!', x=10, y=10, w=0, h=10, anchor=:NW]
     pico.output.draw.text("hg - gh", r1)
@@ -47,52 +47,52 @@ do {
     pico.check("font-04")
 }
 
-;; pico.set.pencil [font=true]: resets to the built-in font
+;; pico.set.pencil [ text=[font=true] ]: resets to the built-in font
 do {
-    assert(pico.get.pencil().font == FONT)
-    pico.set.pencil [ font=true ]
-    assert(pico.get.pencil().font == nil)
+    assert(pico.get.pencil().text.font == FONT)
+    pico.set.pencil [ text=[font=true] ]
+    assert(pico.get.pencil().text.font == nil)
     pico.output.clear()
     pico.output.draw.text("hg - gh", ['!', x=10, y=10, w=0, h=10, anchor=:NW])
     pico.check("font-01")
 }
 
-;; pico.set.pencil [font=box]: a font loaded explicitly draws the same
+;; pico.set.pencil [ text=[font=box] ]: a font loaded explicitly draws the same
 do {
     pin f = pico.font.load(FONT)
     assert(type(f) == 'native')
-    pico.set.pencil [ font=f ]
-    assert(pico.get.pencil().font == f)
+    pico.set.pencil [ text=[font=f] ]
+    assert(pico.get.pencil().text.font == f)
     pico.output.clear()
     pico.output.draw.text("hg - gh", ['!', x=10, y=10, w=0, h=10, anchor=:NW])
     pico.check("font-03")
 
-    pico.set.pencil [ font=true ]
+    pico.set.pencil [ text=[font=true] ]
 }                                   ;; the font goes with its last reference
 assert(pico.font.free == nil)       ;; no explicit free
 
 ;; errors
 do {
-    val ok, err = catch true { pico.set.pencil [ font="no-such-font.ttf" ] }
+    val ok, err = catch true { pico.set.pencil [ text=[font="no-such-font.ttf"] ] }
     assert(!ok)
     print(err)
 
     ;; `false` does not select the built-in font: a wrong type as any other
     func bad (v) {
-        val ok, err = catch true { pico.set.pencil [ font=v ] }
+        val ok, err = catch true { pico.set.pencil [ text=[font=v] ] }
         assert(!ok, "expected error")
         assert(string.find(err, "invalid font : expected font, path, or true"), err)
         print(err)
     }
-    pico.set.pencil [ font=FONT ]
+    pico.set.pencil [ text=[font=FONT] ]
     bad(false)
     bad(10)
     bad([])
-    assert(pico.get.pencil().font == FONT)      ;; unchanged by the errors
+    assert(pico.get.pencil().text.font == FONT)      ;; unchanged by the errors
 
     ;; `true` is the built-in font
-    pico.set.pencil [ font=true ]
-    assert(pico.get.pencil().font == nil)
+    pico.set.pencil [ text=[font=true] ]
+    assert(pico.get.pencil().text.font == nil)
     pico.output.clear()
     pico.output.draw.text("hg - gh", ['!', x=10, y=10, w=0, h=10, anchor=:NW])
     pico.check("font-01")

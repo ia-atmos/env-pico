@@ -31,7 +31,7 @@ do {
 do {
     print("stroke")
     pico.output.clear()
-    pico.set.pencil [ style=:stroke, color=:white ]
+    pico.set.pencil [ color=:white, shape=[style=:stroke] ]
     pico.output.draw.rect(rect)
     pico.output.draw.oval(oval)
     pico.output.draw.tri(t1, t2, t3)
@@ -42,7 +42,7 @@ do {
 do {
     print("back to fill")
     pico.output.clear()
-    pico.set.pencil [ style=:fill, color=:white ]
+    pico.set.pencil [ color=:white, shape=[style=:fill] ]
     pico.output.draw.rect(rect)
     pico.output.draw.oval(oval)
     pico.output.draw.tri(t1, t2, t3)
