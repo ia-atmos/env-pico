@@ -59,22 +59,22 @@ int main (void) {
     // changed font -> another entry; same path -> same cached font
     {
         Pico_Layer* l1 = _pico_layer_text_fp(10, "hello");
-        pico_set_pencil_font_path("../res/DejaVuSans.ttf");
-        Pico_Font* f1 = pico_get_pencil_font();
+        pico_set_pencil_text_font_path("../res/DejaVuSans.ttf");
+        Pico_Font* f1 = pico_get_pencil_text_font();
         Pico_Layer* l2 = _pico_layer_text_fp(10, "hello");
         assert(l1 != l2);
-        pico_set_pencil_font_path("../res/DejaVuSans.ttf");
-        assert(pico_get_pencil_font() == f1);
+        pico_set_pencil_text_font_path("../res/DejaVuSans.ttf");
+        assert(pico_get_pencil_text_font() == f1);
         assert(_pico_layer_text_fp(10, "hello") == l2);
 
         // a loaded font is a distinct font, even for the same file
         Pico_Font* f2 = pico_font_load("../res/DejaVuSans.ttf");
         assert(f2 != f1);
-        pico_set_pencil_font(f2);
+        pico_set_pencil_text_font(f2);
         Pico_Layer* l3 = _pico_layer_text_fp(10, "hello");
         assert(l3!=l2 && l3!=l1);
 
-        pico_set_pencil_font(NULL);
+        pico_set_pencil_text_font(NULL);
         assert(_pico_layer_text_fp(10, "hello") == l1);
         pico_font_free(f2);
     }

@@ -47,7 +47,7 @@ int main (void) {
     puts("stroke");
     {
         pico_output_clear();
-        pico_set_pencil_style(PICO_STYLE_STROKE);
+        pico_set_pencil_shape_style(PICO_STYLE_STROKE);
         pico_set_pencil_color((Pico_Color){255, 255, 255, 0xFF});
         pico_output_draw_rect(rect);
         pico_output_draw_oval(oval);
@@ -59,7 +59,7 @@ int main (void) {
     puts("back to fill");
     {
         pico_output_clear();
-        pico_set_pencil_style(PICO_STYLE_FILL);
+        pico_set_pencil_shape_style(PICO_STYLE_FILL);
         pico_set_pencil_color((Pico_Color){255, 255, 255, 0xFF});
         pico_output_draw_rect(rect);
         pico_output_draw_oval(oval);
@@ -70,12 +70,12 @@ int main (void) {
 
     puts("get style");
     {
-        pico_set_pencil_style(PICO_STYLE_FILL);
-        assert(pico_get_pencil_style() == PICO_STYLE_FILL);
-        pico_set_pencil_style(PICO_STYLE_STROKE);
-        assert(pico_get_pencil_style() == PICO_STYLE_STROKE);
-        pico_set_pencil_style(PICO_STYLE_FILL);
-        assert(pico_get_pencil_style() == PICO_STYLE_FILL);
+        pico_set_pencil_shape_style(PICO_STYLE_FILL);
+        assert(pico_get_pencil_shape_style() == PICO_STYLE_FILL);
+        pico_set_pencil_shape_style(PICO_STYLE_STROKE);
+        assert(pico_get_pencil_shape_style() == PICO_STYLE_STROKE);
+        pico_set_pencil_shape_style(PICO_STYLE_FILL);
+        assert(pico_get_pencil_shape_style() == PICO_STYLE_FILL);
     }
 
     pico_close();

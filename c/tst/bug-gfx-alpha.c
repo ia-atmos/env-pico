@@ -12,7 +12,7 @@ int main (void) {
     pico_set_scene_dim((Pico_Rel_Dim){ '!', {640, 360} });
     pico_set_layer(pico_layer_world());
     pico_set_scene_dim((Pico_Rel_Dim){ '!', {64, 36} });
-    pico_set_pencil_style(PICO_STYLE_FILL);
+    pico_set_pencil_shape_style(PICO_STYLE_FILL);
     pico_output_clear();
 
     // red background rects on both halves

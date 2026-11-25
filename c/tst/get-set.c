@@ -42,12 +42,12 @@ int main (void) {
     // pencil_style
     puts("pencil_style");
     {
-        pico_set_pencil_style(PICO_STYLE_FILL);
-        assert(pico_get_pencil_style() == PICO_STYLE_FILL);
-        pico_set_pencil_style(PICO_STYLE_STROKE);
-        assert(pico_get_pencil_style() == PICO_STYLE_STROKE);
-        pico_set_pencil_style(PICO_STYLE_FILL);
-        assert(pico_get_pencil_style() == PICO_STYLE_FILL);
+        pico_set_pencil_shape_style(PICO_STYLE_FILL);
+        assert(pico_get_pencil_shape_style() == PICO_STYLE_FILL);
+        pico_set_pencil_shape_style(PICO_STYLE_STROKE);
+        assert(pico_get_pencil_shape_style() == PICO_STYLE_STROKE);
+        pico_set_pencil_shape_style(PICO_STYLE_FILL);
+        assert(pico_get_pencil_shape_style() == PICO_STYLE_FILL);
     }
 
     // pencil (bulk setter/getter)
@@ -55,17 +55,29 @@ int main (void) {
     {
         Pico_Font* font = pico_font_load("../res/tiny.ttf");
         pico_set_pencil((Pico_Layer_Pencil){
-            .color=PICO_COLOR_RED, .font=font, .style=PICO_STYLE_STROKE
+            .color=PICO_COLOR_RED,
+            .shape={ .style=PICO_STYLE_STROKE },
+            .text={ .font=font, .bold=1 }
         });
 
         Pico_Layer_Pencil gd = pico_get_pencil();
         assert(gd.color.r == 255 && gd.color.g == 0 && gd.color.b == 0);
-        assert(gd.font == font);
-        assert(gd.style == PICO_STYLE_STROKE);
+        assert(gd.text.font == font && gd.text.bold == 1);
+        assert(gd.shape.style == PICO_STYLE_STROKE);
+
+        // the parts alone
+        Pico_Pencil_Text t = pico_get_pencil_text();
+        assert(t.font==font && t.bold==1 && t.italic==0);
+        pico_set_pencil_text((Pico_Pencil_Text){ .font=NULL, .italic=1 });
+        assert(pico_get_pencil_text_font()==NULL && pico_get_pencil_text_italic()==1);
+        pico_set_pencil_shape((Pico_Pencil_Shape){ .style=PICO_STYLE_FILL });
+        assert(pico_get_pencil_shape().style == PICO_STYLE_FILL);
+        assert(pico_get_pencil_color().r == 255);
 
         // restore
         pico_set_pencil((Pico_Layer_Pencil){
-            .color={0xFF,0xFF,0xFF,0xFF}, .font=NULL, .style=PICO_STYLE_FILL
+            .color={0xFF,0xFF,0xFF,0xFF},
+            .shape={ .style=PICO_STYLE_FILL }, .text={ .font=NULL }
         });
         pico_font_free(font);
     }

@@ -12,7 +12,7 @@ int main (void) {
 
     pico_open(NULL);
     pico_set_app_title("Clip x Expert");
-    pico_set_pencil_style(PICO_STYLE_FILL);
+    pico_set_pencil_shape_style(PICO_STYLE_FILL);
 
     // PLAIN: red full, then blue full clipped to a centered half-box
     pico_set_pencil_color((Pico_Color){0xFF,0x00,0x00,0xFF});

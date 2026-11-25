@@ -28,7 +28,7 @@ static void _scene (void) {
 
     // a user-owned layer is current, with a user-owned pencil font
     pico_set_layer(up);
-    pico_set_pencil_font(fnt);
+    pico_set_pencil_text_font(fnt);
     pico_output_draw_text("y", (Pico_Rel_Rect){'!', {4, 4, 0, 8}, PICO_ANCHOR_C});
 }
 

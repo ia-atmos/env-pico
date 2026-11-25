@@ -21,7 +21,7 @@ int main (void) {
 
     pico_open(NULL);
     pico_set_app_title("Window Clip");
-    pico_set_pencil_style(PICO_STYLE_FILL);
+    pico_set_pencil_shape_style(PICO_STYLE_FILL);
 
     ///////////////////////////////////////////////////////////////////////////
     // PLAIN: green backdrop via the window effect (clear) colour

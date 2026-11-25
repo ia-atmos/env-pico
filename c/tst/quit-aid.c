@@ -28,7 +28,7 @@ int main (void) {
 
     // the current layer and a pencil font are user-owned as well
     pico_set_layer(up);
-    pico_set_pencil_font(fnt);
+    pico_set_pencil_text_font(fnt);
     pico_output_draw_text("y", (Pico_Rel_Rect){'!', {4, 4, 0, 8}, PICO_ANCHOR_C});
 
     // easy-path resources too
