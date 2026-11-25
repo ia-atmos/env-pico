@@ -46,9 +46,12 @@
 ;; `sup=` and `crop=` in `pico.layer.screenshot`. The first name prevails if
 ;; both are given.
 ;;
-;; The field `font` of `pico.set.pencil` is a font, the path of a TTF file,
-;; or `true` for the built-in font. The built-in font comes back as `nil` in
-;; `pico.get.pencil().font`.
+;; The pencil has a `color` for every drawing, a part `shape` for the shapes
+;; (`style=`), and a part `text` for text (`font=`, `smooth=`, `bold=`,
+;; `italic=`): `pico.set.pencil [ color=:red, text=[bold=true] ]`.
+;; The field `font` of `text` is a font, the path of a TTF file, or `true`
+;; for the built-in font. The built-in font comes back as `nil` in
+;; `pico.get.pencil().text.font`.
 ;;
 ;; `pico.get.keyboard()` polls the modifiers only: its `key` is always the
 ;; empty string (the key itself only comes in the events `:key.dn`/`:key.up`).
@@ -90,11 +93,11 @@
 ;; postponed until the layer that depends on it goes.
 ;;
 ;; The current layer and the font of a pencil are state of pico, and not of
-;; a block: `pico.set.layer(l)` and `pico.set.pencil [font=f]` accept a value
+;; a block: `pico.set.layer(l)` and `pico.set.pencil [text=[font=f]]` accept a value
 ;; of any block, and do not make it last longer than its block. When the
 ;; current layer is released, the world is the current layer again; when the
 ;; font of a pencil is released, the pencil goes back to the built-in font
-;; (`pico.get.pencil().font` evaluates to `nil`):
+;; (`pico.get.pencil().text.font` evaluates to `nil`):
 ;;
 ;;      do {
 ;;          pin l = pico.layer.empty [dim=['!',w=32,h=32]]
@@ -317,7 +320,7 @@ static void _pico_atmos_res_fin (void* p) {
             // the box is being closed: its pointer is still set
             if (live && s->font.type==A_NAT && A_NAT_OF(s->font)->ptr==r) {
                 Pico_Layer* old = pico_set_layer(s->lay);
-                pico_set_pencil_font(NULL);
+                pico_set_pencil_text_font(NULL);
                 pico_set_layer(old);
             }
         }
@@ -1454,20 +1457,24 @@ static AStatus _pico_atmos_l_get_now (AFunc* self, int argc, AVal* argv) {
     return A_OK;
 }
 
-// pico.get.pencil()
+// pico.get.pencil(): [color=, shape=[style=], text=[font=, smooth=, bold=, italic=]]
 static AStatus _pico_atmos_l_get_pencil (AFunc* self, int argc, AVal* argv) {
     _PICO_ATMOS_IN("get.pencil")
     AVal t = a_tab();
     _pico_atmos_set(t, "color", _pico_atmos_mk_color(pico_get_pencil_color()));
+    AVal shape = a_tab();
+    _pico_atmos_set(shape, "style", a_strz(_PICO_ATMOS_STYLES[pico_get_pencil_shape_style() & 1]));
+    _pico_atmos_set(t, "shape", shape);
+    AVal text = a_tab();
     AVal font = _PICO_ATMOS.cur->font;       // nil if it is a font that was released
     if (font.type!=A_NAT || a_nat_ptr(font)!=NULL) {
         a_inc(font);
-        _pico_atmos_set(t, "font", font);
+        _pico_atmos_set(text, "font", font);
     }
-    _pico_atmos_set(t, "style", a_strz(_PICO_ATMOS_STYLES[pico_get_pencil_style() & 1]));
-    _pico_atmos_set(t, "smooth", a_bool(pico_get_pencil_smooth()));
-    _pico_atmos_set(t, "bold",   a_bool(pico_get_pencil_bold()));
-    _pico_atmos_set(t, "italic", a_bool(pico_get_pencil_italic()));
+    _pico_atmos_set(text, "smooth", a_bool(pico_get_pencil_text_smooth()));
+    _pico_atmos_set(text, "bold",   a_bool(pico_get_pencil_text_bold()));
+    _pico_atmos_set(text, "italic", a_bool(pico_get_pencil_text_italic()));
+    _pico_atmos_set(t, "text", text);
     a_push(t);
     return A_OK;
 }
@@ -1685,18 +1692,41 @@ static AStatus _pico_atmos_l_set_mouse (AFunc* self, int argc, AVal* argv) {
     return A_OK;
 }
 
-// pico.set.pencil [color=, font=, style=, smooth=, bold=, italic=]
+// pico.set.pencil [color=, shape=[style=], text=[font=, smooth=, bold=, italic=]]
+// Fields not given keep their values, also inside `shape` and `text`.
 static AStatus _pico_atmos_l_set_pencil (AFunc* self, int argc, AVal* argv) {
     _PICO_ATMOS_IN("set.pencil")
     AVal t = _PICO_ATMOS_ARG(0);
     _PICO_ATMOS_TRY(_pico_atmos_tab(t, "pencil"));
-    AVal color = _pico_atmos_get(t, "color");
-    AVal font  = _pico_atmos_get(t, "font");
-    AVal style = _pico_atmos_get(t, "style");
-    AVal smooth = _pico_atmos_get(t, "smooth");
-    AVal bold   = _pico_atmos_get(t, "bold");
-    AVal italic = _pico_atmos_get(t, "italic");
 
+    // the fields of before the split (2026-11-25) say where they went
+    static const struct { const char* name; const char* part; } OLD[] = {
+        {"style","shape"}, {"font","text"}, {"smooth","text"},
+        {"bold","text"}, {"italic","text"},
+    };
+    for (size_t i=0; i<sizeof(OLD)/sizeof(OLD[0]); i++) {
+        if (_pico_atmos_get(t, OLD[i].name).type != A_NIL) {
+            return a_error("%s : unexpected field '%s' : expected in '%s'",
+                _PICO_ATMOS_FN, OLD[i].name, OLD[i].part);
+        }
+    }
+
+    AVal color = _pico_atmos_get(t, "color");
+    AVal shape = _pico_atmos_get(t, "shape");
+    AVal text  = _pico_atmos_get(t, "text");
+    if (shape.type != A_NIL) {
+        _PICO_ATMOS_TRY(_pico_atmos_tab(shape, "shape"));
+    }
+    if (text.type != A_NIL) {
+        _PICO_ATMOS_TRY(_pico_atmos_tab(text, "text"));
+    }
+    AVal style  = (shape.type == A_NIL) ? a_nil() : _pico_atmos_get(shape, "style");
+    AVal font   = (text.type  == A_NIL) ? a_nil() : _pico_atmos_get(text, "font");
+    AVal smooth = (text.type  == A_NIL) ? a_nil() : _pico_atmos_get(text, "smooth");
+    AVal bold   = (text.type  == A_NIL) ? a_nil() : _pico_atmos_get(text, "bold");
+    AVal italic = (text.type  == A_NIL) ? a_nil() : _pico_atmos_get(text, "italic");
+
+    // check everything before changing anything
     Pico_Color xcolor;
     int xstyle;
     _PICO_ATMOS_Res* xfont = NULL;
@@ -1721,26 +1751,26 @@ static AStatus _pico_atmos_l_set_pencil (AFunc* self, int argc, AVal* argv) {
     if (color.type != A_NIL) {
         pico_set_pencil_color(xcolor);
     }
+    if (style.type != A_NIL) {
+        pico_set_pencil_shape_style((PICO_STYLE) xstyle);
+    }
     if (smooth.type != A_NIL) {
-        pico_set_pencil_smooth(a_truthy(smooth));
+        pico_set_pencil_text_smooth(a_truthy(smooth));
     }
     if (bold.type != A_NIL) {
-        pico_set_pencil_bold(a_truthy(bold));
+        pico_set_pencil_text_bold(a_truthy(bold));
     }
     if (italic.type != A_NIL) {
-        pico_set_pencil_italic(a_truthy(italic));
+        pico_set_pencil_text_italic(a_truthy(italic));
     }
     if (font.type != A_NIL) {
         if (font.type==A_STR && !dfont) {
-            pico_set_pencil_font_path(A_STR_OF(font)->s);
+            pico_set_pencil_text_font_path(A_STR_OF(font)->s);
         } else {
-            pico_set_pencil_font((xfont == NULL) ? NULL : xfont->ptr);
+            pico_set_pencil_text_font((xfont == NULL) ? NULL : xfont->ptr);
         }
         // the old value is released after the new one is set
         a_cpy(&_PICO_ATMOS.cur->font, dfont ? a_nil() : font);
-    }
-    if (style.type != A_NIL) {
-        pico_set_pencil_style((PICO_STYLE) xstyle);
     }
     return A_OK;
 }
@@ -2790,7 +2820,7 @@ pin pico = [
         layer    = `:value a_func(_pico_atmos_l_get_layer,    0)`,  ;; () -> layer
         mouse    = `:value a_func(_pico_atmos_l_get_mouse,    0)`,  ;; ([layer,] mode|pos) -> Mouse
         now      = `:value a_func(_pico_atmos_l_get_now,      0)`,  ;; () -> ms
-        pencil   = `:value a_func(_pico_atmos_l_get_pencil,   0)`,  ;; () -> [color=, font=, style=, smooth=, bold=, italic=]
+        pencil   = `:value a_func(_pico_atmos_l_get_pencil,   0)`,  ;; () -> [color=, shape=[style=], text=[font=, smooth=, bold=, italic=]]
         scene    = `:value a_func(_pico_atmos_l_get_scene,    0)`,  ;; () -> [dim=, tile=, target=, source=, clip=, clear=, fit=]
         text     = `:value a_func(_pico_atmos_l_get_text,     0)`,  ;; (dim, text) -> Dim
         video    = `:value a_func(_pico_atmos_l_get_video,    0)`,  ;; ([rect|mode,] layer|path) -> [dim=, fps=, frame=, done=]
@@ -2806,7 +2836,7 @@ pin pico = [
         layer  = `:value a_func(_pico_atmos_l_set_layer,  0)`,  ;; (layer) -> the previous one
         mouse  = `:value a_func(_pico_atmos_l_set_mouse,  0)`,  ;; ([layer,] pos)
         ;; font: a font, a path, or true (the built-in font)
-        pencil = `:value a_func(_pico_atmos_l_set_pencil, 0)`,  ;; [color=, font=, style=:fill|:stroke, smooth=, bold=, italic=]
+        pencil = `:value a_func(_pico_atmos_l_set_pencil, 0)`,  ;; [color=, shape=[style=:fill|:stroke], text=[font=, smooth=, bold=, italic=]]
         scene  = `:value a_func(_pico_atmos_l_set_scene,  0)`,  ;; [dim=, tile=, target=, source=, clip=, clear=, fit=:stretch|:bars]
         video  = `:value a_func(_pico_atmos_l_set_video,  0)`,  ;; (layer, frame) -> boolean
         app    = `:value a_func(_pico_atmos_l_set_app,    0)`,  ;; [fullscreen=, show=, title=]
