@@ -362,7 +362,12 @@ static SDL_Texture* _tex_text (int height, const char* text, Pico_Abs_Dim* dim) 
         ? TTF_RenderUTF8_Blended(ttf, text, c)
         : TTF_RenderUTF8_Solid(ttf, text, c);
     pico_assert(sfc != NULL);
-    assert(sfc->h <= H && "text raster exceeds reference cell");
+    // at tiny sizes (1-2px) a raster may still exceed the cell: grow it
+    // instead of aborting (the box is then not content-independent, which
+    // is invisible at that size)
+    if (sfc->h > H) {
+        H = sfc->h;
+    }
 
     SDL_Surface* box = SDL_CreateRGBSurfaceWithFormat (
         0, sfc->w, H, 32, SDL_PIXELFORMAT_RGBA32

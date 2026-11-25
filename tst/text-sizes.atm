@@ -126,4 +126,12 @@ do {
     assert(a.w == b.w)
 }
 
+;; a text of 1 pixel with a TTF font, smooth: drawn, not an abort
+do {
+    pico.set.pencil [ font="../c/res/DejaVuSans.ttf", smooth=true ]
+    assert(pico.get.text(['!', h=1], "tiny").h >= 1)
+    pico.output.draw.text("tiny", ['!', x=10, y=10, h=1])
+    pico.set.pencil [ font=true, smooth=false ]
+}
+
 pico.close()
