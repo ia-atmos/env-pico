@@ -229,11 +229,18 @@ int pico_input_event_timeout (Pico_Event* evt, int type, int timeout) {
     _pico_guard();
     int t0 = SDL_GetTicks();
     int ti = t0;
+    int total = timeout;
     while (1) {
         Pico_Event out;
         SDL_Event sdl;
         int has = (timeout == -1) ? SDL_WaitEvent(&sdl) : SDL_WaitEventTimeout(&sdl, timeout);
         int tn = SDL_GetTicks();
+        if (!has && timeout!=-1 && tn-t0<total) {
+            // the wait may end a tick early: wait for the rest
+            timeout = total - (tn - t0);
+            ti = tn;
+            continue;
+        }
         if (!has && timeout!=-1) {
             if (evt != NULL) {
                 evt->type = PICO_EVENT_NONE;
