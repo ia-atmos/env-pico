@@ -7,7 +7,7 @@
 pico.open()
 
 pico.set.expert(true, 20)
-pico.set.pencil [ style=:stroke ]
+pico.set.pencil [ shape=[style=:stroke] ]
 
 ;; 4x4 sprite sheet -> a vector with the 16 sub-layers, from 0 to 15
 

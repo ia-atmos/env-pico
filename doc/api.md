@@ -142,12 +142,12 @@ pin s = pico.sound.load("x.wav")
   If such a value is dropped first, its release is postponed until the layer
   that depends on it goes.
 - The current layer and the font of a pencil are state of pico, and not of a
-  block: `pico.set.layer(l)` and `pico.set.pencil [ font=f ]` accept a value of
+  block: `pico.set.layer(l)` and `pico.set.pencil [ text=[font=f] ]` accept a value of
   any block, and do not make it last longer than its block.
   When the current layer is released, the world is the current layer again
   (`pico.get.layer() == pico.layer.world`), also inside a `:draw` handler.
   When the font of a pencil is released, the pencil goes back to the built-in
-  font (`pico.get.pencil().font` evaluates to `nil`), in every layer whose
+  font (`pico.get.pencil().text.font` evaluates to `nil`), in every layer whose
   pencil uses it.
   `pico.get.layer()` and `pico.set.layer(l)` (the previous layer) evaluate to
   the value that the program holds, to be kept in a `val`
@@ -168,7 +168,7 @@ pin s = pico.sound.load("x.wav")
   `val`, and cannot pin them.
 - The resources that operations load from a path or content
   (`pico.output.draw.image`, `pico.output.draw.text`, `pico.output.draw.video`,
-  `pico.output.sound(path)`, and `pico.set.pencil [font=path]`) are loaded
+  `pico.output.sound(path)`, and `pico.set.pencil [ text=[font=path] ]`) are loaded
   once and kept until `pico.close()`.
 
 ## Operations
@@ -244,7 +244,7 @@ In alphabetical order:
 - **pico.font**
     - **pico.font.load**: Loads a font from a TTF file.
         - `pico.font.load (path: string) -> Font`
-        - The font is selected with `pico.set.pencil [font=f]`.
+        - The font is selected with `pico.set.pencil [ text=[font=f] ]`.
         - The font is released with the block that owns it (see
           [Lifetimes](#lifetimes)).
 - **pico.get**: Getters for various properties and settings.
@@ -304,7 +304,7 @@ In alphabetical order:
     - **pico.get.now**: Gets milliseconds since initialization.
         - `pico.get.now () -> integer`
     - **pico.get.pencil**: Gets pencil configuration.
-        - `pico.get.pencil () -> [ color: Color, font: (Font|string)?, style: :fill|:stroke, smooth: boolean, bold: boolean, italic: boolean ]`
+        - `pico.get.pencil () -> [ color: Color, shape: [style: :fill|:stroke], text: [font: (Font|string)?, smooth: boolean, bold: boolean, italic: boolean] ]`
         - `font` is as set: a `Font`, a path, or `nil` for the built-in font
           (and after the `Font` is released, since the pencil then goes back
           to the built-in font).
@@ -633,22 +633,30 @@ In alphabetical order:
     - **pico.set.pencil**: Sets pencil configuration.
         ```
         pico.set.pencil [
-            color:  Color,              -- drawing color
-            font:   Font|string|true,   -- font, TTF path, or true (built-in)
-            style:  :fill|:stroke,      -- shape drawing style
-            smooth: boolean,            -- text with smooth edges (default: false)
-            bold:   boolean,            -- text in bold (default: false)
-            italic: boolean,            -- text in italic (default: false)
+            color: Color,                   -- every drawing
+            shape: [                        -- rect, oval, tri, poly
+                style:  :fill|:stroke,      -- (default: :fill)
+            ],
+            text: [                         -- draw.text, get.text, layer.text
+                font:   Font|string|true,   -- font, TTF path, or true (built-in)
+                smooth: boolean,            -- smooth edges (default: false)
+                bold:   boolean,            -- bold (default: false)
+                italic: boolean,            -- italic (default: false)
+            ],
         ]
         ```
-        - `color` applies to every drawing; `style` to the shapes (rect,
-          oval, tri, poly); `font`, `smooth`, `bold`, and `italic` to text
-          only (`pico.output.draw.text`, `pico.get.text`, `pico.layer.text`).
+        - Fields not given keep their values, also inside `shape` and
+          `text`: `pico.set.pencil [ text=[bold=true] ]` changes `bold` only.
+        - The fields of before (`style=`, `font=`, `smooth=`, ... at the top
+          level) are errors that name the part where they went.
         - `smooth=true` draws text with smooth (anti-aliased) edges. By
           default, glyphs have hard edges, as in pixel art.
         - `bold=true` and `italic=true` synthesize those styles from the
           current font, with no separate file; a bold or italic TTF file
           given as `font` works as any other font.
+        - In C: `Pico_Layer_Pencil` has `color`, `shape` (`Pico_Pencil_Shape`)
+          and `text` (`Pico_Pencil_Text`), with `pico_set_pencil_shape_style`,
+          `pico_set_pencil_text_font`, `pico_set_pencil_text_bold`, etc.
         - The pencil belongs to the current layer.
         - `font=true` selects the built-in font. Any other type, such as
           `false`, is an error.

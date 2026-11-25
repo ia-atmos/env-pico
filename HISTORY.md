@@ -43,10 +43,15 @@ Layout:
   `l` current for the code of its block
 - the texts drawn from strings are dropped from the cache when the `dim`
   of a layer changes (e.g. a resize of the window)
-- pencil `bold` and `italic` (C: `pico_get/set_pencil_bold/italic`): text
-  styles synthesized from one font file
+- pencil `text.bold` and `text.italic`: text styles synthesized from one font
+  file
+- the pencil is split in parts: `color` (every drawing), `shape` (`style`)
+  and `text` (`font`, `smooth`, `bold`, `italic`):
+  `pico.set.pencil [ color=:red, text=[bold=true] ]`; in C,
+  `Pico_Pencil_Shape`, `Pico_Pencil_Text`, `pico_set_pencil_shape_style`,
+  `pico_set_pencil_text_font[_path]`, `pico_set_pencil_text_smooth/bold/italic`
 - text is UTF-8 (was Latin-1)
-- pencil `smooth` (C: `pico_get/set_pencil_smooth`): text with smooth
+- pencil `text.smooth`: text with smooth
   (anti-aliased) edges, off by default
 - enums are tags in Atmos: `:red`, `:NW`, `:fill`, `:horizontal`,
   `:key.dn` (a tag is a string, so the old spelling still works)

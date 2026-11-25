@@ -291,7 +291,7 @@ To write a text, we call `pico.output.draw.text`:
 <table>
 <tr><td><pre>
 pico.output.draw.text("Hello", ['!', x=50, y=33, h=30])
-pico.set.pencil [ font='../c/res/DejaVuSans.ttf' ]
+pico.set.pencil [ text=[font='../c/res/DejaVuSans.ttf'] ]
 pico.output.draw.text("Hello", ['!', x=50, y=66, h=30])
 </pre>
 </td><td>
@@ -304,6 +304,10 @@ pico.output.draw.text("Hello", ['!', x=50, y=66, h=30])
 We first draw `Hello` at the top using the default built-in font.
 Then, we switch to a new font and draw `Hello` again at the bottom.
 
+The pencil has a part `text` for text (`font`, `smooth`, `bold`, `italic`)
+and a part `shape` for shapes (`style`), while its `color` applies to
+everything: `pico.set.pencil [ color=:red, text=[bold=true] ]`.
+
 Note that `atmos-pico` preserves the correct text aspect ratio when we omit the
 width `w`.
 
@@ -312,8 +316,8 @@ The field `font` also accepts a font loaded with `pico.font.load(path)`, or
 
 ```
 pin font = pico.font.load('../c/res/DejaVuSans.ttf')
-pico.set.pencil [ font=font ]       ;; same effect as the path
-pico.set.pencil [ font=true ]       ;; back to the built-in font
+pico.set.pencil [ text=[font=font] ]       ;; same effect as the path
+pico.set.pencil [ text=[font=true] ]       ;; back to the built-in font
 ```
 
 To draw an [image](../c/res/open.png), we call `pico.output.draw.image`:
@@ -1022,7 +1026,7 @@ do {
     pin l = pico.layer.empty [ dim=['!', w=32, h=32] ]
     pin f = pico.font.load("x.ttf")
     pico.set.layer(l)
-    pico.set.pencil [ font=f ]
+    pico.set.pencil [ text=[font=f] ]
 }   ;; `f` and `l` are released: the world is the current layer again
 print(pico.get.layer() == pico.layer.world)     ;; true
 ```

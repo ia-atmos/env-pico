@@ -34,6 +34,7 @@ section numbers for what was already written.
 | #17 | Reopens #15 (the author in `pico-slides`, 2026-11-22: "poderia limpar automaticamente a cada resize (internamente)?" then "sim"): the cache drops its texts by itself when the `dim` of any layer changes (world, window, resize, fullscreen, any layer); images, fonts and sounds stay | done, `c/tst/text-cache.c` (`_pico_cache_count`) |
 | #18 | From `pico-slides` (its #67a, author's approval there): bold and italic synthesized from one font file (`TTF_SetFontStyle`), e.g. pencil fields `bold=`, `italic=` (`style=` is taken by `:fill|:stroke`), for `draw.text`, `get.text`, `layer.text`, and in the cache key | done (#18a, author 2026-11-25): pencil `bold=`, `italic=`, text only; `tst/text-style.atm`, `c/tst/text-style.c` |
 | #19 | By the session, from `pico-slides`: a text of 1 px with a TTF font and `smooth=true` aborted (`text raster exceeds reference cell`) | done: the cell grows to the raster at tiny sizes; `tst/text-sizes.atm` |
+| #20 | Split the pencil in parts `shape` and `text` (author, 2026-11-25) | done (#20b, C and Atmos): `pico.set.pencil [color=, shape=[style=], text=[font=, smooth=, bold=, italic=]]`; C `Pico_Pencil_Shape`, `Pico_Pencil_Text`, `pico_*_pencil_shape_style`, `pico_*_pencil_text_*` |
 
 ## A. Decisions waiting for an answer
 
