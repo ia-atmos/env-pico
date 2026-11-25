@@ -43,6 +43,8 @@ Layout:
   `l` current for the code of its block
 - the texts drawn from strings are dropped from the cache when the `dim`
   of a layer changes (e.g. a resize of the window)
+- pencil `bold` and `italic` (C: `pico_get/set_pencil_bold/italic`): text
+  styles synthesized from one font file
 - text is UTF-8 (was Latin-1)
 - pencil `smooth` (C: `pico_get/set_pencil_smooth`): text with smooth
   (anti-aliased) edges, off by default

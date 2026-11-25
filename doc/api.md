@@ -304,7 +304,7 @@ In alphabetical order:
     - **pico.get.now**: Gets milliseconds since initialization.
         - `pico.get.now () -> integer`
     - **pico.get.pencil**: Gets pencil configuration.
-        - `pico.get.pencil () -> [ color: Color, font: (Font|string)?, style: :fill|:stroke, smooth: boolean ]`
+        - `pico.get.pencil () -> [ color: Color, font: (Font|string)?, style: :fill|:stroke, smooth: boolean, bold: boolean, italic: boolean ]`
         - `font` is as set: a `Font`, a path, or `nil` for the built-in font
           (and after the `Font` is released, since the pencil then goes back
           to the built-in font).
@@ -637,10 +637,18 @@ In alphabetical order:
             font:   Font|string|true,   -- font, TTF path, or true (built-in)
             style:  :fill|:stroke,      -- shape drawing style
             smooth: boolean,            -- text with smooth edges (default: false)
+            bold:   boolean,            -- text in bold (default: false)
+            italic: boolean,            -- text in italic (default: false)
         ]
         ```
+        - `color` applies to every drawing; `style` to the shapes (rect,
+          oval, tri, poly); `font`, `smooth`, `bold`, and `italic` to text
+          only (`pico.output.draw.text`, `pico.get.text`, `pico.layer.text`).
         - `smooth=true` draws text with smooth (anti-aliased) edges. By
           default, glyphs have hard edges, as in pixel art.
+        - `bold=true` and `italic=true` synthesize those styles from the
+          current font, with no separate file; a bold or italic TTF file
+          given as `font` works as any other font.
         - The pencil belongs to the current layer.
         - `font=true` selects the built-in font. Any other type, such as
           `false`, is an error.
