@@ -1,0 +1,38 @@
+;; bold and italic synthesized from one font file
+pico.open()
+pico.set.app [ title="Text Style" ]
+pico.set.pencil [ font="../c/res/DejaVuSans.ttf", smooth=true ]
+
+val p = pico.get.pencil()
+assert(p.bold==false && p.italic==false)
+pico.output.clear()
+pico.output.draw.text("Plain", ['%', x=0.5, y=0.2, w=0, h=0.12, anchor=:C])
+pico.set.pencil [ bold=true ]
+assert(pico.get.pencil().bold == true)
+pico.output.draw.text("Bold", ['%', x=0.5, y=0.4, w=0, h=0.12, anchor=:C])
+pico.set.pencil [ bold=false, italic=true ]
+assert(pico.get.pencil().italic == true)
+pico.output.draw.text("Italic", ['%', x=0.5, y=0.6, w=0, h=0.12, anchor=:C])
+pico.set.pencil [ bold=true ]
+pico.output.draw.text("Both", ['%', x=0.5, y=0.8, w=0, h=0.12, anchor=:C])
+pico.check("text-style-01")
+
+;; bold is wider; plain again is unchanged
+pico.set.pencil [ bold=false, italic=false ]
+val a = pico.get.text(['!', h=20], "Width")
+pico.set.pencil [ bold=true ]
+val b = pico.get.text(['!', h=20], "Width")
+assert(b.w>a.w && b.h==a.h)
+pico.set.pencil [ bold=false ]
+val c = pico.get.text(['!', h=20], "Width")
+assert(c.w==a.w && c.h==a.h)
+
+;; a text layer takes them too
+pico.set.pencil [ italic=true ]
+pin l = pico.layer.text [ dim=['!', h=20], text="Width" ]
+pico.set.layer(l)
+val d = pico.get.scene().dim
+pico.set.layer(pico.layer.world)
+assert(d.w > a.w)
+
+pico.close()

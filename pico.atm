@@ -1466,6 +1466,8 @@ static AStatus _pico_atmos_l_get_pencil (AFunc* self, int argc, AVal* argv) {
     }
     _pico_atmos_set(t, "style", a_strz(_PICO_ATMOS_STYLES[pico_get_pencil_style() & 1]));
     _pico_atmos_set(t, "smooth", a_bool(pico_get_pencil_smooth()));
+    _pico_atmos_set(t, "bold",   a_bool(pico_get_pencil_bold()));
+    _pico_atmos_set(t, "italic", a_bool(pico_get_pencil_italic()));
     a_push(t);
     return A_OK;
 }
@@ -1683,7 +1685,7 @@ static AStatus _pico_atmos_l_set_mouse (AFunc* self, int argc, AVal* argv) {
     return A_OK;
 }
 
-// pico.set.pencil [color=, font=, style=, smooth=]
+// pico.set.pencil [color=, font=, style=, smooth=, bold=, italic=]
 static AStatus _pico_atmos_l_set_pencil (AFunc* self, int argc, AVal* argv) {
     _PICO_ATMOS_IN("set.pencil")
     AVal t = _PICO_ATMOS_ARG(0);
@@ -1692,6 +1694,8 @@ static AStatus _pico_atmos_l_set_pencil (AFunc* self, int argc, AVal* argv) {
     AVal font  = _pico_atmos_get(t, "font");
     AVal style = _pico_atmos_get(t, "style");
     AVal smooth = _pico_atmos_get(t, "smooth");
+    AVal bold   = _pico_atmos_get(t, "bold");
+    AVal italic = _pico_atmos_get(t, "italic");
 
     Pico_Color xcolor;
     int xstyle;
@@ -1719,6 +1723,12 @@ static AStatus _pico_atmos_l_set_pencil (AFunc* self, int argc, AVal* argv) {
     }
     if (smooth.type != A_NIL) {
         pico_set_pencil_smooth(a_truthy(smooth));
+    }
+    if (bold.type != A_NIL) {
+        pico_set_pencil_bold(a_truthy(bold));
+    }
+    if (italic.type != A_NIL) {
+        pico_set_pencil_italic(a_truthy(italic));
     }
     if (font.type != A_NIL) {
         if (font.type==A_STR && !dfont) {
@@ -2780,7 +2790,7 @@ pin pico = [
         layer    = `:value a_func(_pico_atmos_l_get_layer,    0)`,  ;; () -> layer
         mouse    = `:value a_func(_pico_atmos_l_get_mouse,    0)`,  ;; ([layer,] mode|pos) -> Mouse
         now      = `:value a_func(_pico_atmos_l_get_now,      0)`,  ;; () -> ms
-        pencil   = `:value a_func(_pico_atmos_l_get_pencil,   0)`,  ;; () -> [color=, font=, style=, smooth=]
+        pencil   = `:value a_func(_pico_atmos_l_get_pencil,   0)`,  ;; () -> [color=, font=, style=, smooth=, bold=, italic=]
         scene    = `:value a_func(_pico_atmos_l_get_scene,    0)`,  ;; () -> [dim=, tile=, target=, source=, clip=, clear=, fit=]
         text     = `:value a_func(_pico_atmos_l_get_text,     0)`,  ;; (dim, text) -> Dim
         video    = `:value a_func(_pico_atmos_l_get_video,    0)`,  ;; ([rect|mode,] layer|path) -> [dim=, fps=, frame=, done=]
@@ -2796,7 +2806,7 @@ pin pico = [
         layer  = `:value a_func(_pico_atmos_l_set_layer,  0)`,  ;; (layer) -> the previous one
         mouse  = `:value a_func(_pico_atmos_l_set_mouse,  0)`,  ;; ([layer,] pos)
         ;; font: a font, a path, or true (the built-in font)
-        pencil = `:value a_func(_pico_atmos_l_set_pencil, 0)`,  ;; [color=, font=, style=:fill|:stroke, smooth=]
+        pencil = `:value a_func(_pico_atmos_l_set_pencil, 0)`,  ;; [color=, font=, style=:fill|:stroke, smooth=, bold=, italic=]
         scene  = `:value a_func(_pico_atmos_l_set_scene,  0)`,  ;; [dim=, tile=, target=, source=, clip=, clear=, fit=:stretch|:bars]
         video  = `:value a_func(_pico_atmos_l_set_video,  0)`,  ;; (layer, frame) -> boolean
         app    = `:value a_func(_pico_atmos_l_set_app,    0)`,  ;; [fullscreen=, show=, title=]
