@@ -115,4 +115,15 @@ pico.output.draw.layer(expl.right,
 )
 pico.check("sheet-04")
 
+do {   ;; invalid grids
+    func fails (msg, f) {
+        val ok, err = catch true { f() }
+        assert(!ok && string.find(err, msg), "expected error : " ++ msg)
+    }
+    val P = "../c/res/open.png"
+    fails("integers 'w' and 'h'", \{ pico.layer.images [ path=P, sheet=['#', w=1.5, h=2] ] })
+    fails("invalid 'n'",          \{ pico.layer.images [ path=P, sheet=['#', w=2, h=2, n=0] ] })
+    fails("invalid 'n'",          \{ pico.layer.images [ path=P, sheet=['#', w=2, h=2, n=1.5] ] })
+}
+
 pico.close()

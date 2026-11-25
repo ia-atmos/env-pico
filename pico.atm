@@ -1948,6 +1948,12 @@ static AStatus _pico_atmos_l_layer_images (AFunc* self, int argc, AVal* argv) {
         if (cols<1 || rows<1) {
             return a_error("%s : mode '#' requires 'w' and 'h'", _PICO_ATMOS_FN);
         }
+        if (cols!=(int)cols || rows!=(int)rows) {
+            return a_error("%s : mode '#' requires integers 'w' and 'h'", _PICO_ATMOS_FN);
+        }
+        if (_pico_atmos_get(sheet,"n").type!=A_NIL && (max<1 || max!=(int)max)) {
+            return a_error("%s : invalid 'n' : expected an integer >= 1", _PICO_ATMOS_FN);
+        }
         Pico_Abs_Dim dim = pico_get_image(NULL, path);
         float tw = dim.w / (float)(int)cols;
         float th = dim.h / (float)(int)rows;
