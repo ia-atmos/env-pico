@@ -43,6 +43,7 @@ section numbers for what was already written.
 | #26 | `context` changed in the language (lang d0fe0ac, author's "sim" in `atmos-context`): a context is a value `:Context [enter=, leave=]` bound with `in X, cmd`; `context X {...}` is gone | done: `pico.ctx.layer` returns the value; `tst/ctx-layer.atm`, docs |
 | #27 | Excerpt, idiomatic (context as a value): `tst/ctx-layer.atm`, `pin ts = in count(ctx(hud)), tasks()`: the pool is bound once and the tasks spawned into it need nothing | shown 2026-11-26 |
 | #28 | Excerpt, bad (context as a value): `tst/ctx-layer.atm`, the counting wrapper still rebuilds a `:Context` by hand around `c.enter()` / `c.leave(o)`. Why: no way to derive a context from another; better than #24 (fields by name, not by index), but composing still means writing both functions again | shown 2026-11-26 |
+| #29 | Excerpt (rocks, `watching` with a boolean first): `exs/rocks/battle.atm:56`, `val _, s = watching :any ships {...}` discards a boolean that is always false, since the body never terminates | shown 2026-11-26; the author: it follows `catch`; settled as a minor wart, no special form wanted, line kept |
 
 ## A. Decisions waiting for an answer
 
