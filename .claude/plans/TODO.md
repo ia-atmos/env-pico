@@ -36,6 +36,7 @@ section numbers for what was already written.
 | #19 | By the session, from `pico-slides`: a text of 1 px with a TTF font and `smooth=true` aborted (`text raster exceeds reference cell`) | done: the cell grows to the raster at tiny sizes; `tst/text-sizes.atm` |
 | #20 | Split the pencil in parts `shape` and `text` (author, 2026-11-25) | done (#20b, C and Atmos): `pico.set.pencil [color=, shape=[style=], text=[font=, smooth=, bold=, italic=]]`; C `Pico_Pencil_Shape`, `Pico_Pencil_Text`, `pico_*_pencil_shape_style`, `pico_*_pencil_text_*` |
 | #21 | By the session: `pico_input_delay(100)` could return 99 (the SDL wait ends a tick early), which failed `c/tst/expert.c` once under valgrind | done: the wait goes on until the time asked has passed (`c/src/input.c`) |
+| #22 | By the session: CI red (runs 38, 42) in `c/tst/expert_fps.c` `dt2>=25`: in expert mode the event comes at the deadline of the frame, and the dt returned is only what was left to wait (less than 25 if time passed since `pico_set_expert`, as under valgrind); the test was wrong, not the library | done: the test checks the deadline (`now` after - before >= 25), C and Atmos |
 
 ## A. Decisions waiting for an answer
 
