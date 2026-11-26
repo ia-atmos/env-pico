@@ -39,7 +39,7 @@ section numbers for what was already written.
 | #22 | By the session: CI red (runs 38, 42) in `c/tst/expert_fps.c` `dt2>=25`: in expert mode the event comes at the deadline of the frame, and the dt returned is only what was left to wait (less than 25 if time passed since `pico_set_expert`, as under valgrind); the test was wrong, not the library | done: the test checks the deadline (`now` after - before >= 25), C and Atmos |
 | #23 | Excerpt, idiomatic (`pico.ctx.layer`): `tst/ctx-layer.atm:45-50`, a task draws into its own layer inside `context ctx(map) { loop on :draw {...} }`, with no switching by hand | shown 2026-11-26 |
 | #24 | Excerpt, bad (`pico.ctx.layer`): `tst/ctx-layer.atm:16-18`, a wrapper that counts switches takes the `[enter, leave]` pair apart by index (`c@0()`, `c@1(o)`) and rebuilds it. Why: the language has no way to wrap or extend a `context` pair; composing contexts (counting, logging, two states) means rebuilding the pair by hand | shown 2026-11-26 |
-| #25 | By the session, asked by `env-web` (Rocks in the browser over pico, the author's wish there): the C library builds with clang/Emscripten | done: nested functions hoisted (`_sdl_enum`, `_clip_aux`), `SDL_Init` of video, audio, events, timer only (EVERYTHING fails in a browser), a cast for clang |
+| #25 | By the session, asked by `env-web` (Rocks in the browser over pico, the author's wish there): the C library builds with clang/Emscripten | done: nested functions hoisted (`_sdl_enum`, `_clip_aux`), `SDL_Init(SDL_INIT_EVERYTHING)` natively, the subsystem list only under `#ifdef __EMSCRIPTEN__` (author in `env-web`, 2026-11-26: no builds here, only ifdefs set from outside), a cast for clang |
 
 ## A. Decisions waiting for an answer
 
