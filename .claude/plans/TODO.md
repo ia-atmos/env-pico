@@ -40,6 +40,9 @@ section numbers for what was already written.
 | #23 | Excerpt, idiomatic (`pico.ctx.layer`): `tst/ctx-layer.atm:45-50`, a task draws into its own layer inside `context ctx(map) { loop on :draw {...} }`, with no switching by hand | shown 2026-11-26 |
 | #24 | Excerpt, bad (`pico.ctx.layer`): `tst/ctx-layer.atm:16-18`, a wrapper that counts switches takes the `[enter, leave]` pair apart by index (`c@0()`, `c@1(o)`) and rebuilds it. Why: the language has no way to wrap or extend a `context` pair; composing contexts (counting, logging, two states) means rebuilding the pair by hand | shown 2026-11-26 |
 | #25 | By the session, asked by `env-web` (Rocks in the browser over pico, the author's wish there): the C library builds with clang/Emscripten | done: nested functions hoisted (`_sdl_enum`, `_clip_aux`), `SDL_Init(SDL_INIT_EVERYTHING)` natively, the subsystem list only under `#ifdef __EMSCRIPTEN__` (author in `env-web`, 2026-11-26: no builds here, only ifdefs set from outside), a cast for clang |
+| #26 | `context` changed in the language (lang d0fe0ac, author's "sim" in `atmos-context`): a context is a value `:Context [enter=, leave=]` bound with `in X, cmd`; `context X {...}` is gone | done: `pico.ctx.layer` returns the value; `tst/ctx-layer.atm`, docs |
+| #27 | Excerpt, idiomatic (context as a value): `tst/ctx-layer.atm`, `pin ts = in count(ctx(hud)), tasks()`: the pool is bound once and the tasks spawned into it need nothing | shown 2026-11-26 |
+| #28 | Excerpt, bad (context as a value): `tst/ctx-layer.atm`, the counting wrapper still rebuilds a `:Context` by hand around `c.enter()` / `c.leave(o)`. Why: no way to derive a context from another; better than #24 (fields by name, not by index), but composing still means writing both functions again | shown 2026-11-26 |
 
 ## A. Decisions waiting for an answer
 

@@ -189,23 +189,20 @@ In alphabetical order:
         - `pico.color.lighter (clr: Color, pct: number) -> Color`
     - **pico.color.mix**: Mixes two colors.
         - `pico.color.mix (c1: Color, c2: Color) -> Color`
-- **pico.ctx**: Pairs `[enter, leave]` for the `context` of Atmos, which sets
-  a state while the code of its block runs, and restores it before any other
+- **pico.ctx**: Contexts of Atmos (`:Context [enter=, leave=]`), which set a
+  state while the code bound to them runs, and restore it before any other
   code runs.
-    - **pico.ctx.layer**: Makes a layer current for the code of the block.
-        - `pico.ctx.layer (layer: Layer) -> [enter, leave]`
+    - **pico.ctx.layer**: Makes a layer current for the code bound to it.
+        - `pico.ctx.layer (layer: Layer) -> :Context [enter=, leave=]`
         - `enter` makes `layer` current and returns the previous layer;
           `leave` makes that one current again.
-        - Tasks that draw into the same layer go into one context: the
-          layer switches once around all of them, not once per task.
+        - It is bound with `in`, to a task, a block, or a pool:
 
         ```
         pin hud = pico.layer.empty [ up=pico.layer.world, ... ]
-        spawn {
-            context pico.ctx.layer(hud) {
-                loop on :draw {
-                    pico.output.draw.rect(...)      ;; into `hud`
-                }
+        in pico.ctx.layer(hud), spawn {
+            loop on :draw {
+                pico.output.draw.rect(...)          ;; into `hud`
             }
         }
         loop on :draw {
@@ -213,9 +210,14 @@ In alphabetical order:
         }
         ```
 
-        - A change of the current layer inside the block holds only until
-          the code awaits: when it awakes, the context makes `layer`
-          current again.
+        - Tasks that draw into the same layer share one context, so that
+          the layer switches once around all of them, not once per task:
+          bind their pool (`pin ts = in pico.ctx.layer(hud), tasks()`), or
+          keep the value and bind it again (`val c = pico.ctx.layer(hud)`;
+          each call of `pico.ctx.layer` is another context).
+        - A change of the current layer inside the code holds only until
+          it awaits: when it awakes, the context makes `layer` current
+          again.
 - **pico.cv**
     - Projects a value from `L_fr`'s frame into `L_to`'s frame via
       the parent chain. Either layer may be `nil` (== cur). Each

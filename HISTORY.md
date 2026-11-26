@@ -39,8 +39,8 @@ Layout:
   target (for the world, bars in a resized or fullscreen window)
 - `atmos-pico -t`: pico is headless by itself (no display needed), and
   `pico.test` is `true`
-- `pico.ctx.layer(l)`: the pair `[enter, leave]` of a `context` that keeps
-  `l` current for the code of its block
+- `pico.ctx.layer(l)`: a context (`:Context [enter=, leave=]`) that keeps
+  `l` current for the code bound to it (`in pico.ctx.layer(l), spawn {...}`)
 - the texts drawn from strings are dropped from the cache when the `dim`
   of a layer changes (e.g. a resize of the window)
 - pencil `text.bold` and `text.italic`: text styles synthesized from one font
