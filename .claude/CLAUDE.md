@@ -63,3 +63,7 @@ make test T=<app>   # check
 - For each group of changes, show one pair of short Atmos excerpts from that
   work, with file and line: one idiomatic, one bad (awkward, verbose, a
   workaround) (author, 2026-11-26).
+    - Number each excerpt with the session's own `#N` sequence and list it
+      in the index of `.claude/plans/TODO.md`.
+    - For each bad one, say why: what makes it awkward, and what is missing
+      or would make it better (the language, the environment, or the port).
