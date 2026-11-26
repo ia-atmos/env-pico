@@ -36,6 +36,11 @@ make ATMOS=/path/to/lang                # builds ./atmos-pico
 cd dir/of/program && /path/to/atmos-pico program.atm
 ```
 
+Before writing Atmos, read the idioms that came out of the author's reviews:
+`.claude/plans/IDIOMS.md` of https://github.com/ia-atmos/lang (author,
+2026-11-26). A general rule that comes out of a review here goes to the
+session `atmos`, with a before and an after.
+
 ## Tests
 
 ### Running
