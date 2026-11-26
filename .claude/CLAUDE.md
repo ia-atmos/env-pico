@@ -60,3 +60,6 @@ make test T=<app>   # check
 
 - At each big step (a milestone, a feature that changes what is on screen),
   show the author a few screenshots in the report (author, 2026-11-26).
+- For each group of changes, show one pair of short Atmos excerpts from that
+  work, with file and line: one idiomatic, one bad (awkward, verbose, a
+  workaround) (author, 2026-11-26).
