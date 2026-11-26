@@ -83,7 +83,12 @@ void pico_open (const Pico_App* cfg) {
             }
         }
 
+#ifdef __EMSCRIPTEN__
+        // a browser has no haptic: SDL_INIT_EVERYTHING fails there
         pico_assert_0(SDL_Init(SDL_INIT_VIDEO|SDL_INIT_AUDIO|SDL_INIT_EVENTS|SDL_INIT_TIMER));
+#else
+        pico_assert_0(SDL_Init(SDL_INIT_EVERYTHING));
+#endif
         TTF_Init();
         Mix_OpenAudio(22050, AUDIO_S16SYS, 2, 1024);
 
