@@ -4,8 +4,8 @@
 
 [![Tests][badge]][tests]
 
-[badge]: https://github.com/fsantanna/pico-sdl/actions/workflows/tests.yml/badge.svg
-[tests]: https://github.com/fsantanna/pico-sdl/actions/workflows/tests.yml
+[badge]: https://github.com/ia-atmos/env-pico/actions/workflows/tests.yml/badge.svg
+[tests]: https://github.com/ia-atmos/env-pico/actions/workflows/tests.yml
 
 ***A 2D graphics library for C***
 
