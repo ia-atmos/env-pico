@@ -55,3 +55,8 @@ make int  T=<app>   # inspect
 make gen  T=<app>   # generate asr/
 make test T=<app>   # check
 ```
+
+## Reports
+
+- At each big step (a milestone, a feature that changes what is on screen),
+  show the author a few screenshots in the report (author, 2026-11-26).
