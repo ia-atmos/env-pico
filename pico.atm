@@ -2910,14 +2910,18 @@ pin pico = [
 ;; `pico.layer.window` at each `pico.open`
 `_pico_atmos_init($pico);`
 
-;; pico.ctx.layer(l): the pair [enter, leave] of a `context` that makes `l`
-;; the current layer while the code of its block runs:
-;;      context pico.ctx.layer(hud) { loop on :draw { ... } }
+;; pico.ctx.layer(l): a context (`:Context [enter=, leave=]`) that makes `l`
+;; the current layer while the code bound to it runs:
+;;      in pico.ctx.layer(hud), spawn { loop on :draw { ... } }
 ;; `enter` makes `l` current and returns the previous layer; `leave` makes it
-;; current again.
+;; current again. The identity of a context is its value: to share one
+;; context, keep the value and bind it again (`val c = pico.ctx.layer(hud)`).
 set pico.ctx = [
     layer = func (l) {
-        [ \{ pico.set.layer(l) }, \(old) { pico.set.layer(old) } ]
+        :Context [
+            enter = \{ pico.set.layer(l) },
+            leave = \(old) { pico.set.layer(old) },
+        ]
     },
 ]
 

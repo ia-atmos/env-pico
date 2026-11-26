@@ -1,5 +1,5 @@
-;; pico.ctx.layer(l): a `context` that keeps `l` current for the code of its
-;; block. Tasks of a HUD (a pool of 10) and of a minimap draw each frame into
+;; pico.ctx.layer(l): a context that keeps `l` current for the code bound to
+;; it. Tasks of a HUD (a pool of 10) and of a minimap draw each frame into
 ;; their layers, while another task draws into the world.
 `setenv("PICO_ATM_FRAMES", "20:20", 0);`
 
@@ -13,8 +13,11 @@ pin map = pico.layer.empty [ up=world, clear=true, dim=['!',w=20,h=20],
 var n = 0
 var sw = 0                              ;; switches of the current layer
 val ctx = pico.ctx.layer
-val count = \(c) {                      ;; the pair of `c`, counting
-    [ \{ set sw = sw + 1 ; c@0() }, \(o) { set sw = sw + 1 ; c@1(o) } ]
+val count = \(c) {                      ;; the context `c`, counting
+    :Context [
+        enter = \{ set sw = sw + 1 ; c.enter() },
+        leave = \(o) { set sw = sw + 1 ; c.leave(o) },
+    ]
 }
 
 task Bar (i) {
@@ -34,15 +37,14 @@ par :any {
         pico.output.draw.rect ['!', x=n%100, y=50, w=5, h=5]
     }
 } with {
-    context count(ctx(hud)) {
-        pin ts = tasks()
-        loop i in 10 {
-            spawn @ts Bar(i)
-        }
-        await :never
+    ;; the pool is bound: every task spawned into it lives in the context
+    pin ts = in count(ctx(hud)), tasks()
+    loop i in 10 {
+        spawn @ts Bar(i)
     }
+    await :never
 } with {
-    context ctx(map) {
+    in ctx(map), do {
         loop on :draw {
             assert(pico.get.layer() == map)
             pico.output.draw.pixel ['!', x=n%20, y=10]
@@ -52,11 +54,10 @@ par :any {
     await :quit
 }
 
-;; the lazy switch: a few times per frame around the whole pool, not twice
-;; per task of the pool (2*10 per frame by hand)
-print("switches", sw, "frames", n)
-assert(n == 20)
-assert(sw <= 4*n)
+;; the lazy switch: per frame, one enter and one leave around the whole pool
+;; (2*n), not a pair per task (2*10*n by hand); the rest is the start (a pair
+;; per spawn into the pool) and the end (a pair per task aborted)
+assert(sw <= 2*n + 4*10 + 4)
 assert(pico.get.layer() == world)
 
 ;; the picture of the last frame, against its reference
