@@ -36,10 +36,14 @@ val e1, dt1 = pico.input.event()
 assert(e1 == nil)
 assert(dt1 <= 15)
 
-;; test 8: evt,dt from fps=40 timeout
+;; test 8: with fps=40, the event comes at the deadline of the frame, 25ms
+;; after the clock of frames was set (dt2 is only what was left to wait)
+val t8 = pico.get.now()
 pico.set.expert(true, 40)
 val e2, dt2 = pico.input.event()
+val t9 = pico.get.now()
 assert(e2 == nil)
-assert(dt2>=25 && dt2<=40)
+assert(t9-t8>=25 && t9-t8<=40)
+assert(dt2>=0 && dt2<=40)
 
 pico.close()

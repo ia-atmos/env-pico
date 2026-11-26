@@ -54,11 +54,17 @@ int main (void) {
     assert(_pico_slow() || dt<=15);
     assert(e2.type == PICO_EVENT_NONE);
 
-    // test 10: event returns dt with fps timing
+    // test 10: with fps timing, the event comes at the deadline of the
+    // frame, 25ms after the clock of frames was set (the dt returned is
+    // only what was left to wait, less than 25 if time passed before)
+    Uint32 ta = pico_get_now();
     pico_set_expert(1, 40);
     Pico_Event e3;
     int dt2 = pico_input_event(&e3, PICO_EVENT_ANY);
-    assert(dt2>=25 && (_pico_slow() || dt2<=40));
+    Uint32 tb = pico_get_now();
+    assert(tb-ta >= 25);
+    assert(dt2 >= 0);
+    assert(_pico_slow() || (dt2<=25 && tb-ta<=40));
 
     pico_close();
     return 0;
