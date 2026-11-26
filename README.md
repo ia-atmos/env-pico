@@ -47,7 +47,7 @@ spawn {
         pico.output.draw.rect ['%', x=0.5, y=0.5, w=0.5, h=0.5]
     }
 }
-await(:key.dn)
+await :key.dn
 ```
 
 # C library

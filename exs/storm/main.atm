@@ -37,4 +37,4 @@ spawn {
     }
 }
 
-await(false)
+await false

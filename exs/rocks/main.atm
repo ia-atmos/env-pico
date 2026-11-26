@@ -77,7 +77,7 @@ loop {
     ;;  * awaits 'P' to unmute battle
     spawn {
         loop {
-            await(:key.dn [key='P'])
+            await :key.dn [key='P']
             mute battle(true)
             spawn {
                 val p = [ '%', x=0.5, y=0.5 ]
@@ -85,7 +85,7 @@ loop {
                     pico.output.draw.image("imgs/pause.png", p)
                 }
             }
-            await(:key.dn [key='P'])
+            await :key.dn [key='P']
             mute battle(false)
         }
     }
@@ -94,7 +94,7 @@ loop {
     ;;  * awaits battle to return winner
     ;;  * increments winner points
     ;;  * awaits 1s before next battle
-    val winner = await(battle)
+    val winner = await battle
     set points@winner = points@winner + 1
     await 1s
 

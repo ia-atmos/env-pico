@@ -108,13 +108,13 @@ par {
     val dim = pico.get.image("%", img)
     val r = [ '%', x=0.5, y=0.5, w=dim.w, h=dim.h ]
     loop {
-        await(:key.dn [key='P'])
-        emit(:Pause [true])
+        await :key.dn [key='P']
+        emit :Pause [true]
         watching :key.dn [key='P'] {
             loop on :draw {
                 pico.output.draw.image(img, r)
             }
         }
-        emit(:Pause [false])
+        emit :Pause [false]
     }
 }

@@ -301,7 +301,7 @@ task Drop (cloud_phy, G) {
     } with {
         ;; decay: wait for ground hit, then fade out
         watching until pub.has_collided {
-            await(false)
+            await false
         }
         await (DROPS_DECAY_MS * 1ms)
     }
@@ -553,7 +553,7 @@ task Light (G, pos_ini, direction, magnitude, is_fork) {
                     }
                 }
             }
-            await(false)
+            await false
         } with {
             loop on :draw {
                 pico.set.pencil [

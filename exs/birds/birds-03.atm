@@ -31,4 +31,4 @@ pin birds = tasks()
 loop i in (1,5) {
     spawn @birds Bird((0.20*i)-0.10, (0.02*i)+0.15)
 }
-await(false)
+await false
