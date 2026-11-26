@@ -248,6 +248,37 @@ static void _show_grid (Pico_Layer* layer, Pico_Abs_Rect src, SDL_Rect dst) {
     pico_set_pencil_color(x_clr);
 }
 
+// clips rect a to (0,0,max_w,max_h), and shrinks b in proportion
+static void _clip_aux (SDL_Rect* a, SDL_Rect* b, int max_w, int max_h) {
+    assert(a->w>0 && a->h>0);
+    float sw = b->w / (float)a->w;
+    float sh = b->h / (float)a->h;
+    if (a->x < 0) {
+        int d = -a->x;
+        b->x += (d * sw);
+        b->w -= (d * sw);
+        a->w -= d;
+        a->x = 0;
+    }
+    if (a->y < 0) {
+        int d = -a->y;
+        b->y += (d * sh);
+        b->h -= (d * sh);
+        a->h -= d;
+        a->y = 0;
+    }
+    if (a->x+a->w > max_w) {
+        int d = (a->x + a->w) - max_w;
+        b->w -= (d * sw);
+        a->w -= d;
+    }
+    if (a->y+a->h > max_h) {
+        int d = (a->y + a->h) - max_h;
+        b->h -= (d * sh);
+        a->h -= d;
+    }
+}
+
 void _pico_layer_output (
     Pico_Layer* layer, const Pico_Rel_Rect* rect
 ) {
@@ -276,35 +307,6 @@ void _pico_layer_output (
 
     // clip dst to current layer (parent) bounds, propagate to src
     {
-        void aux (SDL_Rect* a, SDL_Rect* b, int max_w, int max_h) {
-            assert(a->w>0 && a->h>0);
-            float sw = b->w / (float)a->w;
-            float sh = b->h / (float)a->h;
-            if (a->x < 0) {
-                int d = -a->x;
-                b->x += (d * sw);
-                b->w -= (d * sw);
-                a->w -= d;
-                a->x = 0;
-            }
-            if (a->y < 0) {
-                int d = -a->y;
-                b->y += (d * sh);
-                b->h -= (d * sh);
-                a->h -= d;
-                a->y = 0;
-            }
-            if (a->x+a->w > max_w) {
-                int d = (a->x + a->w) - max_w;
-                b->w -= (d * sw);
-                a->w -= d;
-            }
-            if (a->y+a->h > max_h) {
-                int d = (a->y + a->h) - max_h;
-                b->h -= (d * sh);
-                a->h -= d;
-            }
-        }
         int max_w, max_h;
         SDL_QueryTexture(SDL_GetRenderTarget(G.window.ren), NULL, NULL, &max_w, &max_h);
 
@@ -321,11 +323,11 @@ void _pico_layer_output (
             return;
         }
 
-        aux(&dst, &src, max_w, max_h);
+        _clip_aux(&dst, &src, max_w, max_h);
         if (src.w<=0 || src.h<=0) {
             return; // dst-clip may have shrunk src to nothing
         }
-        aux(&src, &dst, sup->w, sup->h);
+        _clip_aux(&src, &dst, sup->w, sup->h);
     }
 
     SDL_SetTextureAlphaMod(layer->tex, G.layer->pencil.color.a*layer->effect.alpha/255);
@@ -335,7 +337,7 @@ void _pico_layer_output (
     };
     SDL_RenderCopyEx(G.window.ren, layer->tex, &src, &dst,
                      layer->effect.rotate.angle, &center,
-                     layer->effect.flip);
+                     (SDL_RendererFlip) layer->effect.flip);
 
     if (layer->effect.grid) {
         _show_tile(&layer->scene, dst);

@@ -165,35 +165,36 @@ static int _event_handler (Pico_Event* pico, int do_exit) {
     return 0;
 }
 
+// the pico type of an SDL event
+static PICO_EVENT _sdl_enum (SDL_Event* sdl) {
+    switch (sdl->type) {
+        case SDL_QUIT:
+            return PICO_EVENT_QUIT;
+        case SDL_KEYDOWN:
+            return PICO_EVENT_KEY_DN;
+        case SDL_KEYUP:
+            return PICO_EVENT_KEY_UP;
+        case SDL_MOUSEMOTION:
+            return PICO_EVENT_MOUSE_MOTION;
+        case SDL_MOUSEBUTTONDOWN:
+            return PICO_EVENT_MOUSE_BUTTON_DN;
+        case SDL_MOUSEBUTTONUP:
+            return PICO_EVENT_MOUSE_BUTTON_UP;
+        case SDL_WINDOWEVENT:
+            if (sdl->window.event == SDL_WINDOWEVENT_RESIZED) {
+                return PICO_EVENT_WINDOW_RESIZE;
+            } else {
+                return PICO_EVENT_NONE;
+            }
+        default:
+            return PICO_EVENT_NONE;
+    }
+}
+
 static void _sdl_to_pico (SDL_Event* sdl, Pico_Event* pico) {
     assert(sdl!=NULL && pico!=NULL && "bug found");
 
-    PICO_EVENT _enum (SDL_Event* sdl) {
-        switch (sdl->type) {
-            case SDL_QUIT:
-                return PICO_EVENT_QUIT;
-            case SDL_KEYDOWN:
-                return PICO_EVENT_KEY_DN;
-            case SDL_KEYUP:
-                return PICO_EVENT_KEY_UP;
-            case SDL_MOUSEMOTION:
-                return PICO_EVENT_MOUSE_MOTION;
-            case SDL_MOUSEBUTTONDOWN:
-                return PICO_EVENT_MOUSE_BUTTON_DN;
-            case SDL_MOUSEBUTTONUP:
-                return PICO_EVENT_MOUSE_BUTTON_UP;
-            case SDL_WINDOWEVENT:
-                if (sdl->window.event == SDL_WINDOWEVENT_RESIZED) {
-                    return PICO_EVENT_WINDOW_RESIZE;
-                } else {
-                    return PICO_EVENT_NONE;
-                }
-            default:
-                return PICO_EVENT_NONE;
-        }
-    }
-
-    pico->type = _enum(sdl);
+    pico->type = _sdl_enum(sdl);
     switch (pico->type) {
         case PICO_EVENT_NONE:
             break;              // TODO: complete with all possible events
