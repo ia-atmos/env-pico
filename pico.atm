@@ -229,7 +229,7 @@
 ;; which `tst/run.sh` exports. If the variable is not set, they are
 ;; `../c/tst/out` and `../c/tst/asr`, relative to the current directory.
 
-```:prelude
+```:prelude.c
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>

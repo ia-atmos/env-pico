@@ -2,7 +2,7 @@
 ;; exports PICO_ROOT, the absolute root of the repository, and the files are
 ;; `$PICO_ROOT/c/tst/out/<name>.png` and `$PICO_ROOT/c/tst/asr/<name>.png`.
 
-```:prelude
+```:prelude.c
 #include <unistd.h>
 ```
 
